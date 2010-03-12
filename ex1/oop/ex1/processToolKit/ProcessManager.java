@@ -11,7 +11,7 @@ public class ProcessManager {
     }
     
     public void updatePriority(Process process, int priority) 
-        throws PriorityNotUpdatedException {
+        throws ObjectNotFoundException {
         
     }
     
