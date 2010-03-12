@@ -5,7 +5,7 @@
   * AbstractComparableQueue - _AlreadyProvided_
     * RandomIterator
   * LIFOComparableQueue
-  *  * LIFOIterator
+    * LIFOIterator
   * AbstractPriorityQueue - _Already provided_
   * ArrayPriorityQueue
 
