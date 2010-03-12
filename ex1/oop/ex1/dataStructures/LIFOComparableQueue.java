@@ -3,6 +3,13 @@ package oop.ex1.dataStructures;
 import java.util.Iterator;
 
 public class LIFOComparableQueue extends AbstractComparableQueue {
+    
+    /// Top of the stack position
+    private int _top;
+        
+    public LIFOComparableQueue() {
+        
+    }
 
     public void push(ComparableObject obj) {
 
