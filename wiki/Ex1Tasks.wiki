@@ -1,19 +1,26 @@
 #summary Ex1 tasks
 
-= File list =
-  * AbstractComparableQueue
-  * AbstractPriorityQueue
+= Class list =
+  * ComparableObject - _Already provided_
+  * AbstractComparableQueue - _AlreadyProvided_
+    * RandomIterator
+  * LIFOComparableQueue
+  *  * LIFOIterator
+  * AbstractPriorityQueue - _Already provided_
   * ArrayPriorityQueue
-  * ComparableObject
-  * EmptyQueueException
-  * LIFOComparableObject
+
+
+  * Process
+  * ProcessManager
+
   * NoMoreElementsException
+  * EmptyQueueException
   * ObjectNotFoundException
 
   * DisorderException
   * NoMoreProcessesException
-  * Process
-  * ProcessManager
+  
+
 
 = Yossi's tasks =
 
