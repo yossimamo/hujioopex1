@@ -38,28 +38,49 @@ public abstract class AbstractComparableQueue {
 	 */
 	public abstract void push(ComparableObject obj);
 	
+	
 	private class RandomIterator implements Iterator {
 	    
-	    private boolean _alreadyIterated;
+	    private boolean[] _alreadyIterated;
+	    
 	    private Random _rand;
 	    
+	    private int _position;
+	    
 	    public RandomIterator() {
-	        
+	        _alreadyIterated = new boolean[_queue.length];
+	        _position= _rand.nextInt(_queue.length);
 	    }
 	    
 	    public RandomIterator(long seedNum) {
-	        
+	    	_alreadyIterated = new boolean[_queue.length];
+	        _rand.setSeed(seedNum);
+	        _position= _rand.nextInt(_queue.length);
 	    }
-	    
-	    public Iterator randomIterator() {
-	        
-	    }
-	    
-	    public Iterator randomIterator(long seed) {
-	        
-	    }
+
+		public boolean hasNext() {
+			if (getNextPosition() == null){
+				return false;
+			}
+			return true;
+		}
+
+		public Object next() {
+			
+		}
+
+		private Object getNextPosition() {
+			return null;
+		}
+
+		public void remove() {
+		}
 	    
 	}
+	
+	public abstract Iterator randomIterator();
+    
+    public abstract Iterator randomIterator(long seed);
 	
 	
 }
