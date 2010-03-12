@@ -30,6 +30,10 @@ public class Process implements ComparableObject {
         
     }
     
+    public int getPriority() {
+        
+    }
+    
     public void run() {
         
     }
