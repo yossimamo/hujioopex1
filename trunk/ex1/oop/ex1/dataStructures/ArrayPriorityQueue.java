@@ -18,16 +18,24 @@ public class ArrayPriorityQueue extends AbstractPriorityQueue {
     	}
     	_queue[_upperIndex]= obj;
     	_upperIndex++;
+<<<<<<< .mine
+    	try {
+			updatePriority(obj);
+		} 
+    	catch (ObjectNotFoundException e) {
+		}
+=======
     	try {
     	    updatePriority(obj);
     	}
     	catch (ObjectNotFoundException e) {
     	}
+>>>>>>> .r22
     }
 
     /**
      * returns the element with the highest priority in the queue.
-     * @throws EmptyQueueException
+     * @throws EmptyQueueException if the queue is empty.
      * @return the element with the highest priority in the queue.
      */
     public ComparableObject peek() throws EmptyQueueException {
@@ -41,7 +49,7 @@ public class ArrayPriorityQueue extends AbstractPriorityQueue {
 
     /**
      * returns and removes the element with the highest priority in the queue.
-     * @throws EmptyQueueException
+     * @throws EmptyQueueException if the queue is empty.
      * @return the element with the highest priority in the queue.
      */
     public ComparableObject poll() throws EmptyQueueException {
@@ -56,9 +64,10 @@ public class ArrayPriorityQueue extends AbstractPriorityQueue {
     }
     
     /**
-     * finds object in queue and moves it up or down as requiered by its
+     * finds object in queue and moves it up or down as required by its
      * priority.
-     * @throws ObjectNotFoundException
+     * @throws ObjectNotFoundException if the object does not exist in the
+     * queue. 
      * @param obj the object we wish to search and move.
      * 
      */
@@ -80,7 +89,7 @@ public class ArrayPriorityQueue extends AbstractPriorityQueue {
 
     /**
      * receives an index number and reposition the object in this index, in 
-     * its place according to the priority as long as its lower thaan the
+     * its place according to the priority as long as its lower than the
      * index position in the tree.
      * @param index the index number of the element in the queue to be
      * repositioned.
@@ -88,7 +97,7 @@ public class ArrayPriorityQueue extends AbstractPriorityQueue {
     private void maxHeapify(int index){
     	int largest;
     	int leftSonIndex= index * 2 + 1;
-    	int rightSonIndex = index*2 + 2;
+    	int rightSonIndex = index * 2 + 2;
     	if (leftSonIndex < _upperIndex){
     		if (rightSonIndex >= _upperIndex){
     			rightSonIndex = _upperIndex - 1;
@@ -126,7 +135,8 @@ public class ArrayPriorityQueue extends AbstractPriorityQueue {
      * if it is not in the queue.
      * @param obj the object we wish to find in the queue.
      * @return the index number of the object received
-     * @throws ObjectNotFoundException
+     * @throws ObjectNotFoundException if the object does not exist in the 
+     * queue.
      */
     private int findIndex(ComparableObject obj) throws ObjectNotFoundException{
     	for (int i=1; i< _upperIndex; i++){

@@ -6,7 +6,7 @@ import java.util.Random;
 /**
  * An abstract queue of comparable objects.
  * Supports push,peek,poll, size and random iteration.
- * @author OOP
+ * @author uri greenberg and yossi mammo.
  *
  */
 public abstract class AbstractComparableQueue {
@@ -149,10 +149,12 @@ public abstract class AbstractComparableQueue {
 
 		/**
 		 * returns the next object in the array (in a random selection).
+		 * @throws NoMoreElementsException if no more elements left to be 
+		 * iterated.
 		 * @return the next object in the array (in a random selection).
 		 */
-		public Object next() throws NoMoreElementsException  {
-			if (isQueueEmpty()){
+		public ComparableObject next() throws NoMoreElementsException  {
+			if (hasNext() == false){
 				throw new NoMoreElementsException();
 			}
 			int position;
@@ -171,7 +173,7 @@ public abstract class AbstractComparableQueue {
 		}
 		
 		/**
-		 * creates Initializes the boolean array to false.
+		 * creates and Initializes the boolean array to false.
 		 */
 		private void init(){
 			_alreadyIterated = new boolean[_upperIndex];
@@ -179,7 +181,6 @@ public abstract class AbstractComparableQueue {
 	        	_alreadyIterated[i]= false;	       
 	        }
 		}
-	    
 	}
 }
 

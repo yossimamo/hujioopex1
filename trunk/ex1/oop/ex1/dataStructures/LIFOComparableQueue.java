@@ -31,9 +31,9 @@ public class LIFOComparableQueue extends AbstractComparableQueue {
     }
 
     /**
-     * returns the next element in the stack.
-     * @return the next element in the stack.
-     */
+	 * @throws EmptyQueueException if queue is empty.
+	 * @return The top element in the queue (without removing it).
+	 */
     public ComparableObject peek() throws EmptyQueueException {
     	if (isQueueEmpty()){
     		throw new EmptyQueueException();
@@ -42,9 +42,9 @@ public class LIFOComparableQueue extends AbstractComparableQueue {
     }
 
     /**
-     * removes and return the next element in the stack.
-     * @return the next element in the stack.
-     */
+	 * @throws EmptyQueueException if queue is empty.
+	 * @return The top element in the queue (and remove it).
+	 */
     public ComparableObject poll() throws EmptyQueueException {
     	if (isQueueEmpty()){
     		throw new EmptyQueueException();
@@ -96,6 +96,8 @@ public class LIFOComparableQueue extends AbstractComparableQueue {
 
 		/**
 		 * iterates the next element.
+		 * @throws NoMoreElementsException if all the elements have been
+		 * iterated.
 		 * @return the next element that hasn't been returned yet.
 		 */
 		public Object next() throws NoMoreElementsException {
