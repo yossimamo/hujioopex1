@@ -12,6 +12,7 @@ import oop.ex1.dataStructures.LIFOComparableQueue;
  * @author Yossi and Uri
  */
 public class Process implements ComparableObject {
+    
     ///
     private String _name;
     
@@ -81,7 +82,6 @@ public class Process implements ComparableObject {
      */
     public int getPriority() {
         return _priority;
-        
     }
     
     /**
@@ -96,7 +96,7 @@ public class Process implements ComparableObject {
      * @return
      */
     public Iterator iterateSubProcesses() {
-        return _subProcesses.LIFOIterator()
+        return _subProcesses.LIFOIterator();
     }
     
     /**
@@ -175,6 +175,30 @@ public class Process implements ComparableObject {
             level++;
         }
         return level;
+    }
+    
+    /**
+     * 
+     * @return
+     */
+    public Process getParent() {
+        return _parent;
+    }
+    
+    /**
+     * 
+     * @param time
+     */
+    public void setTerminationTime(Date time) {
+        _terminationTime = time;
+    }
+    
+    /**
+     * 
+     * @return
+     */
+    public Date getTerminationTime() {
+        return _terminationTime;
     }
 
 }
