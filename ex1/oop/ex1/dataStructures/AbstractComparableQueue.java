@@ -3,8 +3,6 @@ package oop.ex1.dataStructures;
 import java.util.Iterator;
 import java.util.Random;
 
-import com.sun.java.swing.plaf.nimbus.LoweredBorder;
-
 /**
  * An abstract queue of comparable objects.
  * Supports push,peek,poll, size and random iteration.
@@ -18,17 +16,9 @@ public abstract class AbstractComparableQueue {
 	protected ComparableObject[] _queue;
 	
 	/**
-	 * the index pointing to the beginning of the elements in the array.
-	 */
-	protected int _lowerIndex;
-	/**
 	 * the index pointing to the end of the elements in the array.
 	 */
 	protected int _upperIndex;
-	/**
-	 * the number of elements in the array.
-	 */
-	protected int _numOfElements;
 
 	/**
 	* Default size of the queue.
@@ -75,7 +65,7 @@ public abstract class AbstractComparableQueue {
      * @return true if the queue has no more elements in it or false otherwise.
      */
     protected boolean isQueueEmpty(){
-    	if (_upperIndex == _lowerIndex){
+    	if (_upperIndex == 0){
     		return true;
     	}
     	return false;
@@ -88,36 +78,20 @@ public abstract class AbstractComparableQueue {
      * false otherwise.
      */
     protected boolean isQueueFull(){
-    	if (_numOfElements == _queue.length - 1){
+    	if (_upperIndex == _queue.length){
     		return true;
     	}
     	return false;
     }
     
     /**
-     * enlarges the queue by a factor of 2. it rearranges the elements in
-     * the array so the first one will be in place 0 and the rest after him.  
+     * enlarges the queue by a factor of 2.  
      */
     protected void enlargeQueue(){
     	ComparableObject[] tempArr= new ComparableObject[ _queue.length * 2];
-    	if (_lowerIndex < _upperIndex){
-    		for (int i=_lowerIndex; i<_upperIndex; i++){
-    			tempArr[i - _lowerIndex]= _queue[i];
-    		}
+    	for (int i=0; i<_upperIndex; i++){
+    		tempArr[i]= _queue[i];
     	}
-    	else {
-    		int j=0;
-    		for (int i=_lowerIndex; i<_queue.length; i++){
-    			tempArr[j]= _queue[i];
-    			j++;
-    		}
-    		for (int i=0; i<_upperIndex; i++){
-    			tempArr[j]= _queue[i];
-    			j++;
-    		}
-    	}
-    	_lowerIndex= 0;
-    	_upperIndex= _numOfElements - 1;
     	_queue= tempArr;
     }
 	
@@ -146,7 +120,7 @@ public abstract class AbstractComparableQueue {
 	     * a constructor of a new random iterator.
 	     */
 	    public RandomIterator() {
-	        _alreadyIterated = new boolean[_queue.length];
+	       init();
 	    }
 	    
 	    /**
@@ -154,51 +128,36 @@ public abstract class AbstractComparableQueue {
 	     * @param seedNum - the seed number for the random class.
 	     */
 	    public RandomIterator(long seedNum) {
-	    	_alreadyIterated = new boolean[_queue.length];
 	        _rand.setSeed(seedNum);
+	        init();
 	    }
 
 	    /**
-	     * returns true if the array has elements that hasnt been iterated
+	     * returns true if the array has elements that hasn't been iterated
 	     * or false otherwise.
-	     * @return true if the array has elements that hasnt been iterated
+	     * @return true if the array has elements that hasn't been iterated
 	     * or false otherwise.
 	     */
 		public boolean hasNext() {
-			if (_lowerIndex<=_upperIndex){
-				for (int i=_lowerIndex; i<_upperIndex; i++){
-					if (_alreadyIterated[i]==false){
-						return true;
-					}
+			for (int i=0; i<_alreadyIterated.length; i++){
+				if (_alreadyIterated[i]==false){
+					return true;
 				}
-				return false;
 			}
-			else {
-				for (int i=0; i<_upperIndex; i++){
-					if (_alreadyIterated[i]==false){
-						return true;
-					}
-				}
-				for (int i=_lowerIndex; i<_alreadyIterated.length; i++){
-					if (_alreadyIterated[i]==false){
-						return true;
-					}
-				}
-				return false;
-			}
+			return false;
 		}
 
 		/**
 		 * returns the next object in the array (in a random selection).
 		 * @return the next object in the array (in a random selection).
 		 */
-		public Object next() {
+		public Object next() throws NoMoreElementsException  {
+			if (isQueueEmpty()){
+				throw new NoMoreElementsException();
+			}
 			int position;
 			do {
-				position= _lowerIndex + _rand.nextInt(_numOfElements);
-				if (position > _alreadyIterated.length - 1){
-					position=-_alreadyIterated.length;
-				}
+				position=_rand.nextInt(_upperIndex);
 			}
 			while (_alreadyIterated[position]);
 			_alreadyIterated[position]= true;
@@ -209,6 +168,16 @@ public abstract class AbstractComparableQueue {
 		 * 
 		 */
 		public void remove() {
+		}
+		
+		/**
+		 * creates Initializes the boolean array to false.
+		 */
+		private void init(){
+			_alreadyIterated = new boolean[_upperIndex];
+	        for (int i=0; i<_alreadyIterated.length; i++){
+	        	_alreadyIterated[i]= false;	       
+	        }
 		}
 	    
 	}
