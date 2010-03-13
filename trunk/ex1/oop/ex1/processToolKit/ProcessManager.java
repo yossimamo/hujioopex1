@@ -8,24 +8,27 @@ import oop.ex1.dataStructures.EmptyQueueException;
 import oop.ex1.dataStructures.ObjectNotFoundException;
 
 /**
- * 
+ * A process manager, responsible for managing and running all the processes.
+ * Holds a priority queue of all the processes in the system.
  * @author Yossi and Uri
  */
 public class ProcessManager {
     
-    ///
+    /// Priority queue of processes
     private ArrayPriorityQueue _processQueue;
     
     /**
-     * 
+     * Constructs a new ProcessManager
      */
     public ProcessManager() {
         _processQueue = new ArrayPriorityQueue();
     }
 
     /**
-     * Assumes this method is invoked on a process without a parent that
-     * does not already exist in the tree.
+     * Adds a process and all its subprocesses to the process queue.
+     * Assumes the given process does not have a parent and does not already
+     * exist in the tree.
+     * @param process The process to add
      */
     public void addProcessTree(Process process) {
         _processQueue.push(process);
@@ -36,10 +39,14 @@ public class ProcessManager {
     }
     
     /**
-     * 
-     * @param process
-     * @param priority
-     * @throws ObjectNotFoundException
+     * Updates the priority of the given process to the given priority. This
+     * method will also update the priorities of the process' parents if they
+     * are smaller than the given priority, and the priorities of the process'
+     * subprocesses if they are bigger than the given priority (all in order
+     * to maintain the heap property of the priority queue).
+     * @param process The process to update
+     * @param priority The requested priority
+     * @throws ObjectNotFoundException TODO ?!?
      */
     public void updatePriority(Process process, int priority) 
         throws ObjectNotFoundException {
@@ -62,11 +69,13 @@ public class ProcessManager {
                 updatePriority(parent, priority);
             }
         }
+        // TODO throw ObjectNotFoundException if process is not in tree?!
     }
     
     /**
-     * 
-     * @throws DisorderException
+     * Runs all processes by their order.
+     * @throws DisorderException If a child is set to run after its parent
+     * has already terminated.
      */
     public void runAllProcesses() throws DisorderException {
         try {
