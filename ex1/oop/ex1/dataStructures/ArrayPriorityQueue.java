@@ -18,7 +18,11 @@ public class ArrayPriorityQueue extends AbstractPriorityQueue {
     	}
     	_queue[_upperIndex]= obj;
     	_upperIndex++;
+    	try{
     	updatePriority(obj);
+    	}
+    	catch {
+    	}
     }
 
     /**
@@ -48,6 +52,7 @@ public class ArrayPriorityQueue extends AbstractPriorityQueue {
     	_queue[0] = _queue[_upperIndex - 1];
     	_upperIndex--;
     	maxHeapify(0);
+    	return max;
     }
     
     /**
@@ -84,9 +89,9 @@ public class ArrayPriorityQueue extends AbstractPriorityQueue {
     	int largest;
     	int leftSonIndex= index * 2 + 1;
     	int rightSonIndex = index*2 + 2;
-    	if (leftSonIndex <= _numOfElements){
-    		if (rightSonIndex > _numOfElements){
-    			rightSonIndex = _numOfElements;
+    	if (leftSonIndex < _upperIndex){
+    		if (rightSonIndex >= _upperIndex){
+    			rightSonIndex = _upperIndex - 1;
     		}
     		if (_queue[leftSonIndex].compare(_queue[index]) > 0){
     			largest = leftSonIndex;
