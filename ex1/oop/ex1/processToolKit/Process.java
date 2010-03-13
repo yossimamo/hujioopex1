@@ -13,48 +13,50 @@ import oop.ex1.dataStructures.LIFOComparableQueue;
  */
 public class Process implements ComparableObject {
     
-    ///
+    /// Name of the process
     private String _name;
     
-    ///
+    /// The process' parent
     private Process _parent;
     
-    ///
+    /// Stack of subprocesses of the current process
     private LIFOComparableQueue _subProcesses;
     
-    ///
+    /// Termination time of the process
     private Date _terminationTime;
     
-    ///
+    /// Priority of the process
     private int _priority;
     
-    ///
+    /// The default given priority
     private static final int DEFAULT_PRIORITY = 0;
     
     /**
-     * 
-     * @param name
-     * @param parent
+     * Constructs a new process with the given name and parent (default
+     * priority will be set).
+     * @param name The process' name
+     * @param parent The process' parent
      */
     public Process(String name, Process parent) {
         init(name, parent, DEFAULT_PRIORITY);
     }
     
     /**
-     * 
-     * @param name
-     * @param parent
-     * @param priority
+     * Constructs a new process with the given name, parent and priority.
+     * @param name The process' name
+     * @param parent The process' parent
+     * @param priority The process' priority
      */
     public Process(String name, Process parent, int priority) {
         init(name, parent, priority);
     }
     
     /**
-     * 
-     * @param name
-     * @param parent
-     * @param priority
+     * Helper method which initializes a newly constructed process with the
+     * given name, parent and priority.
+     * @param name The process' name
+     * @param parent The process' parent
+     * @param priority The process' priority
      */
     private void init(String name, Process parent, int priority) {
         _name = name;
