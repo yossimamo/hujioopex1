@@ -7,6 +7,11 @@ package oop.ex1.dataStructures;
  */
 public class ArrayPriorityQueue extends AbstractPriorityQueue {
 
+	public ArrayPriorityQueue(){
+		super();
+	}
+	
+	
 	/**
 	 * pushes a new element into the queue and relocates it in the right place
 	 * in the array.

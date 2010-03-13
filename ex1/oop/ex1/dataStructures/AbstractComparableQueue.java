@@ -26,6 +26,15 @@ public abstract class AbstractComparableQueue {
 	protected static final int DEFAULT_INITIAL_CAPACITY = 32;
     
 	/**
+	 * creates a new empty queue.
+	 */
+	public AbstractComparableQueue(){
+		_queue= new ComparableObject[DEFAULT_INITIAL_CAPACITY];
+        _upperIndex= 0;
+	}
+	
+	
+	/**
 	 * @throws EmptyQueueException if queue is empty.
 	 * @return The top element in the queue (without removing it).
 	 */
