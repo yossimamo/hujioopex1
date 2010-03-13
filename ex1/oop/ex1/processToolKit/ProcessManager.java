@@ -46,13 +46,15 @@ public class ProcessManager {
      * to maintain the heap property of the priority queue).
      * @param process The process to update
      * @param priority The requested priority
-     * @throws ObjectNotFoundException TODO ?!?
+     * @throws ObjectNotFoundException If the given process was not found in
+     * the queue.
      */
     public void updatePriority(Process process, int priority) 
         throws ObjectNotFoundException {
         int oldPriority = process.getPriority();
         if (oldPriority != priority) {
             process.setPriority(priority);
+            _processQueue.updatePriority(process);
             // If the new priority is bigger than any of the children's
             // priorities, update their priority as well.
             Iterator subProcs = process.iterateSubProcesses();
@@ -69,7 +71,6 @@ public class ProcessManager {
                 updatePriority(parent, priority);
             }
         }
-        // TODO throw ObjectNotFoundException if process is not in tree?!
     }
     
     /**
