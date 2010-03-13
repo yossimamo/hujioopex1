@@ -14,8 +14,7 @@ public class LIFOComparableQueue extends AbstractComparableQueue {
 	 * creates a new empty stack.
 	 */
     public LIFOComparableQueue() {
-        _queue= new ComparableObject[DEFAULT_INITIAL_CAPACITY];
-        _upperIndex= 0;
+        super();
     }
 
     /**
