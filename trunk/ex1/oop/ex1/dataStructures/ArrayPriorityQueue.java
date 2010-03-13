@@ -6,11 +6,6 @@ public class ArrayPriorityQueue extends AbstractPriorityQueue {
 
     }
 
-    public void updatePriority(ComparableObject obj)
-        throws ObjectNotFoundException {
-        
-    }
-
     public ComparableObject peek() throws EmptyQueueException {
    
     }
@@ -18,5 +13,10 @@ public class ArrayPriorityQueue extends AbstractPriorityQueue {
     public ComparableObject poll() throws EmptyQueueException {
 
     }
+    
+    public void updatePriority(ComparableObject obj)
+    throws ObjectNotFoundException {
+    
+}
 
 }
