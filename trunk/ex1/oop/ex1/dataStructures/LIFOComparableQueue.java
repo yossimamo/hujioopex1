@@ -15,9 +15,7 @@ public class LIFOComparableQueue extends AbstractComparableQueue {
 	 */
     public LIFOComparableQueue() {
         _queue= new ComparableObject[DEFAULT_INITIAL_CAPACITY];
-        _lowerIndex= 0;
         _upperIndex= 0;
-        _numOfElements= 0;
     }
 
     /**
@@ -30,7 +28,6 @@ public class LIFOComparableQueue extends AbstractComparableQueue {
     	}
     	_queue[_upperIndex]= obj;
     	_upperIndex++;
-    	_numOfElements++;
     }
 
     /**
@@ -39,7 +36,7 @@ public class LIFOComparableQueue extends AbstractComparableQueue {
      */
     public ComparableObject peek() throws EmptyQueueException {
     	if (isQueueEmpty()){
-    		throw new EmptyQueueException;
+    		throw new EmptyQueueException();
     	}
     	return _queue[_upperIndex - 1];
     }
@@ -50,11 +47,10 @@ public class LIFOComparableQueue extends AbstractComparableQueue {
      */
     public ComparableObject poll() throws EmptyQueueException {
     	if (isQueueEmpty()){
-    		throw EmptyQueueException;
+    		throw new EmptyQueueException();
     	}
     	_upperIndex--;
-    	_numOfElements--;
-    	return  _queue[_upperIndex];
+    	return _queue[_upperIndex];
     }
     
     /**
@@ -102,8 +98,11 @@ public class LIFOComparableQueue extends AbstractComparableQueue {
 		 * iterates the next element.
 		 * @return the next element that hasn't been returned yet.
 		 */
-		public Object next() {
-			_iteratorIndex =- 1;
+		public Object next() throws NoMoreElementsException {
+			if (hasNext() == false){
+				throw new NoMoreElementsException();
+			}
+			_iteratorIndex--;
 			return _queue[_iteratorIndex];
 		}
 
