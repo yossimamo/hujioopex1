@@ -94,8 +94,6 @@ public abstract class AbstractComparableQueue {
     	}
     	_queue= tempArr;
     }
-	
-    
     
     /**
 	 * a class that represents an iterator that brings the next element 
@@ -125,11 +123,11 @@ public abstract class AbstractComparableQueue {
 	    
 	    /**
 	     * a constructor of a new random iterator. with a long seed number.
-	     * @param seedNum - the seed number for the random class.
+	     * @param seedNum the seed number for the random class.
 	     */
 	    public RandomIterator(long seedNum) {
-	        _rand.setSeed(seedNum);
 	        init();
+	        _rand.setSeed(seedNum);
 	    }
 
 	    /**
@@ -175,7 +173,8 @@ public abstract class AbstractComparableQueue {
 		/**
 		 * creates and Initializes the boolean array to false.
 		 */
-		private void init(){
+		private void init() {
+		    _rand = new Random();
 			_alreadyIterated = new boolean[_upperIndex];
 	        for (int i=0; i<_alreadyIterated.length; i++){
 	        	_alreadyIterated[i]= false;	       
