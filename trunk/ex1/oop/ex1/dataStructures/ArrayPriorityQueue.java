@@ -18,19 +18,11 @@ public class ArrayPriorityQueue extends AbstractPriorityQueue {
     	}
     	_queue[_upperIndex]= obj;
     	_upperIndex++;
-<<<<<<< .mine
     	try {
 			updatePriority(obj);
 		} 
     	catch (ObjectNotFoundException e) {
 		}
-=======
-    	try {
-    	    updatePriority(obj);
-    	}
-    	catch (ObjectNotFoundException e) {
-    	}
->>>>>>> .r22
     }
 
     /**
