@@ -136,7 +136,7 @@ public class ArrayPriorityQueue extends AbstractPriorityQueue {
      * queue.
      */
     private int findIndex(ComparableObject obj) throws ObjectNotFoundException{
-    	for (int i=1; i< _upperIndex; i++){
+    	for (int i=0; i< _upperIndex; i++){
     		if (obj == _queue[i]){
     			return i;
     		}
