@@ -1,3 +1,13 @@
+//###############  
+// FILE : AbstractComparableQueue.java  
+// WRITER : Uri Greenberg, urig03, 021986039  
+// WRITER : Yossi Mamo, ymamo29, 038073722
+// EXERCISE : oop ex1 2010  
+// DESCRIPTION:    
+// An abstract queue of comparable objects. Supports push, peek, poll, size and
+// random iteration.
+//###############
+
 package oop.ex1.dataStructures;
 
 import java.util.Iterator;

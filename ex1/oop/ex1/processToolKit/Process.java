@@ -1,3 +1,13 @@
+//###############  
+// FILE : Process.java  
+// WRITER : Uri Greenberg, urig03, 021986039  
+// WRITER : Yossi Mamo, ymamo29, 038073722
+// EXERCISE : oop ex1 2010  
+// DESCRIPTION:    
+// Represents a process with a unique name, priority, termination time, a
+// single parent and a stack of subprocesses associated with it.
+//###############
+
 package oop.ex1.processToolKit;
 
 import java.util.Date;
@@ -10,7 +20,7 @@ import oop.ex1.dataStructures.LIFOComparableQueue;
 /**
  * Represents a process with a unique name, priority, termination time, a
  * single parent and a stack of subprocesses associated with it.
- * @author Yossi and Uri
+ * @author Uri Greenberg and Yossi Mamo
  */
 public class Process implements ComparableObject {
     
@@ -65,12 +75,15 @@ public class Process implements ComparableObject {
         _terminationTime = null;
         _subProcesses = new LIFOComparableQueue();
         if (null != parent) {
-            if (DEFAULT_PRIORITY < parent.getPriority()) {
+            if (priority < parent.getPriority()) {
                 _priority = parent.getPriority();
             } else {
                 _priority = priority;
             }
             parent._subProcesses.push(this);            
+        }
+        else {
+            _priority = priority;
         }
     }
     

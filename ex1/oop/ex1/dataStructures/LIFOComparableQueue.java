@@ -1,11 +1,19 @@
+//###############  
+// FILE : LIFOComparableQueue.java  
+// WRITER : Uri Greenberg, urig03, 021986039  
+// WRITER : Yossi Mamo, ymamo29, 038073722
+// EXERCISE : oop ex1 2010  
+// DESCRIPTION:    
+// A class which represents a stack (LIFO) of comparable objects.
+//###############
+
 package oop.ex1.dataStructures;
 
 import java.util.Iterator;
 
 /**
- * A class which represents a stack of comparable objects.
+ * A class which represents a stack (LIFO) of comparable objects.
  * @author Uri Greenberg and Yossi Mamo
- *
  */
 
 public class LIFOComparableQueue extends AbstractComparableQueue {
