@@ -40,6 +40,8 @@ public class ArrayPriorityQueue extends AbstractPriorityQueue {
 			updatePriority(obj);
 		} 
     	catch (ObjectNotFoundException e) {
+    	    // Intentionally left blank, fail silently
+    	    // (this should never happen)
 		}
     }
 
@@ -89,9 +91,10 @@ public class ArrayPriorityQueue extends AbstractPriorityQueue {
     /**
      * Moving the element upwards to its rightful position
      *(swaps every time the parent is smaller than the element itself)
+     * Assumes i is a legal index in the array.
      * @param i the index of the element.
      */
-    private void increaseKey(int i){
+    private void increaseKey(int i) {
     	while (i > 0) {
     		if(_queue[i].compare(_queue[(i-1)/2]) > 0) {
     			swap(i,(i-1)/2);
@@ -106,7 +109,8 @@ public class ArrayPriorityQueue extends AbstractPriorityQueue {
     /**
      * Receives an index number and repositions the object in this index, in 
      * its place according to the priority as long as its lower than the
-     * index position in the tree
+     * index position in the tree.
+     * Assumes index is legal in the array.
      * @param index The index number of the element in the queue to be
      * repositioned
      */
@@ -135,11 +139,12 @@ public class ArrayPriorityQueue extends AbstractPriorityQueue {
     }
     
     /**
-     * Receives two indexes in the queue and swaps the elements in them
+     * Receives two indexes in the queue and swaps the elements in them.
+     * Assumes both indices are within array bounds.
      * @param i First index
      * @param j Second index
      */
-    private void swap(int i, int j){
+    private void swap(int i, int j) {
     	ComparableObject temp = _queue[i];
     	_queue[i] = _queue[j];
     	_queue[j] = temp;
