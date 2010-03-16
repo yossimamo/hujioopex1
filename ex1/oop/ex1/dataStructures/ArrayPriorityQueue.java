@@ -25,7 +25,7 @@ public class ArrayPriorityQueue extends AbstractPriorityQueue {
     	if (isQueueFull()) {
     		enlargeQueue();
     	}
-    	_queue[_upperIndex]= obj;
+    	_queue[_upperIndex] = obj;
     	_upperIndex++;
     	try {
 			updatePriority(obj);
@@ -74,8 +74,15 @@ public class ArrayPriorityQueue extends AbstractPriorityQueue {
     		throws ObjectNotFoundException {
     	int i = findIndex(obj);
     	maxHeapify(i);
-    	// Moving the element upwards to its rightful position
-    	// (swaps every time the parent is smaller than the element itself)
+    	increaseKey(i);
+    }
+    
+    /**
+     * Moving the element upwards to its rightful position
+     *(swaps every time the parent is smaller than the element itself)
+     * @param i the index of the element.
+     */
+    private void increaseKey(int i){
     	while (i > 0) {
     		if(_queue[i].compare(_queue[(i-1)/2]) > 0) {
     			swap(i,(i-1)/2);
@@ -140,7 +147,7 @@ public class ArrayPriorityQueue extends AbstractPriorityQueue {
     private int findIndex(ComparableObject obj)
         throws ObjectNotFoundException {
     	for (int i=0; i< _upperIndex; i++){
-    		if (obj == _queue[i]){
+    		if (obj.equals(_queue[i])){
     			return i;
     		}
     	}
