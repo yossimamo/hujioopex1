@@ -1,3 +1,13 @@
+//###############  
+// FILE : ProcessManager.java  
+// WRITER : Uri Greenberg, urig03, 021986039  
+// WRITER : Yossi Mamo, ymamo29, 038073722
+// EXERCISE : oop ex1 2010  
+// DESCRIPTION:    
+// A process manager, responsible for managing and running all the processes.
+// Holds a priority queue of all the processes in the system.
+//###############
+
 package oop.ex1.processToolKit;
 
 import java.util.Date;
@@ -10,7 +20,7 @@ import oop.ex1.dataStructures.ObjectNotFoundException;
 /**
  * A process manager, responsible for managing and running all the processes.
  * Holds a priority queue of all the processes in the system.
- * @author Yossi and Uri
+ * @author Uri Greenberg and Yossi Mamo
  */
 public class ProcessManager {
     
