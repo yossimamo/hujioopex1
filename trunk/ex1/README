@@ -1,0 +1,82 @@
+urig03
+ymamo29
+
+uri greenberg 021986039
+yossi mamo 038073722
+
+-------------------------------
+ex1 README file:
+-------------------------------
+
+-------------------------------
+file description:
+-------------------------------
+
+AbstractComparableQueue.java - an abstract class which represents
+a data base (a queue or a stack) holding comperable objects.
+it holds functions that are being used by both the stack and
+the priority queue. also hold a nested class (RandomIterator).
+
+AbstractPriorityQueue.java - an abstract class representing a 
+priority queue.
+
+ArrayPriorityQueue.java - extends AbstractPriorityQueue. practicly
+it is an implementation of the priority queue.
+
+ComparableObject.java - an interface of a comperable object.
+
+EmptyQueueException.java - 
+
+LIFOComparableQueue.java
+
+NoMoreElementsException.java
+
+ObjectNotFoundException.java
+
+DisorderException.java
+
+NoMoreProcessesException.java
+
+Process.java
+
+ProcessManager.java
+
+README
+
+
+------------------------
+design:
+------------------------
+
+the design wasnt ours it was given in the exercise.
+
+
+
+------------------------
+implementation issues:
+------------------------
+
+the priority queue works in such a way that it is a binary
+tree written in an array. the element in the 0 index is the root.
+then for each index (lets call it i) the left son is the element
+in the 2*i+1 index and the right son is in the 2*i+2 index.
+when we push a new element we add it to the end and then rearrange
+the tree according to its priority. first we use the heapify function.
+it compares the element
+with its two sons and switch the bigger son with the element 
+if needed. it continue doing so until there is no more need to
+switch the element with one of its sons or if it has no more sons.
+then we call another function (increase key) which basically
+does the oppisite. it compares the element with its father and 
+switches them if needed. it continues doing so until it reached
+the root or it is no longer requiered to switch the element with
+its father.
+when we poll an element we just take out the first element.
+take the last element and put it in the firsts place. then we
+use the heapify function again so the tree will be organized again
+(the root will be with the highest priority).
+the LIFOComparableQueue works just like a regular stack.
+when our arrays get full we enlarge them by a factor of 2.
+we decided doing so because in one hand it is not efficient to
+enlarge the array too often (lets say by +1) and on the other 
+we dont want to take too much memory by enlarging it too much.
