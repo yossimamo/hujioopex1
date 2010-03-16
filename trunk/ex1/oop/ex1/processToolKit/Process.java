@@ -56,7 +56,7 @@ public class Process implements ComparableObject {
      * Constructs a new process with the given name, parent and priority.
      * @param name The process' name
      * @param parent The process' parent
-     * @param priority The process' priority
+     * @param priority The process' priority (can be negative)
      */
     public Process(String name, Process parent, int priority) {
         init(name, parent, priority);
@@ -196,8 +196,8 @@ public class Process implements ComparableObject {
     }
     
     /**
-     * Returns the process' level, that is the amount of parents that this
-     * process has
+     * Returns the process' level, that is, the amount of parents that this
+     * process has.
      * @return The process' level
      */
     private int getLevel() {

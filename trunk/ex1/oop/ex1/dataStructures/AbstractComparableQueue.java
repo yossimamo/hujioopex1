@@ -102,7 +102,7 @@ public abstract class AbstractComparableQueue {
     /**
      * Reallocates the queue with a larger size  
      */
-    protected void enlargeQueue(){
+    protected void enlargeQueue() {
     	ComparableObject[] tempArr =
     	    new ComparableObject[_queue.length*QUEUE_EXPANSION_FACTOR];
     	for (int i=0; i<_upperIndex; i++){

@@ -38,6 +38,7 @@ public class ProcessManager {
      * Adds a process and all its subprocesses to the process queue.
      * Assumes the given process does not have a parent and does not already
      * exist in the tree.
+     * Assumes legal input (valid Process object that is not null)
      * @param process The process to add
      */
     public void addProcessTree(Process process) {
@@ -52,7 +53,7 @@ public class ProcessManager {
      * Updates the priority of the given process to the given priority. This
      * method will also update the priorities of the process' parents if they
      * are smaller than the given priority, and the priorities of the process'
-     * subprocesses if they are bigger than the given priority (all in order
+     * subprocesses if they are bigger than the given priority (in order
      * to maintain the heap property of the priority queue).
      * @param process The process to update
      * @param priority The requested priority
@@ -94,7 +95,6 @@ public class ProcessManager {
         try {
             Process process = (Process)_processQueue.poll();
             while (null != process) {
-                Date now = new Date();
                 Process parent = process.getParent();
                 if ((null != parent) && (null != parent.getTerminationTime())) {
                     throw new DisorderException();
