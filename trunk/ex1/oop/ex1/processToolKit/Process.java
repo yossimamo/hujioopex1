@@ -8,7 +8,8 @@ import oop.ex1.dataStructures.EmptyQueueException;
 import oop.ex1.dataStructures.LIFOComparableQueue;
 
 /**
- * 
+ * Represents a process with a unique name, priority, termination time, a
+ * single parent and a stack of subprocesses associated with it.
  * @author Yossi and Uri
  */
 public class Process implements ComparableObject {
@@ -74,38 +75,40 @@ public class Process implements ComparableObject {
     }
     
     /**
-     * 
-     * @param priority
+     * Sets the process' priority
+     * @param priority The new priority
      */
     public void setPriority(int priority)  {
         _priority = priority;
     }
     
     /**
-     * 
-     * @return
+     * Returns the process' priority 
+     * @return the process' priority
      */
     public int getPriority() {
         return _priority;
     }
     
     /**
-     * 
+     * Runs the process 
      */
     public void run() {
         System.out.println("Running " + toString());
     }
     
     /**
-     * 
-     * @return
+     * Returns an iterator on the subprocesses stack
+     * @return A LIFOIterator on the subprocesses stack
      */
     public Iterator iterateSubProcesses() {
         return _subProcesses.LIFOIterator();
     }
     
     /**
-     * 
+     * Returns true if this process is equal to the other given process.
+     * Equality is determined by checking if the process' names are equal.
+     * @param other The other process to compare to
      */
     public boolean equals(ComparableObject other) {
         if (other instanceof Process) {
@@ -117,9 +120,15 @@ public class Process implements ComparableObject {
     }
     
     /**
-     * 
+     * Compares two processes to determine which one is bigger. The order is
+     * determined by comparing priorities, then the level, and then by names
+     * (lexicographically). 
+     * @param other The other process to compare to
+     * @throws ClassCastException if the given object is not a Process
+     * @return A positive value if this process is bigger than the other, a
+     * negative value if the other one is bigger, or 0 if they are equal.
      */
-    public int compare(ComparableObject other) {
+    public int compare(ComparableObject other) throws ClassCastException {
         if (!(other instanceof Process)) {
             throw new ClassCastException();
         }
@@ -128,7 +137,7 @@ public class Process implements ComparableObject {
             if (0 == getLevel() - otherProc.getLevel()) {
                 return _name.compareTo(otherProc._name);
             } else {
-                return getLevel() - otherProc.getLevel();
+                return (getLevel() - otherProc.getLevel());
             }
         } else {
             return (_priority - otherProc._priority);
@@ -136,9 +145,10 @@ public class Process implements ComparableObject {
     }
     
     /**
-     * 
-     * @return
-     * @throws NoMoreProcessesException
+     * Polls the sub-processes stack (removes the subprocess from it)
+     * @return The next subprocess in the stack (if exists)
+     * @throws NoMoreProcessesException If there are no more subprocesses
+     * in the stack
      */
     public Process pollSubProcess() throws NoMoreProcessesException {
         try {
@@ -149,7 +159,11 @@ public class Process implements ComparableObject {
     }
     
     /**
-     * 
+     * Returns a string representation of the process and all its subprocesses.
+     * The returned string has the following structure:  
+     * "name: {subP1.toString(),subP2.toString(),...,subPn.toString()}" or
+     * "name" (if process has no subprocesses).
+     * @return A string representation of the process and its sons. 
      */
     public String toString() {
         StringBuilder sb = new StringBuilder(_name);
@@ -169,8 +183,9 @@ public class Process implements ComparableObject {
     }
     
     /**
-     * 
-     * @return
+     * Returns the process' level, that is the amount of parents that this
+     * process has
+     * @return The process' level
      */
     private int getLevel() {
         int level = 0;
@@ -183,24 +198,24 @@ public class Process implements ComparableObject {
     }
     
     /**
-     * 
-     * @return
+     * Returns the process' parent
+     * @return The process' parent (may be null)
      */
     public Process getParent() {
         return _parent;
     }
     
     /**
-     * 
-     * @param time
+     * Sets the termination time of the process
+     * @param time The desired termination time of the process
      */
     public void setTerminationTime(Date time) {
         _terminationTime = time;
     }
     
     /**
-     * 
-     * @return
+     * Returns the termination time of the process
+     * @return The termination time of the process
      */
     public Date getTerminationTime() {
         return _terminationTime;
