@@ -61,13 +61,16 @@ public class Process implements ComparableObject {
     private void init(String name, Process parent, int priority) {
         _name = name;
         _parent = parent;
+        _terminationTime = null;
         _subProcesses = new LIFOComparableQueue();
-        if (DEFAULT_PRIORITY < parent.getPriority()) {
-            _priority = parent.getPriority();
-        } else {
-            _priority = priority;
+        if (null != parent) {
+            if (DEFAULT_PRIORITY < parent.getPriority()) {
+                _priority = parent.getPriority();
+            } else {
+                _priority = priority;
+            }
+            parent._subProcesses.push(this);            
         }
-        parent._subProcesses.push(this);
     }
     
     /**
@@ -106,7 +109,7 @@ public class Process implements ComparableObject {
      */
     public boolean equals(ComparableObject other) {
         if (other instanceof Process) {
-            if (((Process)other).toString().equals(toString())) {
+            if (((Process)other)._name.equals(_name)) {
                 return true;
             }
         }

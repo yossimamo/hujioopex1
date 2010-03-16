@@ -67,8 +67,10 @@ public class ProcessManager {
             // If the new priority is smaller than the parent's priority,
             // update the parent's priority as well.
             Process parent = process.getParent();
-            if (parent.getPriority() > priority) {
-                updatePriority(parent, priority);
+            if (null != parent) {
+                if (parent.getPriority() > priority) {
+                    updatePriority(parent, priority);
+                }
             }
         }
     }
@@ -81,12 +83,17 @@ public class ProcessManager {
     public void runAllProcesses() throws DisorderException {
         try {
             Process process = (Process)_processQueue.poll();
-            Date now = new Date();
-            if (now.after(process.getParent().getTerminationTime())) {
-                throw new DisorderException();
+            while (null != process) {
+                Date now = new Date();
+                Process parent = process.getParent();
+                if ((null != parent) && (null != parent.getTerminationTime())) {
+                    throw new DisorderException();
+                }
+                process.run();
+                process.setTerminationTime(new Date());
+                // Next!
+                process = (Process)_processQueue.poll();
             }
-            process.run();
-            process.setTerminationTime(new Date());
         }
         catch (EmptyQueueException e) {
             return;
