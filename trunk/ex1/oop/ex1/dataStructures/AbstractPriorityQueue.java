@@ -12,5 +12,6 @@ public abstract class AbstractPriorityQueue extends AbstractComparableQueue {
 	 * @param obj Object for which the priority was updated.
 	 * @throws ObjectNotFoundException In case object is not found in queue.
 	 */
-	public abstract void updatePriority(ComparableObject obj) throws ObjectNotFoundException;
+	public abstract void updatePriority(ComparableObject obj)
+	    throws ObjectNotFoundException;
 }

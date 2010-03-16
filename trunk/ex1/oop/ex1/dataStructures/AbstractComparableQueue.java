@@ -5,134 +5,124 @@ import java.util.Random;
 
 /**
  * An abstract queue of comparable objects.
- * Supports push,peek,poll, size and random iteration.
- * @author uri greenberg and yossi mammo.
+ * Supports push, peek, poll, size and random iteration.
+ * @author Uri Greenberg and Yossi Mamo
  *
  */
 public abstract class AbstractComparableQueue {
-	/**
-	* Elements in the queue.
-	*/
+    
+	/// Elements in the queue
 	protected ComparableObject[] _queue;
 	
-	/**
-	 * the index pointing to the end of the elements in the array.
-	 */
+	/// The index pointing to the end of the elements in the array
 	protected int _upperIndex;
 
-	/**
-	* Default size of the queue.
-	*/
+
+	/// Default size of the queue
 	protected static final int DEFAULT_INITIAL_CAPACITY = 32;
-    
-	/**
-	 * creates a new empty queue.
-	 */
-	public AbstractComparableQueue(){
-		_queue= new ComparableObject[DEFAULT_INITIAL_CAPACITY];
-        _upperIndex= 0;
+	
+	/// Expansion factor of the queue (when reallocating)
+	protected static final int QUEUE_EXPANSION_FACTOR = 2;
+	
+	/// Creates a new empty queue
+	public AbstractComparableQueue() {
+		_queue = new ComparableObject[DEFAULT_INITIAL_CAPACITY];
+        _upperIndex = 0;
 	}
 	
-	
 	/**
-	 * @throws EmptyQueueException if queue is empty.
-	 * @return The top element in the queue (without removing it).
+	 * @throws EmptyQueueException if queue is empty
+	 * @return The top element in the queue (without removing it)
 	 */
 	public abstract ComparableObject peek() throws EmptyQueueException;
 	
 	/**
-	 * @throws EmptyQueueException if queue is empty.
-	 * @return The top element in the queue (and remove it).
+	 * @throws EmptyQueueException if queue is empty
+	 * @return The top element in the queue (and remove it)
 	 */
 	public abstract ComparableObject poll() throws EmptyQueueException;
 	
 	/**
-	 * Push obj into the queue.
-	 * @param obj Object to push to queue.
+	 * Push obj into the queue
+	 * @param obj Object to push to queue
 	 */
 	public abstract void push(ComparableObject obj);
 	
 	/**
-	 * returns a new instance of a random iterator.
-	 * @return  a new instance of a random iterator.
+	 * returns a new instance of a random iterator
+	 * @return a new instance of a random iterator
 	 */
-	public Iterator randomIterator(){
+	public Iterator randomIterator() {
 		return new RandomIterator();
 	}
     
 	/**
-	 * returns a new instance of a random iterator(seed).
-	 * @param seed - the seed number for the random iterator.
-	 * @return a new instance of a random iterator.
+	 * Returns a new instance of a random iterator(seed)
+	 * @param seed The seed number for the random iterator
+	 * @return A new instance of a random iterator
 	 */
-    public Iterator randomIterator(long seed){
+    public Iterator randomIterator(long seed) {
     	return new RandomIterator(seed);
     }
     
     /**
-     * returns true if the queue has no more elements in it or false otherwise.
-     * @return true if the queue has no more elements in it or false otherwise.
+     * Returns true if the queue has no more elements in it or false otherwise
+     * @return True if the queue has no more elements in it or false otherwise
      */
-    protected boolean isQueueEmpty(){
-    	if (_upperIndex == 0){
+    protected boolean isQueueEmpty() {
+    	if (0 == _upperIndex) {
     		return true;
     	}
     	return false;
     }
     
     /**
-     * returns true if the queue has no more room for elements in it or 
+     * Returns true if the queue has no more room for elements in it or 
      * false otherwise.
-     * @return true if the queue has no more room for elements in it or 
+     * @return True if the queue has no more room for elements in it or 
      * false otherwise.
      */
-    protected boolean isQueueFull(){
-    	if (_upperIndex == _queue.length){
+    protected boolean isQueueFull() {
+    	if (_queue.length == _upperIndex) {
     		return true;
     	}
     	return false;
     }
     
     /**
-     * enlarges the queue by a factor of 2.  
+     * Reallocates the queue with a larger size  
      */
     protected void enlargeQueue(){
-    	ComparableObject[] tempArr= new ComparableObject[ _queue.length * 2];
+    	ComparableObject[] tempArr =
+    	    new ComparableObject[_queue.length*QUEUE_EXPANSION_FACTOR];
     	for (int i=0; i<_upperIndex; i++){
-    		tempArr[i]= _queue[i];
+    		tempArr[i] = _queue[i];
     	}
-    	_queue= tempArr;
+    	_queue = tempArr;
     }
     
     /**
-	 * a class that represents an iterator that brings the next element 
+	 * A class that represents an iterator that brings the next element 
 	 * from the array in a random method.
-	 * @author uri greenberg and yossi mammo
-	 *
+	 * @author Uri Greenberg and Yossi Mamo
 	 */
 	private class RandomIterator implements Iterator {
 	    
-		/**
-		 * a boolean array which holds true if the element in this index 
-		 * number was already iterated or false otherwise.
-		 */
+	    /// A boolean array which holds true if the element in this index 
+		/// number was already iterated or false otherwise
 	    private boolean[] _alreadyIterated;
 	    
-	    /**
-	     * an instance of the java.util.Random class.
-	     */
+	    /// An instance of the java.util.Random class
 	    private Random _rand;
 	    
-	    /**
-	     * a constructor of a new random iterator.
-	     */
+	     /// A constructor of a new random iterator
 	    public RandomIterator() {
 	       init();
 	    }
 	    
 	    /**
-	     * a constructor of a new random iterator. with a long seed number.
-	     * @param seedNum the seed number for the random class.
+	     * A constructor of a new random iterator with a long seed number
+	     * @param seedNum the seed number for the random class
 	     */
 	    public RandomIterator(long seedNum) {
 	        init();
@@ -140,14 +130,14 @@ public abstract class AbstractComparableQueue {
 	    }
 
 	    /**
-	     * returns true if the array has elements that hasn't been iterated
-	     * or false otherwise.
-	     * @return true if the array has elements that hasn't been iterated
-	     * or false otherwise.
+	     * Returns true if the array has elements that hasn't been iterated
+	     * or false otherwise
+	     * @return True if the array has elements that hasn't been iterated
+	     * or false otherwise
 	     */
 		public boolean hasNext() {
 			for (int i=0; i<_alreadyIterated.length; i++){
-				if (_alreadyIterated[i]==false){
+				if (false == _alreadyIterated[i]){
 					return true;
 				}
 			}
@@ -155,41 +145,40 @@ public abstract class AbstractComparableQueue {
 		}
 
 		/**
-		 * returns the next object in the array (in a random selection).
+		 * Returns the next object in the array (in a random selection)
 		 * @throws NoMoreElementsException if no more elements left to be 
 		 * iterated.
-		 * @return the next object in the array (in a random selection).
+		 * @return The next object in the array (in a random selection)
 		 */
 		public ComparableObject next() throws NoMoreElementsException  {
 			if (hasNext() == false){
 				throw new NoMoreElementsException();
 			}
-			int position;
+			int position = 0;
 			do {
-				position=_rand.nextInt(_upperIndex);
+				position = _rand.nextInt(_upperIndex);
 			}
 			while (_alreadyIterated[position]);
-			_alreadyIterated[position]= true;
+			_alreadyIterated[position] = true;
 			return _queue[position];
 		}
 
 		/**
-		 * 
+		 * Not implemented 
 		 */
 		public void remove() {
 		}
 		
 		/**
-		 * creates and Initializes the boolean array to false.
+		 * Creates and initializes the boolean array to false
 		 */
 		private void init() {
 		    _rand = new Random();
 			_alreadyIterated = new boolean[_upperIndex];
 	        for (int i=0; i<_alreadyIterated.length; i++){
-	        	_alreadyIterated[i]= false;	       
+	        	_alreadyIterated[i] = false;	       
 	        }
 		}
 	}
+	
 }
-
-

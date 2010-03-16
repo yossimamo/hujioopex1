@@ -1,15 +1,16 @@
 package oop.ex1.dataStructures;
 
 /**
- * An interface which forces its elements to be able to compare themselves to other
- * comparable elements.
+ * An interface which forces its implementors to be able to compare themselves
+ * to other comparable elements.
  * @author OOP
  *
  */
 public interface ComparableObject {
 	/**
-	 * @param other Object to compare to.
-	 * @return > 0 - this element is bigger, < 0 - other is bigger, 0 - they are equal. 
+	 * @param other Object to compare to
+	 * @return Positive integer if this element is bigger, negative if the
+	 * other is bigger, and 0 if they are equal 
 	 */
 	int compare(ComparableObject other);
 	
