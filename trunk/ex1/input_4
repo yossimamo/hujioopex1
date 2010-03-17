@@ -1,0 +1,20 @@
+new dad 1 null
+new son1 1 dad
+new son2 1 dad
+new son3 1 son2
+new dad2 1 son3
+new son4 1 dad2
+new son5 1 son4
+new son6 1 son5
+new bb 0  null
+new zp 0 null
+new ivet 0 null
+new barak 0 null
+add dad
+add bb
+add zp
+add ivet
+add barak
+update son6 -5
+update dad2 2
+run
