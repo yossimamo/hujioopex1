@@ -42,6 +42,9 @@ public class Process implements ComparableObject {
     /// The default given priority
     private static final int DEFAULT_PRIORITY = 0;
     
+    /// Arbitrary positive value (for compare() method)
+    private static final int ARBITRARY_POSITIVE_VALUE = 1;
+    
     /**
      * Constructs a new process with the given name and parent (default
      * priority will be set).
@@ -121,9 +124,14 @@ public class Process implements ComparableObject {
     /**
      * Returns true if this process is equal to the other given process.
      * Equality is determined by checking if the process' names are equal.
+     * Null values are supported
      * @param other The other process to compare to
      */
     public boolean equals(ComparableObject other) {
+        if (null == other) {
+            // Obviously not equal
+            return false;
+        }
         if (other instanceof Process) {
             if (((Process)other)._name.equals(_name)) {
                 return true;
@@ -136,12 +144,19 @@ public class Process implements ComparableObject {
      * Compares two processes to determine which one is bigger. The order is
      * determined by comparing priorities, then the level, and then by names
      * (lexicographically). 
+     * Null values are supported and are arbitrarily defined to be smaller than
+     * anything else.
      * @param other The other process to compare to
      * @throws ClassCastException if the given object is not a Process
      * @return A positive value if this process is bigger than the other, a
      * negative value if the other one is bigger, or 0 if they are equal.
      */
     public int compare(ComparableObject other) throws ClassCastException {
+        if (null == other) {
+            // A null value is arbitrarily defined to be the smallest
+            // Return arbitrary positive value
+            return ARBITRARY_POSITIVE_VALUE;
+        }
         if (!(other instanceof Process)) {
             throw new ClassCastException();
         }

@@ -1,82 +1,89 @@
 urig03
 ymamo29
 
-uri greenberg 021986039
-yossi mamo 038073722
+Uri Greenberg 021986039
+Yossi Mamo 038073722
 
 -------------------------------
-ex1 README file:
+OOP Ex1 (Task Manager) README file
 -------------------------------
 
 -------------------------------
-file description:
+File Descriptions:
 -------------------------------
-
 AbstractComparableQueue.java - an abstract class which represents
-a data base (a queue or a stack) holding comperable objects.
-it holds functions that are being used by both the stack and
-the priority queue. also hold a nested class (RandomIterator).
+a data structure (a queue or a stack) holding comparable objects.
+It holds functions that are being used by both the stack and
+the priority queue. Also holds a nested class (RandomIterator).
 
 AbstractPriorityQueue.java - an abstract class representing a 
 priority queue.
 
-ArrayPriorityQueue.java - extends AbstractPriorityQueue. practicly
+ArrayPriorityQueue.java - extends AbstractPriorityQueue. practically
 it is an implementation of the priority queue.
 
-ComparableObject.java - an interface of a comperable object.
+ComparableObject.java - A generic interface for comparable objects.
 
-EmptyQueueException.java - 
+EmptyQueueException.java - An exception thrown upon attempts to access an empty
+queue.
 
-LIFOComparableQueue.java
+LIFOComparableQueue.java - A class which represents a stack (LIFO) of
+comparable objects.
 
-NoMoreElementsException.java
+NoMoreElementsException.java - An exception thrown upon attempts to iterate a
+collection after reaching the end of the iteration.
 
-ObjectNotFoundException.java
+ObjectNotFoundException.java - An exception thrown upon a failed attempt to
+find a certain object in a queue.
 
-DisorderException.java
+DisorderException.java - An exception thrown when attempting to run a child
+process after its parent.
 
-NoMoreProcessesException.java
+NoMoreProcessesException.java - An exception thrown when a certain process
+has no more subprocesses to iterate.
 
-Process.java
+Process.java - Represents a process with a unique name, priority, termination
+time, a single parent and a stack of subprocesses associated with it.
 
-ProcessManager.java
+ProcessManager.java - A process manager, responsible for managing and running
+all the processes. Holds a priority queue of all the processes in the system.
 
-README
+README - This file.
 
+Total: 13 files.
 
 ------------------------
-design:
+Design:
 ------------------------
-
-the design wasnt ours it was given in the exercise.
-
-
+The design was dictated by the exercise description and is not ours.
 
 ------------------------
-implementation issues:
+Implementation issues:
 ------------------------
-
-the priority queue works in such a way that it is a binary
-tree written in an array. the element in the 0 index is the root.
-then for each index (lets call it i) the left son is the element
+The priority queue works in such a way that it is a binary
+tree implemented with an array. The element at 0 index is the root.
+Then for each index (lets call it i) the left son is the element
 in the 2*i+1 index and the right son is in the 2*i+2 index.
-when we push a new element we add it to the end and then rearrange
-the tree according to its priority. first we use the heapify function.
-it compares the element
-with its two sons and switch the bigger son with the element 
-if needed. it continue doing so until there is no more need to
-switch the element with one of its sons or if it has no more sons.
-then we call another function (increase key) which basically
-does the oppisite. it compares the element with its father and 
-switches them if needed. it continues doing so until it reached
-the root or it is no longer requiered to switch the element with
+When we push a new element we add it to the end and then rearrange
+the tree according to its priority. First we use the heapify function.
+It compares the element with its two sons and switch the bigger son with
+the element if needed. It continues doing so until there is no more need
+to switch the element with one of its sons or if it has no more sons.
+Then we call another function (increaseKey) which basically
+does the opposite. It compares the element with its father and 
+switches them if needed. It continues doing so until it reached
+the root or it is no longer required to switch the element with
 its father.
-when we poll an element we just take out the first element.
-take the last element and put it in the firsts place. then we
+When we poll an element we just take out the first element,
+take the last element and put it in the first's place. Then we
 use the heapify function again so the tree will be organized again
 (the root will be with the highest priority).
-the LIFOComparableQueue works just like a regular stack.
-when our arrays get full we enlarge them by a factor of 2.
-we decided doing so because in one hand it is not efficient to
-enlarge the array too often (lets say by +1) and on the other 
-we dont want to take too much memory by enlarging it too much.
+The LIFOComparableQueue works just like a regular stack.
+When the array gets full we reallocate it and double the size by a 
+factor of 2. We decided doing so because it is not efficient to
+reallocate the array too often (lets say by +1 each time) and on the
+other hand allocating too much memory when it is not necessarily needed
+it a waste. We consider doubling the size a good tradeoff between
+performance and memory consumption.
+The functions of the data structures is demonstrated by the Task Manager,
+represented mainly by the ProcessManager and Process objects.
