@@ -1,0 +1,13 @@
+Running barak
+Running son6
+Running son4: {son6}
+Running son3
+Running son2: {son3}
+Running son5
+Running dad2: {son4: {son6}}
+Running dad: {son2: {son3}}
+Running shamir
+Running ivet
+Running ivet
+Running zp: {shamir}
+Running bb: {ivet}
