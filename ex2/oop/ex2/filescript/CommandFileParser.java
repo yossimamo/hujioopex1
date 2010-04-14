@@ -9,7 +9,7 @@ public class CommandFileParser {
 		
 	}
 	
-	public ArrayList<Command> parse(File file) {
+	public ArrayList<CommandFile> parse(File file) {
 		return null;
 	}
 
