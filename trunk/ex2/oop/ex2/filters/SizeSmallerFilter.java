@@ -6,7 +6,7 @@ import oop.ex2.filescript.InvalidFilterParametersException;
 
 public class SizeSmallerFilter extends SizeFilter {
 	
-	private static final String _name = "SIZE_LESS_THAN";
+	public static final String _name = "SIZE_LESS_THAN";
 
 	/**
 	 * a constructor that saves the size given as a filter

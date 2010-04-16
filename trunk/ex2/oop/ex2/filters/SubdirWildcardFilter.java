@@ -5,7 +5,7 @@ import java.io.IOException;
 
 public class SubdirWildcardFilter extends WildcardFilter {
 	
-	private static final String _name = "SUBDIR_WILDCARD";
+	public static final String _name = "SUBDIR_WILDCARD";
 
 	/**
 	 * saves the given string in a field.

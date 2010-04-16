@@ -4,7 +4,7 @@ import java.io.File;
 
 public class FileWildcardFilter extends WildcardFilter {
 	
-	private static final String _name = "FILE_WILDCARD";
+	public static final String _name = "FILE_WILDCARD";
 
 	/**
 	 * saves the given string in a field.

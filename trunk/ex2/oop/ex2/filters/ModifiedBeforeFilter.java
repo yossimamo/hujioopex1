@@ -7,7 +7,7 @@ import oop.ex2.filescript.InvalidFilterParametersException;
 
 public class ModifiedBeforeFilter extends ModificationDateFilter {
 	
-	private static final String _name = "MODIFIED_BEFORE";
+	public static final String _name = "MODIFIED_BEFORE";
 
 	/**
 	 * Constructs a filter and put the filters value (a date) in a field.
