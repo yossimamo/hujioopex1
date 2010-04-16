@@ -6,6 +6,10 @@ public class NotFilter extends Filter {
 	
 	// a filter.
 	private Filter _filter;
+	
+	public NotFilter(Filter filter) {
+		_filter = filter;
+	}
 
 	/**
 	 * receives a file and checks to see if it doesn't satisfy the filters

@@ -2,13 +2,20 @@ package oop.ex2.filters;
 
 import java.io.File;
 
+import oop.ex2.filescript.InvalidFilterParametersException;
+
 public class IsWritableFilter extends BooleanFilter {
 
+	private static final String _name = "IS_WRITABLE";
+	
 	/**
 	 * a constructor which saves the parameter received as a boolean field.
 	 * @param condition the condition received.
+	 * @throws InvalidFilterParametersException Upon invalid parameter (not
+	 * YES or NO) 
 	 */
-	public IsWritableFilter(String condition) {
+	public IsWritableFilter(String condition)
+		throws InvalidFilterParametersException {
 		super(condition);
 	}
 

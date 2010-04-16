@@ -1,6 +1,8 @@
 package oop.ex2.filters;
 
-public abstract class BooleanFilter extends BasicFilter {
+import oop.ex2.filescript.InvalidFilterParametersException;
+
+public abstract class BooleanFilter extends Filter {
 	
 	// the boolean condition which the file needs to fit to.
 	protected boolean _condition;
@@ -14,8 +16,10 @@ public abstract class BooleanFilter extends BasicFilter {
 	/**
 	 * a constructor which saves the parameter received as a boolean field.
 	 * @param condition the condition received.
+	 * @throws InvalidFilterParametersException Upon illegal parameter (not
+	 * "YES" or "NO")
 	 */
-	public BooleanFilter(String condition) {
+	public BooleanFilter(String condition) throws InvalidFilterParametersException {
 		if (condition.equals(YES)) {
 			_condition = true;
 		}
@@ -24,7 +28,7 @@ public abstract class BooleanFilter extends BasicFilter {
 				_condition = false;
 			}
 			else {
-				throw InvalidFilterParameters;
+				throw new InvalidFilterParametersException();
 			}
 		}
 	}

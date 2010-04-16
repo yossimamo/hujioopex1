@@ -2,13 +2,20 @@ package oop.ex2.filters;
 
 import java.io.File;
 
+import oop.ex2.filescript.InvalidFilterParametersException;
+
 public class IsReadableFilter extends BooleanFilter {
+	
+	private static final String _name = "IS_READABLE";
 
 	/**
 	 * a constructor which saves the parameter received as a boolean field.
 	 * @param condition the condition received.
+	 * @throws InvalidFilterParametersException Upon invalid parameter (not
+	 * YES or NO)
 	 */
-	public IsReadableFilter(String condition) {
+	public IsReadableFilter(String condition)
+		throws InvalidFilterParametersException {
 		super(condition);
 	}
 
