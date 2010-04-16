@@ -4,8 +4,6 @@ import java.io.File;
 
 public abstract class Action {
 	
-	public void execute(File file) {
-		
-	}
+	public abstract void execute(File file);
 
 }
