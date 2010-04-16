@@ -4,14 +4,22 @@ import java.io.File;
 
 public class FileWildcardFilter extends WildcardFilter {
 
+	/**
+	 * saves the given string in a field.
+	 * @param wildcardString the string to be searched for in the file.
+	 */
 	public FileWildcardFilter(String wildcardString) {
 		super(wildcardString);
-		// TODO Auto-generated constructor stub
 	}
 
+	/**
+	 * receives a file and checks to see if the files name
+	 * matches the wildcard expression. 
+	 * @param file a file.
+	 * @return true if the files name matches the wildcard expression
+	 * and false otherwise.
+	 */
 	public boolean isMatch(File file) {
-		// TODO Auto-generated method stub
-		return false;
+		return contains(file.getName());
 	}
-
 }

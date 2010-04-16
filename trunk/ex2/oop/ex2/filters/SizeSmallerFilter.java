@@ -4,13 +4,26 @@ import java.io.File;
 
 public class SizeSmallerFilter extends SizeFilter {
 
-	public SizeSmallerFilter(int size) {
+	/**
+	 * a constructor that saves the size given as a filter
+	 * parameter in a field.
+	 * @param size the size given as a filter parameter.
+	 */
+	public SizeSmallerFilter(String size) {
 		super(size);
-		// TODO Auto-generated constructor stub
 	}
 
+	/**
+	 * returns true if the files size is smaller than the size given as the
+	 * filters parameter or false otherwise.
+	 * @param file the file.
+	 * @return true if the files size is smaller than the size given as the
+	 * filters parameter or false otherwise.
+	 */
 	public boolean isMatch(File file) {
-		// TODO Auto-generated method stub
+		if (file.length() < _size){
+			return true;
+		}
 		return false;
 	}
 
