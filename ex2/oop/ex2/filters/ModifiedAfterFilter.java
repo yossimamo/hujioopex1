@@ -3,13 +3,20 @@ package oop.ex2.filters;
 import java.io.File;
 import java.util.Date;
 
+import oop.ex2.filescript.InvalidFilterParametersException;
+
 public class ModifiedAfterFilter extends ModificationDateFilter {
+	
+	private static final String _name = "MODIFIED_AFTER";
 
 	/**
 	 * Constructs a filter and put the filters value (a date) in a field.
 	 * @param date the date given as the filters value.
+	 * @throws InvalidFilterParametersException Upon invalid parameter such as
+	 * bad date format
 	 */
-	public ModifiedAfterFilter(String date) {
+	public ModifiedAfterFilter(String date)
+		throws InvalidFilterParametersException {
 		super(date);
 	}
 

@@ -1,6 +1,6 @@
 package oop.ex2.filters;
 
-public abstract class WildcardFilter extends BasicFilter {
+public abstract class WildcardFilter extends Filter {
 
 	//the string to be searched for in the file.
 	protected String _wildcardString;

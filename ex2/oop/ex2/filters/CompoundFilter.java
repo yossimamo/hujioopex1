@@ -4,10 +4,10 @@ import java.io.File;
 
 public abstract class CompoundFilter extends Filter {
 	
-	// the first filter
+	/// the first filter
 	protected Filter _firstFilter;
 	
-	// the second filter.
+	/// the second filter.
 	protected Filter _secondFilter;
 	
 	/**
@@ -17,7 +17,7 @@ public abstract class CompoundFilter extends Filter {
 	 */
 	public CompoundFilter(Filter firstFilter, Filter secondFilter){
 		_firstFilter = firstFilter;
-		_secondFilter= secondFilter;
+		_secondFilter = secondFilter;
 	}
 
 	/**

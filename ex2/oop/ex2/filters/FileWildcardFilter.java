@@ -3,6 +3,8 @@ package oop.ex2.filters;
 import java.io.File;
 
 public class FileWildcardFilter extends WildcardFilter {
+	
+	private static final String _name = "FILE_WILDCARD";
 
 	/**
 	 * saves the given string in a field.

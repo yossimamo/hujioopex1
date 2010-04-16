@@ -5,7 +5,9 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public abstract class ModificationDateFilter extends BasicFilter {
+import oop.ex2.filescript.InvalidFilterParametersException;
+
+public abstract class ModificationDateFilter extends Filter {
 	
 	//the date given as the filter value. 
 	protected Date _date;
@@ -16,13 +18,15 @@ public abstract class ModificationDateFilter extends BasicFilter {
 	/**
 	 * constructs a filter and put the filters value (a date) in a field.
 	 * @param date the date given as the filter value.
+	 * @throws InvalidFilterParametersException upon illegal parameter (not a
+	 * legal date format)
 	 */
-	public ModificationDateFilter(String date) {
+	public ModificationDateFilter(String date) throws InvalidFilterParametersException {
 		SimpleDateFormat simpleDateFormat = new SimpleDateFormat(DATE_FORMAT);
 		try {
 			_date = simpleDateFormat.parse(date);
 		} catch (ParseException e) {
-			throw InvalidFilterParameters;
+			throw new InvalidFilterParametersException();
 		}
 	}
 	

@@ -4,6 +4,12 @@ import java.io.File;
 
 public abstract class Filter {
 	
+	private static String _name;
+	
+	public static String getName() {
+		return _name;
+	}
+	
 	/**
 	 * receives a file and checks to see if it satisfies the filters condition. 
 	 * @param file a file.
