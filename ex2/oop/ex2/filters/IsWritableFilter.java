@@ -6,7 +6,7 @@ import oop.ex2.filescript.InvalidFilterParametersException;
 
 public class IsWritableFilter extends BooleanFilter {
 
-	private static final String _name = "IS_WRITABLE";
+	public static final String _name = "IS_WRITABLE";
 	
 	/**
 	 * a constructor which saves the parameter received as a boolean field.
