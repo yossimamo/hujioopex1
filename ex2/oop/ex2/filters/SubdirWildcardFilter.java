@@ -1,17 +1,33 @@
 package oop.ex2.filters;
 
 import java.io.File;
+import java.io.IOException;
 
 public class SubdirWildcardFilter extends WildcardFilter {
 
+	/**
+	 * saves the given string in a field.
+	 * @param wildcardString the string to be searched for in the file.
+	 */
 	public SubdirWildcardFilter(String wildcardString) {
 		super(wildcardString);
-		// TODO Auto-generated constructor stub
 	}
 
+	/**
+	 * receives a file and checks to see if the files full path and name
+	 * matches the wildcard expression. 
+	 * @param file a file.
+	 * @return true if the file full path and name
+	 * matches the wildcard expression and false 
+	 * otherwise.
+	 */
 	public boolean isMatch(File file) {
-		// TODO Auto-generated method stub
-		return false;
+		try {
+			return contains(file.getCanonicalPath());
+		} catch (IOException e) {
+			e.printStackTrace();
+			return false;
+		}
 	}
 
 }
