@@ -39,7 +39,6 @@ public class Section {
 	 * @throws IOException 
 	 */
 	public void execute(File rootDirectory) throws IOException {
-		// TODO if dir is invalid or no action is set, throw exceptions???
 		// Print comments
 		for (int i = 0; i < _comments.size(); i++) {
 			System.out.println(_comments.get(i));

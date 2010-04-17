@@ -13,7 +13,7 @@ public abstract class ModificationDateFilter extends Filter {
 	protected Date _date;
 	
 	// the format in which the date is received.
-	private static final String DATE_FORMAT = "YYYY/DD/MM";
+	private static final String DATE_FORMAT = "yyyy/dd/MM";
 	
 	/**
 	 * constructs a filter and put the filters value (a date) in a field.
