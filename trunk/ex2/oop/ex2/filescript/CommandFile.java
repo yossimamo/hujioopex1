@@ -2,7 +2,6 @@ package oop.ex2.filescript;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.StringTokenizer;
@@ -240,7 +239,7 @@ public class CommandFile {
 		}
 	}
 	
-	public void execute(File rootDirectory) throws IOException {
+	public void execute(File rootDirectory) throws IOFailureException {
 		for (int i = 0; i < _sections.size(); i++) {
 			_sections.get(i).execute(rootDirectory);
 		}

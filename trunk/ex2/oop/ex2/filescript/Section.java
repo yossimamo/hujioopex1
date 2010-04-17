@@ -37,8 +37,9 @@ public class Section {
 	 * Assumes that the directory is valid and that an action has been set.
 	 * @param rootDirectory
 	 * @throws IOException 
+	 * @throws IOFailureException 
 	 */
-	public void execute(File rootDirectory) throws IOException {
+	public void execute(File rootDirectory) throws IOFailureException {
 		// Print comments
 		for (int i = 0; i < _comments.size(); i++) {
 			System.out.println(_comments.get(i));
@@ -48,12 +49,17 @@ public class Section {
 		buildFileTree(rootDirectory, fileTree);
 		
 		Iterator<File> it = fileTree.iterator();
-		while (it.hasNext()) {
-			File file = it.next();
-			if (matchToFilters(file)) {
-				_action.execute(file, rootDirectory.getCanonicalPath());
+		try {
+			while (it.hasNext()) {
+				File file = it.next();
+				if (matchToFilters(file)) {
+					_action.execute(file, rootDirectory.getCanonicalPath());
+				}
 			}
+		} catch (IOException e) {
+			throw new IOFailureException();
 		}
+		
 		
 	}
 
@@ -68,7 +74,7 @@ public class Section {
 		}
 	}
 	
-	private boolean matchToFilters(File file) {
+	private boolean matchToFilters(File file) throws IOFailureException {
 		for (int i = 0; i < _filters.size(); i++) {
 			if (!_filters.get(i).isMatch(file)) {
 				return false;
