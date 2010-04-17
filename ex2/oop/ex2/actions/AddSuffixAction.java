@@ -17,9 +17,8 @@ public class AddSuffixAction extends Action {
 
 	public void execute(File file, String srcDirPath) throws IOFailureException {
 		try {
-			System.out.println(file.getCanonicalPath() + _suffix);
 			File newName = new File(file.getCanonicalPath() + _suffix);
-			System.out.println(file.renameTo(newName));
+			file.renameTo(newName);
 		} catch (IOException e){
 			throw new IOFailureException();
 		}
