@@ -17,7 +17,7 @@ public class PrintAction extends Action {
 
 
 	public PrintAction(String streamName) 
-			throws InvalidActionParametersException {
+			throws InvalidActionParametersException  {
 		if (streamName.equals(STDOUT)) {
 			_isSTDOUT = true;
 		}
@@ -31,14 +31,12 @@ public class PrintAction extends Action {
 		}
 	}
 
-	public void execute(File file) {
+	public void execute(File file) throws IOException {
 		if (_isSTDOUT){
-			try {
-				System.out.println(file.getCanonicalPath());
-			} catch (IOException e) {
-				throw new IOFailure();
-			}
+			System.out.println(file.getCanonicalPath());
+		}
+		else {
+			System.err.println(file.getCanonicalPath());
 		}
 	}
-
 }
