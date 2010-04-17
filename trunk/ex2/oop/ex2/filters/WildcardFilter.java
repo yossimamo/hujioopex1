@@ -24,7 +24,8 @@ public abstract class WildcardFilter extends Filter {
 		_wildcardString = wildcardString;
 		if (_wildcardString.startsWith("*")) {
 			if (_wildcardString.endsWith("*")) {
-				_wildcardString.substring(1,_wildcardString.length() - 2);
+				_wildcardString = 
+					_wildcardString.substring(1,_wildcardString.length() - 2);
 				_type = WildcardType.CONTAINS;
 			}
 			else {
@@ -34,7 +35,8 @@ public abstract class WildcardFilter extends Filter {
 		}
 		else {
 			if (_wildcardString.endsWith("*")) {
-				_wildcardString.substring(0,_wildcardString.length() - 2);
+				_wildcardString = 
+					_wildcardString.substring(0,_wildcardString.length() - 2);
 				_type = WildcardType.BEGINS_WITH;
 			}
 			else{
