@@ -2,6 +2,7 @@ package oop.ex2.filescript;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.StringTokenizer;
@@ -42,7 +43,7 @@ public class CommandFile {
 		throws InvalidActionException,
 			   InvalidFilterExpressionException, UnsupportedFilterException,
 			   InvalidSectionException, InvalidFilterParametersException,
-			   FileNotFoundException {
+			   FileNotFoundException, InvalidActionParametersException {
 		Scanner sc = new Scanner(file);
 		CommandFile cmdFile = new CommandFile();
 		
@@ -56,7 +57,7 @@ public class CommandFile {
 	private static Section parseSection(Scanner sc)
 		throws InvalidActionException, InvalidFilterExpressionException,
 			   UnsupportedFilterException, InvalidSectionException,
-			   InvalidFilterParametersException {
+			   InvalidFilterParametersException, InvalidActionParametersException {
 		Section section = new Section();
 		String line = sc.nextLine();
 		// Begin parsing FILTERS
@@ -128,7 +129,7 @@ public class CommandFile {
 	}
 	
 	private static Action parseAction(String line)
-		throws InvalidActionException {
+		throws InvalidActionException, InvalidActionParametersException {
 		Pattern patt = Pattern.compile(ACTION_REGEX);
 		Matcher matcher = patt.matcher(line);
 		if (!matcher.matches()) {
@@ -225,7 +226,7 @@ public class CommandFile {
 	}
 	
 	private static Action makeAction(String actionName, String actionParam)
-		throws InvalidActionException {
+		throws InvalidActionException, InvalidActionParametersException {
 		if (actionName.equals(AddPrefixAction._name)) {
 			return new AddPrefixAction(actionParam);
 		} else if (actionName.equals(AddSuffixAction._name)) {
@@ -239,7 +240,7 @@ public class CommandFile {
 		}
 	}
 	
-	public void execute(File rootDirectory) {
+	public void execute(File rootDirectory) throws IOException {
 		for (int i = 0; i < _sections.size(); i++) {
 			_sections.get(i).execute(rootDirectory);
 		}

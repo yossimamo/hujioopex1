@@ -2,8 +2,6 @@ package oop.ex2.filescript;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class MyFileScript {
 	
