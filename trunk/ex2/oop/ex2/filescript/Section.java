@@ -1,6 +1,7 @@
 package oop.ex2.filescript;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.TreeSet;
@@ -35,8 +36,9 @@ public class Section {
 	/**
 	 * Assumes that the directory is valid and that an action has been set.
 	 * @param rootDirectory
+	 * @throws IOException 
 	 */
-	public void execute(File rootDirectory) {
+	public void execute(File rootDirectory) throws IOException {
 		// TODO if dir is invalid or no action is set, throw exceptions???
 		// Print comments
 		for (int i = 0; i < _comments.size(); i++) {
