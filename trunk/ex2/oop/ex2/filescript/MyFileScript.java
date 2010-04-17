@@ -10,6 +10,7 @@ public class MyFileScript {
 	private static final int ARGUMENTS = 2;
 
 	/**
+	 * Entry point of the MyFileScript program
 	 * @param args
 	 */
 	public static void main(String[] args) {
