@@ -13,9 +13,10 @@ public class AddSuffixAction extends Action {
 		_suffix = suffix;
 	}
 
-	public void execute(File file) throws IOException {
+	public void execute(File file, String srcDirPath) throws IOException {
+		System.out.println(file.getCanonicalPath() + _suffix);
 		File newName = new File(file.getCanonicalPath() + _suffix);
-		file.renameTo(newName);
+		System.out.println(file.renameTo(newName));
 	}
 	
 }

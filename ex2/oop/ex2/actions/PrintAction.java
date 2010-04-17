@@ -31,7 +31,7 @@ public class PrintAction extends Action {
 		}
 	}
 
-	public void execute(File file) throws IOException {
+	public void execute(File file, String srcDirPath) throws IOException {
 		if (_isSTDOUT){
 			System.out.println(file.getCanonicalPath());
 		}
