@@ -12,9 +12,14 @@ public class CopyAction extends Action {
 		_target = target;
 	}
 
-	public void execute(File file) throws IOException {
-		File newFile = new File (_target);
-		newFile.mkdirs();
+	public void execute(File file, String srcDirPath) throws IOException {
+		String newTarget = 
+			_target + file.getCanonicalPath().substring(srcDirPath.length());
+		File newFile = new File(newTarget);
+		int fileNameIndex =  newTarget.length() - newFile.getName().length();
+		File newFileDir = new File(newTarget.substring(0, fileNameIndex));
+		newFileDir.mkdirs();
+		newFile.createNewFile();
 		OutputStream output = new FileOutputStream(newFile);
 		InputStream input = new FileInputStream(file);
 		int result;

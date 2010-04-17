@@ -5,6 +5,7 @@ import java.io.IOException;
 
 public abstract class Action {
 	
-	public abstract void execute(File file) throws IOException;
+	public abstract void execute(File file, String srcDirPath)
+		throws IOException;
 
 }

@@ -2,8 +2,19 @@ package oop.ex2.filters;
 
 public abstract class WildcardFilter extends Filter {
 
+	enum WildcardType {
+		EQUALS,
+		BEGINS_WITH,
+		ENDS_WITH,
+		CONTAINS
+	};
+	
 	//the string to be searched for in the file.
-	protected String _wildcardString;
+	private String _wildcardString;
+	private WildcardType _type;
+
+	
+	
 	
 	/**
 	 * saves the given string in a field.
@@ -11,6 +22,25 @@ public abstract class WildcardFilter extends Filter {
 	 */
 	public WildcardFilter(String wildcardString) {
 		_wildcardString = wildcardString;
+		if (_wildcardString.startsWith("*")) {
+			_wildcardString = _wildcardString.substring(1);
+			if (_wildcardString.endsWith("*")) {
+				_wildcardString.substring(0,_wildcardString.length() - 1);
+				_type = WildcardType.CONTAINS;
+			}
+			else {
+				_type = WildcardType.ENDS_WITH;
+			}
+		}
+		else {
+			if (_wildcardString.endsWith("*")) {
+				_wildcardString.substring(0,_wildcardString.length() - 1);
+				_type = WildcardType.BEGINS_WITH;
+			}
+			else{
+				_type = WildcardType.EQUALS;
+			}
+		}
 	}
 	
 	/**
@@ -20,33 +50,28 @@ public abstract class WildcardFilter extends Filter {
 	 * @return true if the wild card string fits
 	 * the string and false otherwise.
 	 */
-	protected boolean contains(String str){
-		if (str.equals(_wildcardString)){
-			return true;
-		}
-		if (_wildcardString.startsWith("*")){
-			_wildcardString = _wildcardString.substring(1);
-			if (_wildcardString.endsWith("*")){
-				_wildcardString = 
-					_wildcardString.substring(0,_wildcardString.length() - 1);
-				if (str.contains(_wildcardString)){
-					return true;
-				}
+	protected boolean contains(String str) {
+		switch (_type) {
+		case EQUALS:
+			if (str.equals(_wildcardString)) {
+				return true;
 			}
-			else {
-				if (str.endsWith(_wildcardString)){
-					return true;
-				}
+			break;
+		case BEGINS_WITH:
+			if (str.startsWith(_wildcardString)) {
+				return true;
 			}
-		}
-		else {
-			if (_wildcardString.endsWith("*")){
-				_wildcardString = 
-					_wildcardString.substring(0,_wildcardString.length() - 1);
-				if (str.startsWith(_wildcardString)){
-					return true;
-				}
+			break;
+		case ENDS_WITH:
+			if (str.endsWith(_wildcardString)) {
+				return true;
 			}
+			break;
+		case CONTAINS:
+			if (str.contains(_wildcardString)) {
+				return true;
+			}
+			break;
 		}
 		return false;
 	}

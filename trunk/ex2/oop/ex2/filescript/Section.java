@@ -51,7 +51,7 @@ public class Section {
 		while (it.hasNext()) {
 			File file = it.next();
 			if (matchToFilters(file)) {
-				_action.execute(file);
+				_action.execute(file, rootDirectory.getCanonicalPath());
 			}
 		}
 		
