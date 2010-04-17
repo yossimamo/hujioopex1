@@ -13,29 +13,29 @@ import oop.ex2.filters.*;
 public class CommandFile {
 	
 	private static final String FILTERS = "FILTERS";
-	private static final String ACTIONS = "ACTIONS";
+	private static final String ACTION = "ACTION";
 	private static final char LEFT_PARENTHESIS = '(';
 	private static final char BEGIN_COMMENT = '#';
 	private static final int COMMENT_PREFIX_LENGTH = 1;
 	private static final String BASIC_FILTER_REGEX = "^[^\\s():]+:[^\\s():]+$";
 	private static final String BASIC_FILTER_DELIMITERS = ":";
-	private static final String COMPOUND_FILTER_REGEX = "^\\((.+) (AND|OR) (.+)\\)$|^\\((NOT) (.+)\\)$";
-	private static final int NOT_REGEX_GROUP_COUNT = 2;
-	private static final int NOT_OPERAND_GROUP_INDEX = 2;
-	private static final int AND_OR_REGEX_GROUP_COUNT = 3;
+	private static final String COMPOUND_FILTER_REGEX = "(.+?) (AND|OR) (.+)|(NOT) (.+)";
 	private static final int LEFT_OPERAND_GROUP_INDEX = 1;
 	private static final int AND_OR_OPERATOR_GROUP_INDEX = 2;
 	private static final int RIGHT_OPERAND_GROUP_INDEX = 3;
+	private static final int NOT_OPERATOR_GROUP_INDEX = 4;
+	private static final int NOT_OPERAND_GROUP_INDEX = 5;	
 	private static final String AND_OPERATOR = "AND";
 	private static final String OR_OPERATOR = "OR";
-	
 	private static final String ACTION_REGEX = "^[^\\s():]+:[^\\s():]+$";
 	private static final String ACTION_DELIMITERS = ":";
+	private static final int PARENTHESES_GROUP_INDEX = 1;
+	private static final String PARENTHESES_REGEX = "^\\((.+)\\)$";
 	
 	private ArrayList<Section> _sections;
 	
 	private CommandFile() {
-		
+		_sections = new ArrayList<Section>();
 	}
 	
 	public static CommandFile createFromFile(File file)
@@ -64,7 +64,7 @@ public class CommandFile {
 			throw new InvalidSectionException();
 		}
 		line = sc.nextLine();
-		while (!line.equals(ACTIONS)) {
+		while (!line.equals(ACTION)) {
 			// Two possible types of lines:
 			// 1. Comment
 			// 2. Filter 
@@ -144,36 +144,57 @@ public class CommandFile {
 	private static Filter parseCompoundFilter(String line)
 		throws InvalidFilterExpressionException, UnsupportedFilterException,
 			   InvalidFilterParametersException {
-		Pattern patt = Pattern.compile(COMPOUND_FILTER_REGEX);
+		// Check for parenthesEs
+		Pattern patt = Pattern.compile(PARENTHESES_REGEX);
 		Matcher matcher = patt.matcher(line);
 		if (!matcher.matches()) {
+			// Expression has no legal parentheses
 			throw new InvalidFilterExpressionException();
 		}
-		switch (matcher.groupCount()) {
-			case NOT_REGEX_GROUP_COUNT: {
-				Filter notFilter = parseFilter(matcher.group(NOT_OPERAND_GROUP_INDEX));
-				return new NotFilter(notFilter);
-			}
-			case AND_OR_REGEX_GROUP_COUNT: {
-				String operator = matcher.group(AND_OR_OPERATOR_GROUP_INDEX);
-				Filter leftFilter = parseFilter(matcher.group(LEFT_OPERAND_GROUP_INDEX));
-				Filter rightFilter = parseFilter(matcher.group(RIGHT_OPERAND_GROUP_INDEX));
-				if (operator.equals(AND_OPERATOR)) {
-					return new AndFilter(leftFilter, rightFilter);
-				} else if (operator.equals(OR_OPERATOR)) {
-					return new OrFilter(leftFilter, rightFilter);
+		String trimmedLine = matcher.group(PARENTHESES_GROUP_INDEX);
+		patt = Pattern.compile(COMPOUND_FILTER_REGEX);
+		matcher = patt.matcher(trimmedLine);
+		int i = 0;
+		while (matcher.find(i)) {
+			try {
+				if (null != matcher.group(NOT_OPERATOR_GROUP_INDEX)) {
+					Filter notFilter = parseFilter(matcher.group(NOT_OPERAND_GROUP_INDEX));
+					return new NotFilter(notFilter);
+				} else if (null != matcher.group(AND_OR_OPERATOR_GROUP_INDEX)) {
+					String leftOperand;
+					if (0 == i) {
+						leftOperand = matcher.group(LEFT_OPERAND_GROUP_INDEX);
+						
+					} else {
+						leftOperand = trimmedLine.substring(0, i) + matcher.group(LEFT_OPERAND_GROUP_INDEX);
+					}
+					String rightOperand = matcher.group(RIGHT_OPERAND_GROUP_INDEX);
+					String operator = matcher.group(AND_OR_OPERATOR_GROUP_INDEX);
+					Filter leftFilter = parseFilter(leftOperand);
+					Filter rightFilter = parseFilter(rightOperand);
+					if (operator.equals(AND_OPERATOR)) {
+						return new AndFilter(leftFilter, rightFilter);
+					} else if (operator.equals(OR_OPERATOR)) {
+						return new OrFilter(leftFilter, rightFilter);
+					} else {
+						// This should never happen due to the regex, but just to
+						// be on the safe side
+						throw new InvalidFilterExpressionException();
+					}
 				} else {
 					// This should never happen due to the regex, but just to
 					// be on the safe side
 					throw new InvalidFilterExpressionException();
 				}
-			}
-			default: {
-				// This should never happen due to the regex, but just to
-				// be on the safe side
-				throw new InvalidFilterExpressionException();
+			} catch (InvalidFilterExpressionException e) {
+				// Fail silently, to allow more attempts at matching the
+				// filter string correctly
+				i = matcher.start(RIGHT_OPERAND_GROUP_INDEX);
 			}
 		}
+		// If we got here it means we tried all possible matches and none of
+		// them were legal filter expressions
+		throw new InvalidFilterExpressionException();
 	}
 	
 	private static Filter makeBasicFilter(String filterName, String filterValue)
