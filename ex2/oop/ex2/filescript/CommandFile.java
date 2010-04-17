@@ -20,12 +20,12 @@ public class CommandFile {
 	private static final int COMMENT_PREFIX_LENGTH = 1;
 	private static final String BASIC_FILTER_REGEX = "^[^\\s():]+:[^\\s():]+$";
 	private static final String BASIC_FILTER_DELIMITERS = ":";
-	private static final String COMPOUND_FILTER_REGEX = "(.+?) (AND|OR) (.+)|(NOT) (.+)";
-	private static final int LEFT_OPERAND_GROUP_INDEX = 1;
-	private static final int AND_OR_OPERATOR_GROUP_INDEX = 2;
-	private static final int RIGHT_OPERAND_GROUP_INDEX = 3;
-	private static final int NOT_OPERATOR_GROUP_INDEX = 4;
-	private static final int NOT_OPERAND_GROUP_INDEX = 5;	
+	private static final String COMPOUND_FILTER_REGEX = "(NOT) (.+)$|(.+?) (AND|OR) (.+)$";
+	private static final int NOT_OPERATOR_GROUP_INDEX = 1;
+	private static final int NOT_OPERAND_GROUP_INDEX = 2;
+	private static final int LEFT_OPERAND_GROUP_INDEX = 3;
+	private static final int AND_OR_OPERATOR_GROUP_INDEX = 4;
+	private static final int RIGHT_OPERAND_GROUP_INDEX = 5;
 	private static final String AND_OPERATOR = "AND";
 	private static final String OR_OPERATOR = "OR";
 	private static final String ACTION_REGEX = "^[^\\s():]+:[^\\s():]+$";
@@ -145,7 +145,7 @@ public class CommandFile {
 	private static Filter parseCompoundFilter(String line)
 		throws InvalidFilterExpressionException, UnsupportedFilterException,
 			   InvalidFilterParametersException {
-		// Check for parenthesEs
+		// Check for parentheses
 		Pattern patt = Pattern.compile(PARENTHESES_REGEX);
 		Matcher matcher = patt.matcher(line);
 		if (!matcher.matches()) {
