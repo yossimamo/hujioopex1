@@ -14,6 +14,7 @@ public class CopyAction extends Action {
 
 	public void execute(File file) throws IOException {
 		File newFile = new File (_target);
+		newFile.mkdirs();
 		OutputStream output = new FileOutputStream(newFile);
 		InputStream input = new FileInputStream(file);
 		int result;

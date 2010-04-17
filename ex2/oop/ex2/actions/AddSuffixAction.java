@@ -6,15 +6,16 @@ import java.io.IOException;
 public class AddSuffixAction extends Action {
 	
 	public static final String _name = "ADD_SUFFIX";
+	
+	private String _suffix;
 
 	public AddSuffixAction(String suffix) {
-		
+		_suffix = suffix;
 	}
 
-	@Override
 	public void execute(File file) throws IOException {
-		// TODO Auto-generated method stub
-		
+		File newName = new File(file.getCanonicalPath() + _suffix);
+		file.renameTo(newName);
 	}
 	
 }
