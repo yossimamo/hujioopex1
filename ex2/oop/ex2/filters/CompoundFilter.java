@@ -2,6 +2,8 @@ package oop.ex2.filters;
 
 import java.io.File;
 
+import oop.ex2.filescript.IOFailureException;
+
 public abstract class CompoundFilter extends Filter {
 	
 	/// the first filter
@@ -26,7 +28,8 @@ public abstract class CompoundFilter extends Filter {
 	 * @param file a file.
 	 * @return true if the file satisfies the filters condition and false 
 	 * otherwise.
+	 * @throws IOFailureException 
 	 */
-	public abstract boolean isMatch(File file);
+	public abstract boolean isMatch(File file) throws IOFailureException;
 
 }

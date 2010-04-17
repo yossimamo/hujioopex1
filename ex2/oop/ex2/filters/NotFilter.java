@@ -2,6 +2,8 @@ package oop.ex2.filters;
 
 import java.io.File;
 
+import oop.ex2.filescript.IOFailureException;
+
 public class NotFilter extends Filter {
 	
 	// a filter.
@@ -17,8 +19,9 @@ public class NotFilter extends Filter {
 	 * @param file a file.
 	 * @return true if the file doesn't satisfy the  filters condition
 	 * and false otherwise.
+	 * @throws IOFailureException 
 	 */
-	public boolean isMatch(File file) {
+	public boolean isMatch(File file) throws IOFailureException {
 		return !_filter.isMatch(file);
 	}
 

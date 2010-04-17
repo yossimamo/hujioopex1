@@ -3,6 +3,7 @@ package oop.ex2.actions;
 import java.io.File;
 import java.io.IOException;
 
+import oop.ex2.filescript.IOFailureException;
 import oop.ex2.filescript.InvalidActionParametersException;
 
 public class PrintAction extends Action {
@@ -31,12 +32,17 @@ public class PrintAction extends Action {
 		}
 	}
 
-	public void execute(File file, String srcDirPath) throws IOException {
-		if (_isSTDOUT){
-			System.out.println(file.getCanonicalPath());
+	public void execute(File file, String srcDirPath) throws IOFailureException {
+		try {
+			if (_isSTDOUT){
+				System.out.println(file.getCanonicalPath());
+			}
+			else {
+				System.err.println(file.getCanonicalPath());
+			}
+		} catch (IOException e){
+			throw new IOFailureException();
 		}
-		else {
-			System.err.println(file.getCanonicalPath());
-		}
+		
 	}
 }

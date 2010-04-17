@@ -3,6 +3,8 @@ package oop.ex2.filters;
 import java.io.File;
 import java.io.IOException;
 
+import oop.ex2.filescript.IOFailureException;
+
 public class SubdirWildcardFilter extends WildcardFilter {
 	
 	public static final String _name = "SUBDIR_WILDCARD";
@@ -22,13 +24,13 @@ public class SubdirWildcardFilter extends WildcardFilter {
 	 * @return true if the file full path and name
 	 * matches the wildcard expression and false 
 	 * otherwise.
+	 * @throws IOFailureException 
 	 */
-	public boolean isMatch(File file) {
+	public boolean isMatch(File file) throws IOFailureException {
 		try {
 			return contains(file.getCanonicalPath());
 		} catch (IOException e) {
-			e.printStackTrace();
-			return false;
+			throw new IOFailureException();
 		}
 	}
 
