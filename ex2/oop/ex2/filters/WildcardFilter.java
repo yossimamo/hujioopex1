@@ -23,18 +23,18 @@ public abstract class WildcardFilter extends Filter {
 	public WildcardFilter(String wildcardString) {
 		_wildcardString = wildcardString;
 		if (_wildcardString.startsWith("*")) {
-			_wildcardString = _wildcardString.substring(1);
 			if (_wildcardString.endsWith("*")) {
-				_wildcardString.substring(0,_wildcardString.length() - 1);
+				_wildcardString.substring(1,_wildcardString.length() - 2);
 				_type = WildcardType.CONTAINS;
 			}
 			else {
+				_wildcardString = _wildcardString.substring(1);
 				_type = WildcardType.ENDS_WITH;
 			}
 		}
 		else {
 			if (_wildcardString.endsWith("*")) {
-				_wildcardString.substring(0,_wildcardString.length() - 1);
+				_wildcardString.substring(0,_wildcardString.length() - 2);
 				_type = WildcardType.BEGINS_WITH;
 			}
 			else{
