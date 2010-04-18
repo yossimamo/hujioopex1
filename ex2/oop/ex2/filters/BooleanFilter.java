@@ -1,7 +1,21 @@
+//###############  
+// FILE : BooleanFilter.java  
+// WRITER : Uri Greenberg, urig03, 021986039  
+// WRITER : Yossi Mamo, ymamo29, 038073722
+// EXERCISE : oop ex2 2010  
+// DESCRIPTION: an abstract class which represents the filters that have a 
+// condition.
+//###############
+
 package oop.ex2.filters;
 
 import oop.ex2.filescript.InvalidFilterParametersException;
 
+/**
+ * an abstract class which represents the filters that have a 
+ * condition.
+ * @author Uri Greenberg and Yossi Mamo.
+ */
 public abstract class BooleanFilter extends Filter {
 	
 	// the boolean condition which the file needs to fit to.

@@ -1,3 +1,12 @@
+//###############  
+// FILE : ModificationDateFilter.java  
+// WRITER : Uri Greenberg, urig03, 021986039  
+// WRITER : Yossi Mamo, ymamo29, 038073722
+// EXERCISE : oop ex2 2010  
+// DESCRIPTION: an abstract class which represents all filters that check
+// the date of the file.
+//###############
+
 package oop.ex2.filters;
 
 import java.io.File;
@@ -7,6 +16,11 @@ import java.util.Date;
 
 import oop.ex2.filescript.InvalidFilterParametersException;
 
+/**
+ * an abstract class which represents all filters that check
+ * the date of the file.
+ * @author Uri Greenberg and Yossi Mamo.
+ */
 public abstract class ModificationDateFilter extends Filter {
 	
 	//the date given as the filter value. 
@@ -21,7 +35,8 @@ public abstract class ModificationDateFilter extends Filter {
 	 * @throws InvalidFilterParametersException upon illegal parameter (not a
 	 * legal date format)
 	 */
-	public ModificationDateFilter(String date) throws InvalidFilterParametersException {
+	public ModificationDateFilter(String date) 
+					throws InvalidFilterParametersException {
 		SimpleDateFormat simpleDateFormat = new SimpleDateFormat(DATE_FORMAT);
 		try {
 			_date = simpleDateFormat.parse(date);

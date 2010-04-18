@@ -1,7 +1,26 @@
+//###############  
+// FILE : WildcardFilter.java  
+// WRITER : Uri Greenberg, urig03, 021986039  
+// WRITER : Yossi Mamo, ymamo29, 038073722
+// EXERCISE : oop ex2 2010  
+// DESCRIPTION: an abstract class which represents the filters that uses a 
+// wildcard expression.
+//###############
+
 package oop.ex2.filters;
 
+/**
+ * an abstract class which represents the filters that uses a 
+ * wildcard expression.
+ * @author Uri Greenberg and Yossi Mamo.
+ */
 public abstract class WildcardFilter extends Filter {
 
+	// there are four types of wildcard expressions:
+	// EQUALS - an expression with no '*' (example: "abc")
+	// BEGINS_WITH - an expression that ends with '*' (example: "abc*")
+	// ENDS_WITH - an expression that starts with '*' (example: "*abc")
+	// CONTAINS - an expression surrounded by '*' (example: "*abc*")
 	enum WildcardType {
 		EQUALS,
 		BEGINS_WITH,
@@ -11,26 +30,36 @@ public abstract class WildcardFilter extends Filter {
 	
 	//the string to be searched for in the file.
 	private String _wildcardString;
+	
+	// the type of wildcard expression the string is.
 	private WildcardType _type;
 
 	
 	
 	
 	/**
-	 * saves the given string in a field.
+	 * constructs a new filter from the wildcard expression. it determines
+	 * its type and remove the "*" from the String.
 	 * @param wildcardString the string to be searched for in the file.
 	 */
 	public WildcardFilter(String wildcardString) {
 		_wildcardString = wildcardString;
 		if (_wildcardString.startsWith("*")) {
-			if (_wildcardString.endsWith("*")) {
-				_wildcardString = 
-					_wildcardString.substring(1,_wildcardString.length() - 1);
+			if (_wildcardString.length() == 1){
+				_wildcardString = _wildcardString.substring(1);
 				_type = WildcardType.CONTAINS;
 			}
 			else {
-				_wildcardString = _wildcardString.substring(1);
-				_type = WildcardType.ENDS_WITH;
+				if (_wildcardString.endsWith("*")) {
+					_wildcardString = 
+						_wildcardString.
+						substring(1,_wildcardString.length() - 1);
+					_type = WildcardType.CONTAINS;
+				}
+				else {
+					_wildcardString = _wildcardString.substring(1);
+					_type = WildcardType.ENDS_WITH;
+				}
 			}
 		}
 		else {
