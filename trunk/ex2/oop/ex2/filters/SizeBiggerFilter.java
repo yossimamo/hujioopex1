@@ -1,11 +1,26 @@
+//###############  
+// FILE : SizeBiggerFilter.java  
+// WRITER : Uri Greenberg, urig03, 021986039  
+// WRITER : Yossi Mamo, ymamo29, 038073722
+// EXERCISE : oop ex2 2010  
+// DESCRIPTION: a filter which checks if the file is bigger than the given
+// parameter.
+//###############
+
 package oop.ex2.filters;
 
 import java.io.File;
 
 import oop.ex2.filescript.InvalidFilterParametersException;
 
+/**
+ * a filter which checks if the file is bigger than the given
+ * parameter.
+ * @author Uri Greenberg and Yossi Mamo.
+ */
 public class SizeBiggerFilter extends SizeFilter {
 	
+	// the name of the filter.
 	public static final String _name = "SIZE_MORE_THAN";
 
 	/**
@@ -33,5 +48,4 @@ public class SizeBiggerFilter extends SizeFilter {
 		}
 		return false;
 	}
-
 }

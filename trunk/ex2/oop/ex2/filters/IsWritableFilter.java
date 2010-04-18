@@ -1,11 +1,24 @@
+//###############  
+// FILE : IsWritableFilter.java  
+// WRITER : Uri Greenberg, urig03, 021986039  
+// WRITER : Yossi Mamo, ymamo29, 038073722
+// EXERCISE : oop ex2 2010  
+// DESCRIPTION: a filter which checks if the file is writable.
+//###############
+
 package oop.ex2.filters;
 
 import java.io.File;
 
 import oop.ex2.filescript.InvalidFilterParametersException;
 
+/**
+ * a filter which checks if the file is writable.
+ * @author Uri Greenberg and Yossi Mamo.
+ */
 public class IsWritableFilter extends BooleanFilter {
 
+	// the filters name.
 	public static final String _name = "IS_WRITABLE";
 	
 	/**
@@ -28,5 +41,4 @@ public class IsWritableFilter extends BooleanFilter {
 	public boolean isMatch(File file) {
 		return (file.canWrite() == _condition);
 	}
-
 }

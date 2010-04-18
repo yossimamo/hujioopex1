@@ -75,11 +75,12 @@ public class Section {
 	}
 	
 	private boolean matchToFilters(File file) throws IOFailureException {
+		boolean foundMatch = false;
 		for (int i = 0; i < _filters.size(); i++) {
-			if (!_filters.get(i).isMatch(file)) {
-				return false;
+			if (_filters.get(i).isMatch(file)) {
+				foundMatch = true;
 			}
 		}
-		return true;
+		return foundMatch;
 	}
 }

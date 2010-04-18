@@ -16,8 +16,7 @@ public class CommandFile {
 	private static final String ACTION = "ACTION";
 	private static final char LEFT_PARENTHESIS = '(';
 	private static final char BEGIN_COMMENT = '#';
-	private static final int COMMENT_PREFIX_LENGTH = 1;
-	private static final String BASIC_FILTER_REGEX = "^[^\\s():]+:[^\\s():]+$";
+	private static final String BASIC_FILTER_REGEX = "^[A-Za-z0-9\\\\/\\*\\.\\-_]+:[A-Za-z0-9\\\\/\\*\\.\\-_]+$";
 	private static final String BASIC_FILTER_DELIMITERS = ":";
 	private static final String COMPOUND_FILTER_REGEX = "(NOT) (.+)$|(.+?) (AND|OR) (.+)$";
 	private static final int NOT_OPERATOR_GROUP_INDEX = 1;
@@ -27,7 +26,7 @@ public class CommandFile {
 	private static final int RIGHT_OPERAND_GROUP_INDEX = 5;
 	private static final String AND_OPERATOR = "AND";
 	private static final String OR_OPERATOR = "OR";
-	private static final String ACTION_REGEX = "^[^\\s():]+:[^\\s():]+$";
+	private static final String ACTION_REGEX = "^[^\\s():]+:(.+)$";
 	private static final String ACTION_DELIMITERS = ":";
 	private static final int PARENTHESES_GROUP_INDEX = 1;
 	private static final String PARENTHESES_REGEX = "^\\((.+)\\)$";
@@ -58,19 +57,23 @@ public class CommandFile {
 			   UnsupportedFilterException, InvalidSectionException,
 			   InvalidFilterParametersException, InvalidActionParametersException {
 		Section section = new Section();
-		String line = sc.nextLine();
+		String line = getNextLine(sc);
 		// Begin parsing FILTERS
 		if (!line.equals(FILTERS)) {
 			throw new InvalidSectionException();
 		}
-		line = sc.nextLine();
+		line = getNextLine(sc);
 		while (!line.equals(ACTION)) {
+			// FILTERS at this point violate the section structure
+			if (line.equals(FILTERS)) {
+				throw new InvalidSectionException();
+			}
 			// Two possible types of lines:
 			// 1. Comment
 			// 2. Filter 
 			switch (line.charAt(0)) {
 				case BEGIN_COMMENT: {
-					section.addComment(parseComment(line));
+					section.addComment(line);
 					break;			
 				}
 				default: {
@@ -78,10 +81,14 @@ public class CommandFile {
 					break;
 				}
 			}
-			line = sc.nextLine();
+			line = getNextLine(sc);
 		}
-		// Begin parsing ACTIONS
-		line = sc.nextLine();
+		// Begin parsing ACTION
+		line = getNextLine(sc);
+		// FILTERS at this point violate the section structure
+		if (line.equals(FILTERS)) {
+			throw new InvalidSectionException();
+		}
 		// Comments are not allowed here
 		if (BEGIN_COMMENT == line.charAt(0)) {
 			throw new InvalidSectionException();
@@ -90,10 +97,6 @@ public class CommandFile {
 		section.setAction(parseAction(line));		
 			
 		return section;
-	}
-	
-	private static String parseComment(String line) {
-		return line.substring(COMMENT_PREFIX_LENGTH);
 	}
 	
 	private static Filter parseFilter(String line)
@@ -237,6 +240,14 @@ public class CommandFile {
 		} else {
 			throw new InvalidActionException();
 		}
+	}
+	
+	private static String getNextLine(Scanner sc) throws InvalidSectionException {
+		String nextLine = sc.nextLine();
+		if (0 == nextLine.length()) {
+			throw new InvalidSectionException();
+		}
+		return nextLine;
 	}
 	
 	public void execute(File rootDirectory) throws IOFailureException {
