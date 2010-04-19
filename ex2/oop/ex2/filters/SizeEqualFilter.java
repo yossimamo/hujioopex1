@@ -20,7 +20,7 @@ import oop.ex2.filescript.InvalidFilterParametersException;
  */
 public class SizeEqualFilter extends SizeFilter {
 
-	// the name of the filter.
+	/// the name of the filter
 	public static final String _name = "SIZE_EQUAL_TO";
 	
 	/**

@@ -19,10 +19,10 @@ import oop.ex2.filescript.IOFailureException;
  */
 public class CopyAction extends Action {
 	
-	// the name of the Action.
+	/// the name of the Action
 	public static final String _name = "COPY_TO";
 	
-	// the path to copy the file to.
+	/// the path to copy the file to
 	private String _target;
 
 	/**
@@ -46,8 +46,7 @@ public class CopyAction extends Action {
 								throws IOFailureException {
 		try {
 			// getting the targets absolute path.
-			String newTarget = 
-				_target + 
+			String newTarget = _target + 
 				file.getCanonicalPath().substring(srcDirPath.length());
 			File newFile = new File(newTarget);
 			// creating the directories in the files new path.

@@ -20,7 +20,7 @@ import oop.ex2.filescript.IOFailureException;
  */
 public class NotFilter extends Filter {
 	
-	// a filter.
+	/// the contained filter
 	private Filter _filter;
 	
 	/**

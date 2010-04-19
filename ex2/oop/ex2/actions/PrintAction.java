@@ -20,16 +20,16 @@ import oop.ex2.filescript.InvalidActionParametersException;
  */
 public class PrintAction extends Action {
 	
-	// the name of the action.
+	/// the name of the action.
 	public static final String _name = "PRINT_TO";
 	
-	// the name of the stream.
+	/// the name of the stream.
 	private static final String STDERR = "STDERR";
 	
-	// the name of the stream.
+	/// the name of the stream.
 	private static final String STDOUT = "STDOUT";
 	
-	// holds true if the stream is out and false otherwise.
+	/// holds true if the stream is out and false otherwise.
 	private boolean _isSTDOUT;
 
 	/**

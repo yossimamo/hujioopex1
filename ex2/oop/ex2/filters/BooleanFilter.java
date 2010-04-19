@@ -18,13 +18,13 @@ import oop.ex2.filescript.InvalidFilterParametersException;
  */
 public abstract class BooleanFilter extends Filter {
 	
-	// the boolean condition which the file needs to fit to.
+	/// the boolean condition which the file needs to fit to.
 	protected boolean _condition;
 	
-	//the string which will mean true.
+	/// the string which will mean true.
 	private static final String YES = "Yes";
 	
-	//the string which will mean false.
+	/// the string which will mean false.
 	private static final String NO = "No";
 	
 	/**

@@ -20,7 +20,7 @@ import oop.ex2.filescript.InvalidFilterParametersException;
  */
 public class ModifiedAfterFilter extends ModificationDateFilter {
 	
-	//the name of the filter.
+	/// the name of the filter
 	public static final String _name = "MODIFIED_AFTER";
 
 	/**

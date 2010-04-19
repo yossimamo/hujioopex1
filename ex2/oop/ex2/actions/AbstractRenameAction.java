@@ -23,19 +23,18 @@ import oop.ex2.filescript.InvalidActionParametersException;
  */
 public abstract class AbstractRenameAction extends Action {
 	
-	// a regex that checks if the string contains illegal
-	// character ( spaces, '\', '/').
+	/// a regex that checks if the string contains illegal
+	/// character ( spaces, '\', '/').
 	private static final String VALID_PARAM_REGEX = "[^\\s\\\\/]*";
 
-	
-	// the String to be added to the name.
+	/// the String to be added to the name.
 	protected String _string;
 	
 	/**
-	 * constructs a new action with the given String.
-	 * @param string the String to be added to the name.
+	 * constructs a new action with the given string.
+	 * @param string the string to be added to the name.
 	 * @throws InvalidActionParametersException in case the string contains
-	 * an illegal character ( spaces, '\', '/').
+	 * an illegal character (spaces, '\', '/').
 	 */
 	public AbstractRenameAction(String string)
 							throws InvalidActionParametersException {

@@ -18,7 +18,7 @@ import oop.ex2.filescript.InvalidFilterParametersException;
  */
 public abstract class SizeFilter extends Filter {
 	
-	// the size given as the filter parameter.
+	/// the size given as the filter parameter
 	protected long _size;
 	
 	/**
