@@ -21,8 +21,7 @@ import oop.ex2.filescript.IOFailureException;
 public abstract class CompoundFilter extends Filter {
 	
 	/// the first filter
-	protected Filter _firstFilter;
-	
+	protected Filter _firstFilter;	
 	/// the second filter.
 	protected Filter _secondFilter;
 	

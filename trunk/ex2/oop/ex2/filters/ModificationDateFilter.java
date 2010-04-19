@@ -23,10 +23,10 @@ import oop.ex2.filescript.InvalidFilterParametersException;
  */
 public abstract class ModificationDateFilter extends Filter {
 	
-	//the date given as the filter value. 
+	/// the date given as the filter value. 
 	protected Date _date;
 	
-	// the format in which the date is received.
+	/// the format in which the date is received.
 	private static final String DATE_FORMAT = "yyyy/dd/MM";
 	
 	/**

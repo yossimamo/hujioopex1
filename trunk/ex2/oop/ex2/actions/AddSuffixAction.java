@@ -21,14 +21,14 @@ import oop.ex2.filescript.InvalidActionParametersException;
  */
 public class AddSuffixAction extends AbstractRenameAction {
 	
-	// the name of the Action.
+	/// the name of the action.
 	public static final String _name = "ADD_SUFFIX";
 
 	/**
 	 * constructs a new action with the given suffix String.
 	 * @param suffix the String to be added at the end of the name.
 	 * @throws InvalidActionParametersException in case the string contains
-	 * an illegal character ( spaces, '\', '/').
+	 * an illegal character (spaces, '\', '/').
 	 */
 	public AddSuffixAction(String suffix) 
 						throws InvalidActionParametersException {

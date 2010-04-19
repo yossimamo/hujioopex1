@@ -11,6 +11,7 @@ package oop.ex2.actions;
 
 import java.io.File;
 import java.io.IOException;
+
 import oop.ex2.filescript.IOFailureException;
 import oop.ex2.filescript.InvalidActionParametersException;
 
@@ -21,14 +22,14 @@ import oop.ex2.filescript.InvalidActionParametersException;
  */
 public class AddPrefixAction extends AbstractRenameAction {
 	
-	// the name of the Action.
+	/// the name of the Action.
 	public static final String _name = "ADD_PREFIX";
 	
 	/**
 	 * constructs a new action with the given prefix String.
 	 * @param prefix the String to be added at the beginning of the name.
 	 * @throws InvalidActionParametersException in case the string contains
-	 * an illegal character ( spaces, '\', '/').
+	 * an illegal character (spaces, '\', '/').
 	 */
 	public AddPrefixAction(String prefix) 
 						throws InvalidActionParametersException {

@@ -18,7 +18,7 @@ import oop.ex2.filescript.InvalidFilterParametersException;
  */
 public class IsReadableFilter extends BooleanFilter {
 	
-	//the filters name.
+	/// the filter's name
 	public static final String _name = "IS_READABLE";
 
 	/**

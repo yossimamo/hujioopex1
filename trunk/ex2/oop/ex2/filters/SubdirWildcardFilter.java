@@ -21,7 +21,7 @@ import oop.ex2.filescript.IOFailureException;
  */
 public class SubdirWildcardFilter extends WildcardFilter {
 	
-	// the name of the filter.
+	/// the name of the filter
 	public static final String _name = "SUBDIR_WILDCARD";
 
 	/**

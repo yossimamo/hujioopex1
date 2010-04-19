@@ -28,15 +28,12 @@ public abstract class WildcardFilter extends Filter {
 		CONTAINS
 	};
 	
-	//the string to be searched for in the file.
+	/// the string to be searched for in the file.
 	private String _wildcardString;
 	
-	// the type of wildcard expression the string is.
+	/// the type of wildcard expression the string is.
 	private WildcardType _type;
 
-	
-	
-	
 	/**
 	 * constructs a new filter from the wildcard expression. it determines
 	 * its type and remove the "*" from the String.
