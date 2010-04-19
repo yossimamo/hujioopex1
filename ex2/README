@@ -1,0 +1,176 @@
+urig03
+ymamo29
+
+Uri Greenberg 021986039
+Yossi Mamo 038073722
+
+-------------------------------
+OOP Ex2 (File processing tool) README file
+-------------------------------
+
+-------------------------------
+File Descriptions:
+-------------------------------
+
+Action.java - an abstract class which represents an action. has a method
+which is common to all actions, execute.
+
+AbstractRenameAction.java - an abstract class which inherits to all actions
+that rename the file ( AddPrefixAction and AddSuffixAction).
+
+AddPrefixAction.java - an action which renames the file, adding prefix at the
+beginning of its name (excluding path).
+
+AddSuffixAction.java - an action which renames the file, adding suffix at the
+end of its name.
+
+CopyAction.java - an action which copies a file (and its path from the source
+directory) into the given target directory.
+
+PrintAction.java - an action which prints the full file's name into the given
+stream.
+
+CommandFile.java - Represents a command file which may contain multiple
+sections of filters and actions.
+
+InvalidActionException.java - Represents an error thrown upon an invalid
+action given as input.
+
+InvalidActionParametersException.java - Represents an error thrown upon
+invalid action parameters given as input.
+
+InvalidCommandLineParametersException.java - Represents an error thrown upon
+invalid command line parameters
+
+InvalidFilterExpressionException.java - Represents an error thrown upon
+encountering an invalid filter expression
+
+InvalidFilterParametersException.java - Represents an error thrown upon
+encountering invalid filter params
+
+InvalidSectionException.java - Represents an error thrown upon encountering
+an invalid section
+
+IOFailureException.java - Represents an error thrown upon an I/O failure
+of any kind
+
+MyFileScript.java - A program which allows mass manipulation of files 
+according to preconfigured filters and actions.
+
+Section.java - Represents a single section inside a command file.
+
+UnsupportedFilterException.java - Represents an error thrown upon encountering
+an unsupported filter
+
+Filter.java - an abstract class which represents a filter. has a method
+which is common to all filters, isMatch.
+
+CompoundFilter.java - an abstract class which represents a compound filter.
+it holds two fields (of filters) which are common to all compound filters.
+
+AndFilter.java - a class which represents an And compound filter.
+for the file to satisfy the filter it must satisfy both filters in the 
+fields.
+
+OrFilter.java - a class which represents an Or compound filter.
+for the file to satisfy the filter it must satisfy one of the filters in
+the fields.
+
+NotFilter.java - a filter which holds another filter as a field and is
+satisfied only if the filter in the field is not.
+
+BooleanFilter.java - an abstract class which inherits to filters that have
+a condition (IsReadableFilter and IsWritableFilter).
+
+IsReadableFilter.java - a filter which checks if the file is readable.
+
+IsWritableFilter.java - a filter which checks if the file is writable.
+
+WildcardFilter.java - an abstract class which inherits to the filters that
+uses a wildcard expression.
+
+SubdirWildcardFilter.java - a filter which checks if the wildcard expression
+fits the canonical name of the file.
+
+FileWildcardFilter.java - a filter which checks if the wildcard expression
+fits the name of the file.
+
+ModificationDateFilter.java - an abstract class which inherits to all filters
+that check the date of the file.
+
+ModifiedOnFilter.java - a filter which checks if the file was last modified
+on the given date.
+
+ModifiedBeforeFilter.java - a filter which checks if the file was last
+modified before the given date.
+
+ModifiedAfterFilter.java - a filter which checks if the file was last modified
+after the given date.
+
+SizeFilter.java - an abstract class which inherits to all filters that check
+the size of the file.
+
+SizeSmallerFilter.java - a filter which checks if the file is smaller than
+the given parameter.
+
+SizeEqualFilter.java - a filter which checks if the file equals the given
+parameter.
+
+SizeBiggerFilter.java -  a filter which checks if the file is bigger than
+the given parameter.
+
+README - This file.
+
+Total: 37 files.
+
+------------------------
+Design:
+------------------------
+in our design we decided to devide the files into 3 packages.
+the action package, which holds all the action classes.
+the filter package, which holds all the filters classes.
+and the filescript package, which holds the script to the program itself,
+the interface for the user and the exceptions.
+
+action package - in this package we have an abstract class that represents an 
+action. it has a method (execute) which is common to all actions. all the
+classes inherite the action class. in this package we made another abstract
+class (AbstractRenameAction.java) that is also an action but it has all the
+things that are common to the AddPrefixAction.java class and the
+AddSuffixAction.java class. both classes inherites from the abstract class.
+they have a lot of similar features (renaming the file, and their constructor
+is identical). and thats why they have an abstract class to inherit from.
+filter package - this package contains all of the filters. we made a few
+abstract classes in this package. each abstract class inherites to a few
+filters that have common  features such as constructors, fields or methods.
+we did so in order to make future changes easies and to avoid code repetision.
+
+Filter.java - is an abstract class that all filters inherit from. it holds
+a method common to all filters, isMatch.
+CompoundFilter.java - is an abstract class. AndFilter.java and OrFilter.java
+both inherit it because they both have two fields with filters. we decided
+not to make NotFilter.java a compound filter because it holds only one 
+filter as a field and it is more fit to be considered as a regular filter.
+(and inherit Filter.java). 
+SizeBiggerFilter.java, SizeEqualFilter.java and SizeSmallerFilter.java all
+inherit from SizeFilter.java which is an abstract class.
+ModifiedAfterFilter.java, ModifiedBeforeFilter.java and
+ModifiedOnFilter.java all inherit from ModificationDateFilter.java 
+which is an abstract class.
+SubdirWildcardFilter.java and FileWildcardFilter.java 
+inherit from WildcardFilter.java which is an abstract class.
+IsReadableFilter.java and IsWritableFilter.java
+inherit from BooleanFilter.java which is an abstract class.
+
+filescript package - 
+
+------------------------
+Implementation issues:
+------------------------
+we decided to implement the project the following way:
+first the program parses the input file. while doing so it creates filter and
+action objects (as written in the input file) and stores them in arrays. this
+phaze is the compilation phaze, if there is an error in the way the input file
+is written (such as illegal parameters) it will print the error in this phase.
+afterwards the program will start executing the actions on some of the files
+(according to the filters). 
