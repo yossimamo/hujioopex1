@@ -15,8 +15,8 @@ File Descriptions:
 Action.java - an abstract class which represents an action. has a method
 which is common to all actions, execute.
 
-AbstractRenameAction.java - an abstract class which inherits to all actions
-that rename the file ( AddPrefixAction and AddSuffixAction).
+AbstractRenameAction.java - an abstract class which is a parent to all actions
+that rename a file (AddPrefixAction and AddSuffixAction).
 
 AddPrefixAction.java - an action which renames the file, adding prefix at the
 beginning of its name (excluding path).
@@ -46,7 +46,7 @@ InvalidFilterExpressionException.java - Represents an error thrown upon
 encountering an invalid filter expression
 
 InvalidFilterParametersException.java - Represents an error thrown upon
-encountering invalid filter params
+encountering invalid filter parameters
 
 InvalidSectionException.java - Represents an error thrown upon encountering
 an invalid section
@@ -126,51 +126,77 @@ Total: 37 files.
 ------------------------
 Design:
 ------------------------
-in our design we decided to devide the files into 3 packages.
-the action package, which holds all the action classes.
-the filter package, which holds all the filters classes.
-and the filescript package, which holds the script to the program itself,
-the interface for the user and the exceptions.
+In our design we decided to divide the objects into 3 packages.
+1. The actions package, which holds all the Action objects.
+2. The filters package, which holds all the Filter objects.
+3. The filescript package, which holds the entry point of the program itself,
+the user interface, the CommandFile implementation and the various exceptions.
 
-action package - in this package we have an abstract class that represents an 
-action. it has a method (execute) which is common to all actions. all the
-classes inherite the action class. in this package we made another abstract
+actions package - In this package we have an abstract class that represents an 
+action. It has a method (execute) which is common to all actions. All the
+Action classes inherit from it. In this package we made another abstract
 class (AbstractRenameAction.java) that is also an action but it has all the
 things that are common to the AddPrefixAction.java class and the
-AddSuffixAction.java class. both classes inherites from the abstract class.
-they have a lot of similar features (renaming the file, and their constructor
-is identical). and thats why they have an abstract class to inherit from.
-filter package - this package contains all of the filters. we made a few
-abstract classes in this package. each abstract class inherites to a few
-filters that have common  features such as constructors, fields or methods.
-we did so in order to make future changes easies and to avoid code repetision.
+AddSuffixAction.java class. Both classes inherit from the abstract class.
+They have a lot of similar features (renaming the file, and their constructor
+is identical), and thats why they have an abstract class to inherit from.
 
-Filter.java - is an abstract class that all filters inherit from. it holds
+filters package - This package contains all of the filters. We made a few
+abstract classes in this package. each abstract class is a parent to a few
+filters that have common features such as constructors, fields or methods.
+We did so in order to make future changes easier and to avoid code repetition.
+Filter is an abstract class that all filters inherit from. it holds
 a method common to all filters, isMatch.
-CompoundFilter.java - is an abstract class. AndFilter.java and OrFilter.java
-both inherit it because they both have two fields with filters. we decided
-not to make NotFilter.java a compound filter because it holds only one 
-filter as a field and it is more fit to be considered as a regular filter.
-(and inherit Filter.java). 
-SizeBiggerFilter.java, SizeEqualFilter.java and SizeSmallerFilter.java all
-inherit from SizeFilter.java which is an abstract class.
-ModifiedAfterFilter.java, ModifiedBeforeFilter.java and
-ModifiedOnFilter.java all inherit from ModificationDateFilter.java 
-which is an abstract class.
-SubdirWildcardFilter.java and FileWildcardFilter.java 
-inherit from WildcardFilter.java which is an abstract class.
-IsReadableFilter.java and IsWritableFilter.java
-inherit from BooleanFilter.java which is an abstract class.
+CompoundFilter is an abstract class. AndFilter and OrFilter both inherit it
+because they both have two fields with filters (operands). We decided
+not to make NotFilter a compound filter because it holds only one filter as a
+field and it is more fit to be considered as a regular filter (and inherit from
+Filter). 
+SizeBiggerFilter, SizeEqualFilter and SizeSmallerFilter all inherit from 
+SizeFilter which is an abstract class.
+ModifiedAfterFilter, ModifiedBeforeFilter and ModifiedOnFilter all inherit from
+ModificationDateFilter which is an abstract class.
+SubdirWildcardFilter and FileWildcardFilter inherit from WildcardFilter which
+is an abstract class.
+IsReadableFilter and IsWritableFilter inherit from BooleanFilter which is an
+abstract class.
 
-filescript package - 
+filescript package - This is the main package of the program.
+The MyFileScript object contains the entry point of the program. It is responsible
+for handling the given parameters, creating the CommandFile object and executing
+it eventually. Exceptions thrown from the program are usually caught here,
+printed out and then the program ends.
+The CommandFile object represents a command file. It does not have a public
+constructor, but it exposes a static method called createFromFile which
+is responsible for parsing a given input file, and, if it is found to be
+legally formatted, creating a valid CommandFile object from it and returning
+it to the caller. This object holds an ArrayList of Section objects, in the
+same order as in the input file. The parsing process makes use of regular
+expressions in order to validate and capture information from the input file.
+Part of the parsing process is uses a recursive method, as the compound filter
+expressions may be nested. If the input file is found to be invalid, an
+exception will be thrown from within the parsing process, or upon an attempted
+creation of a Filter or Action with invalid/unsupported parameters.
+The Section object represents a single section in the input file. Each section
+consists of several Filters, comments and a single Action. Each section exposes
+an execute method which allows execution of its contents on a given source
+directory (that is, printing the comments, matching the filters, and executing
+the action on the matched files).  
 
 ------------------------
 Implementation issues:
 ------------------------
-we decided to implement the project the following way:
-first the program parses the input file. while doing so it creates filter and
-action objects (as written in the input file) and stores them in arrays. this
-phaze is the compilation phaze, if there is an error in the way the input file
-is written (such as illegal parameters) it will print the error in this phase.
-afterwards the program will start executing the actions on some of the files
-(according to the filters). 
+We decided to implement the project the following way:
+The program starts off by validating its command line parameters and then
+attempts to convert the given command file into a CommandFile object, which
+involves parsing the file and validating its contents. The outcome of this
+process is a valid CommandFile object which holds several (one of more) Section
+objects, which contain the various Filters, comments and Actions.
+Then, assuming the parsing phase has been completed successfully, a CommandFile
+object is created and then it may be executed by the main program. Effectively,
+this will cause an iteration over the given source directory, matching the
+various filters with the files found there, and executing the actions
+accordingly.
+If an error has occurred during this process, an exception will be thrown
+somewhere within the program and caught at the main procedure, which allows
+printing of the error message and then cleanly exiting the program.
