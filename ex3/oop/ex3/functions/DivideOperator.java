@@ -2,22 +2,25 @@ package oop.ex3.functions;
 
 import java.util.LinkedList;
 
-public class DivideOperator extends Function {
+public class DivideOperator extends Operator {
+	
+	public static final String NAME = "Divide";
+	private static final String SIGN = "/";
 
 	public DivideOperator() {
-		// TODO Auto-generated constructor stub
+		_sign = SIGN;
 	}
 
-	@Override
-	public Double calculate(LinkedList<Double> input) throws IllegalArgumentException {
-		// TODO Auto-generated method stub
-		return null;
+	public Double calculate(LinkedList<Double> input)
+							throws IllegalArgumentException {
+		checkInputOperator(input);
+		if (input.getLast() == 0){
+			throw new IllegalArgumentException();  
+		}
+		return input.getFirst() / input.getLast();
 	}
 
-	@Override
 	public String getFunctionName() {
-		// TODO Auto-generated method stub
-		return null;
+		return NAME;
 	}
-
 }

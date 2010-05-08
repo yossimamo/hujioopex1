@@ -24,6 +24,18 @@ public abstract class Function {
 	 * @throws IllegalArgumentException in case the arguments are illegal 
 	 * (wrong number of parameters, wrong value, etc.)
 	 */
-	@SuppressWarnings("unchecked")
-	public abstract Double calculate(LinkedList<Double> input) throws IllegalArgumentException;
+	public abstract Double calculate(LinkedList<Double> input)
+									throws IllegalArgumentException;
+	
+	protected void checkInput(LinkedList<Double> input, int numOfArgs)
+											throws IllegalArgumentException {
+		if (input == null || input.size() != numOfArgs) {
+			throw new IllegalArgumentException();
+		}
+		for (int i=0; i < input.size(); i++) {
+			if (input.get(i) == null) {
+				throw new IllegalArgumentException();
+			}
+		}
+	}
 }
