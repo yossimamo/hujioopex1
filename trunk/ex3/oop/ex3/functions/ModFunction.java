@@ -3,21 +3,24 @@ package oop.ex3.functions;
 import java.util.LinkedList;
 
 public class ModFunction extends Function {
+	
+	public static final int NUM_OF_ARGS = 2;
+	
+	public static final String NAME = "Mod";
 
 	public ModFunction() {
-		// TODO Auto-generated constructor stub
 	}
 
-	@Override
-	public Double calculate(LinkedList<Double> input) throws IllegalArgumentException {
-		// TODO Auto-generated method stub
-		return null;
+	public Double calculate(LinkedList<Double> input)
+								throws IllegalArgumentException {
+		checkInput(input, NUM_OF_ARGS);
+		if (input.getLast() == 0){
+			throw new IllegalArgumentException();  
+		}
+		return input.getFirst() % input.getLast();
 	}
 
-	@Override
 	public String getFunctionName() {
-		// TODO Auto-generated method stub
-		return null;
+		return NAME;
 	}
-
 }

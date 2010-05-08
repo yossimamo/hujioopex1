@@ -8,16 +8,17 @@ public class HashString implements HashObject {
 		_string = string;
 	}
 
-	@Override
 	public boolean equals(HashObject other) {
-		// TODO Auto-generated method stub
+		if (other instanceof HashString) {
+			HashString otherHashString = (HashString)other;
+			if (otherHashString._string.equals(_string)) {
+				return true;
+			}
+		}
 		return false;
 	}
 
-	@Override
 	public int hashCode(int maxNum) {
-		// TODO Auto-generated method stub
-		return 0;
+		return _string.hashCode() % maxNum;
 	}
-
 }

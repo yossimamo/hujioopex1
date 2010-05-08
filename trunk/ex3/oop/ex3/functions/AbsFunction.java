@@ -4,20 +4,19 @@ import java.util.LinkedList;
 
 public class AbsFunction extends Function {
 
+	public static final int NUM_OF_ARGS = 1;
+	
+	public static final String NAME = "Abs";
+	
 	public AbsFunction() {
-		// TODO Auto-generated constructor stub
 	}
 
-	@Override
 	public Double calculate(LinkedList<Double> input) throws IllegalArgumentException {
-		// TODO Auto-generated method stub
-		return null;
+		checkInput(input, NUM_OF_ARGS);
+		return Math.abs(input.getFirst());
 	}
 
-	@Override
 	public String getFunctionName() {
-		// TODO Auto-generated method stub
-		return null;
+		return NAME;
 	}
-
 }

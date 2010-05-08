@@ -4,20 +4,24 @@ import java.util.LinkedList;
 
 public class MinFunction extends Function {
 
+	public static final String NAME = "Min";
+	
 	public MinFunction() {
-		// TODO Auto-generated constructor stub
 	}
 
-	@Override
-	public Double calculate(LinkedList<Double> input) throws IllegalArgumentException {
-		// TODO Auto-generated method stub
-		return null;
+	public Double calculate(LinkedList<Double> input)
+								throws IllegalArgumentException {
+		if (input.isEmpty()) {
+			throw new IllegalArgumentException();
+		}
+		Double min = input.getFirst();
+		for (int i=1; i<input.size() ; i++) {
+			min = Math.min(min, input.get(i));
+		}
+		return min;
 	}
 
-	@Override
 	public String getFunctionName() {
-		// TODO Auto-generated method stub
-		return null;
+		return NAME;
 	}
-
 }

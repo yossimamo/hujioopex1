@@ -1,23 +1,22 @@
 package oop.ex3.functions;
 
 import java.util.LinkedList;
-
-public class MinusOperator extends Function {
-
+public class MinusOperator extends Operator {
+	
+	public static final String NAME = "Minus";
+	private static final String SIGN = "-";
+		
 	public MinusOperator() {
-		// TODO Auto-generated constructor stub
+		_sign = SIGN;
 	}
 
-	@Override
-	public Double calculate(LinkedList<Double> input) throws IllegalArgumentException {
-		// TODO Auto-generated method stub
-		return null;
+	public Double calculate(LinkedList<Double> input)
+						throws IllegalArgumentException {
+		checkInputOperator(input);
+		return input.getFirst() - input.getLast();
 	}
 
-	@Override
 	public String getFunctionName() {
-		// TODO Auto-generated method stub
-		return null;
+		return NAME;
 	}
-
 }

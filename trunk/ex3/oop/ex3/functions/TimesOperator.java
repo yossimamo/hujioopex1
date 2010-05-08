@@ -2,22 +2,23 @@ package oop.ex3.functions;
 
 import java.util.LinkedList;
 
-public class TimesOperator extends Function {
+public class TimesOperator extends Operator {
+	
+	public static final String NAME = "Times";
+	private static final String SIGN = "*";
 
+	
 	public TimesOperator() {
-		// TODO Auto-generated constructor stub
+		_sign = SIGN;
 	}
 
-	@Override
-	public Double calculate(LinkedList<Double> input) throws IllegalArgumentException {
-		// TODO Auto-generated method stub
-		return null;
+	public Double calculate(LinkedList<Double> input)
+							throws IllegalArgumentException {
+		checkInputOperator(input);
+		return input.getFirst() * input.getLast();
 	}
 
-	@Override
 	public String getFunctionName() {
-		// TODO Auto-generated method stub
-		return null;
+		return NAME;
 	}
-
 }

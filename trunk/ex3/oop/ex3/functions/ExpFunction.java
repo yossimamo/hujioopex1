@@ -3,21 +3,21 @@ package oop.ex3.functions;
 import java.util.LinkedList;
 
 public class ExpFunction extends Function {
+	
+	public static final int NUM_OF_ARGS = 1;
+	
+	public static final String NAME = "Exp";
 
 	public ExpFunction() {
-		// TODO Auto-generated constructor stub
 	}
 
-	@Override
-	public Double calculate(LinkedList<Double> input) throws IllegalArgumentException {
-		// TODO Auto-generated method stub
-		return null;
+	public Double calculate(LinkedList<Double> input)
+							throws IllegalArgumentException {
+		checkInput(input, NUM_OF_ARGS);
+		return Math.exp(input.getFirst());
 	}
 
-	@Override
 	public String getFunctionName() {
-		// TODO Auto-generated method stub
-		return null;
+		return NAME;
 	}
-
 }
