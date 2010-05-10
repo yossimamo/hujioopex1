@@ -20,18 +20,22 @@ import oop.ex3.exceptions.IllegalMathOperationException;
  * @author Uri Greenberg and Yossi Mamo
  *
  */
-public class ModFunction extends Function {
+public class ModFunction extends Operator {
 	
 	// the number of arguments the function is supposed to get in the input.
 	public static final int NUM_OF_ARGS = 2;
 	
 	//the name of the function
 	public static final String NAME = "Mod";
+	
+	// the sign of the overloaded operator
+	private static final String SIGN = "%";
 
 	/**
 	 * an empty constructor.
 	 */
 	public ModFunction() {
+		_sign = SIGN;
 	}
 
 	/**
@@ -58,5 +62,9 @@ public class ModFunction extends Function {
 	 */
 	public String getFunctionName() {
 		return NAME;
+	}
+
+	public boolean isAssignmentAllowed() {
+		return false;
 	}
 }

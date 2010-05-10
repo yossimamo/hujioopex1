@@ -55,4 +55,6 @@ public abstract class Operator extends Function {
 	public String getSign() {
 		return _sign;
 	}
+
+	public abstract boolean isAssignmentAllowed();
 }
