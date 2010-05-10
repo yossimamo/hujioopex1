@@ -19,6 +19,6 @@ public class HashString implements HashObject {
 	}
 
 	public int hashCode(int maxNum) {
-		return _string.hashCode() % maxNum;
+		return Math.abs(_string.hashCode() % maxNum);
 	}
 }

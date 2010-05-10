@@ -2,6 +2,8 @@ package oop.ex3.functions;
 
 import java.util.LinkedList;
 
+import oop.ex3.exceptions.IllegalMathOperationException;
+
 public class ModFunction extends Function {
 	
 	public static final int NUM_OF_ARGS = 2;
@@ -15,7 +17,7 @@ public class ModFunction extends Function {
 								throws IllegalArgumentException {
 		checkInput(input, NUM_OF_ARGS);
 		if (input.getLast() == 0){
-			throw new IllegalArgumentException();  
+			throw new IllegalMathOperationException();  
 		}
 		return input.getFirst() % input.getLast();
 	}

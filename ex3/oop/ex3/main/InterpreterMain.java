@@ -2,14 +2,17 @@ package oop.ex3.main;
 
 import java.util.Scanner;
 
+import oop.ex3.exceptions.NullPointerException;
+
 public class InterpreterMain {
 	
 	private static String EXIT_COMMAND = "exit";
 
 	/**
 	 * @param args
+	 * @throws NullPointerException 
 	 */
-	public static void main(String[] args) {
+	public static void main(String[] args) throws NullPointerException {
 		Interpreter interpreter = new Interpreter();
 		Scanner sc = new Scanner(System.in);
 		String line = sc.nextLine();

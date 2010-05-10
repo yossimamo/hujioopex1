@@ -1,6 +1,6 @@
 package oop.ex3.exceptions;
 
-public class IllegalOperatorException extends Exception {
+public class IllegalOperatorException extends IllegalArgumentException {
 	
 	private static final long serialVersionUID = 1L;
 	

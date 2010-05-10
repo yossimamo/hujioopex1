@@ -1,19 +1,23 @@
 package oop.ex3.dataStructures;
 
+import java.util.ArrayList;
+import oop.ex3.exceptions.NullPointerException;
 import java.util.Iterator;
 import java.util.LinkedList;
 
 public class ChainedHashMap {
 	
-	private LinkedList<KeyValObject>[] _hashMap;
+	private ArrayList<LinkedList<KeyValObject>> _hashMap;
 	
 	private int _size;
 	
 	private final static int BUCKET_ARRAY_SIZE = 100;
 	
-	@SuppressWarnings("unchecked")
 	public ChainedHashMap() {
-		_hashMap = new LinkedList[BUCKET_ARRAY_SIZE];
+		_hashMap = new ArrayList<LinkedList<KeyValObject>>(BUCKET_ARRAY_SIZE);
+		for (int i=0 ; i<BUCKET_ARRAY_SIZE ; i++){
+			_hashMap.add(new LinkedList<KeyValObject>());
+		}
 		_size = 0;
 	}
 	
@@ -21,43 +25,47 @@ public class ChainedHashMap {
 		return _size;
 	}
 	
-	public Object get(HashObject key) {
+	public Object get(HashObject key) throws NullPointerException {
+		isNull(key);
 		int position = key.hashCode(BUCKET_ARRAY_SIZE);
-		int index = findObjectIndex(_hashMap[position] , key);
+		int index = findObjectIndex(_hashMap.get(position) , key);
 		if (-1 == index) {
 			return null;
 		}
 		else {
-			return _hashMap[position].get(index).getValue();
+			return _hashMap.get(position).get(index).getValue();
 		}
 	}
 	
-	public void put(HashObject key, Object value) {
+	public void put(HashObject key, Object value) throws NullPointerException {
+		isNull(key);
 		int position = key.hashCode(BUCKET_ARRAY_SIZE);
-		int index = findObjectIndex(_hashMap[position] , key);
+		int index = findObjectIndex(_hashMap.get(position) , key);
 		if (-1 == index) {
-			_hashMap[position].addLast(new KeyValObject(key , value));
+			_hashMap.get(position).addLast(new KeyValObject(key , value));
 			_size++;
 		}
 		else {
-			_hashMap[position].get(index).setValue(value);
+			_hashMap.get(position).get(index).setValue(value);
 		}
 	}
 	
-	public boolean remove(HashObject key) {
+	public boolean remove(HashObject key) throws NullPointerException {
+		isNull(key);
 		int position = key.hashCode(BUCKET_ARRAY_SIZE);
-		int index = findObjectIndex(_hashMap[position] , key);
+		int index = findObjectIndex(_hashMap.get(position) , key);
 		if (-1 == index) {
 			return false;
 		}
-		_hashMap[position].remove(index);
+		_hashMap.get(position).remove(index);
 		_size--;
 		return true;
 	}
 	
-	public boolean containsKey(HashObject key) {
+	public boolean containsKey(HashObject key) throws NullPointerException {
+		isNull(key);
 		int position = key.hashCode(BUCKET_ARRAY_SIZE);
-		int index = findObjectIndex(_hashMap[position] , key);
+		int index = findObjectIndex(_hashMap.get(position) , key);
 		if (-1 == index) {
 			return false;
 		}
@@ -66,12 +74,20 @@ public class ChainedHashMap {
 	
 	private int findObjectIndex
 				(LinkedList<KeyValObject> list, HashObject hashObject) {
-		Iterator<KeyValObject> iterator = list.iterator();
-		for (int i=0 ; iterator.hasNext() ; i++) {
-			if (hashObject.equals(((KeyValObject) iterator.next()).getKey())) {
-				return i;
+		if (_size != 0){
+			Iterator<KeyValObject> iterator = list.iterator();
+			for (int i=0 ; iterator.hasNext() ; i++) {
+				if (hashObject.equals(((KeyValObject) iterator.next()).getKey())) {
+					return i;
+				}
 			}
 		}
 		return -1;
+	}
+	
+	private void isNull(HashObject key) throws NullPointerException {
+		if (key == null) {
+			throw new NullPointerException();
+		}
 	}
 }

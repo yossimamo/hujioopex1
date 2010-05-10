@@ -14,7 +14,9 @@ public class ExpFunction extends Function {
 	public Double calculate(LinkedList<Double> input)
 							throws IllegalArgumentException {
 		checkInput(input, NUM_OF_ARGS);
-		return Math.exp(input.getFirst());
+		Double solution = Math.exp(input.getFirst());
+		checkOutput(solution);
+		return solution;
 	}
 
 	public String getFunctionName() {
