@@ -8,8 +8,7 @@ import java.util.regex.Pattern;
 import oop.ex3.exceptions.IllegalExpressionException;
 import oop.ex3.exceptions.IllegalFunctionException;
 import oop.ex3.exceptions.IllegalOperatorException;
-import oop.ex3.exceptions.NullPointerException;
-import oop.ex3.exceptions.UnititializedVariableException;
+import oop.ex3.exceptions.UninitializedVariableException;
 import oop.ex3.functions.Function;
 import oop.ex3.functions.Operator;
 
@@ -45,7 +44,7 @@ public class Interpreter {
 	}
 	
 	public double interpret(String line)
-		throws IllegalArgumentException, UnititializedVariableException,
+		throws IllegalArgumentException, UninitializedVariableException,
 		IllegalExpressionException, IllegalFunctionException, InstantiationException,
 		IllegalAccessException, InvocationTargetException, IllegalOperatorException, NullPointerException {
 		StringBuilder expr = new StringBuilder(line.trim());
@@ -71,7 +70,7 @@ public class Interpreter {
 	}
 	
 	private double interpretMathExpression(StringBuilder expr)
-		throws UnititializedVariableException, IllegalExpressionException,
+		throws UninitializedVariableException, IllegalExpressionException,
 		IllegalArgumentException, IllegalFunctionException, InstantiationException,
 		IllegalAccessException, InvocationTargetException, IllegalOperatorException, NullPointerException {
 		double result = interpretRightmostOperand(expr);
@@ -92,7 +91,7 @@ public class Interpreter {
 	
 	// TODO separate to functions?
 	private double interpretRightmostOperand(StringBuilder expr)
-		throws UnititializedVariableException, IllegalExpressionException,
+		throws UninitializedVariableException, IllegalExpressionException,
 		IllegalArgumentException, IllegalFunctionException, InstantiationException,
 		IllegalAccessException, InvocationTargetException, IllegalOperatorException, NullPointerException {
 		// Capture the rightmost operand, which can be one of four: float, variable,
@@ -174,7 +173,7 @@ public class Interpreter {
 	
 	private double interpretFunction(String name, String args)
 		throws IllegalFunctionException, IllegalArgumentException, InstantiationException,
-		IllegalAccessException, InvocationTargetException, UnititializedVariableException,
+		IllegalAccessException, InvocationTargetException, UninitializedVariableException,
 		IllegalExpressionException, IllegalOperatorException, NullPointerException {
 		Function func = _functions.getFunction(name);
 		LinkedList<Double> argsList = makeArgumentList(args);
@@ -182,7 +181,7 @@ public class Interpreter {
 	}
 	
 	private LinkedList<Double> makeArgumentList(String args)
-		throws IllegalArgumentException, UnititializedVariableException,
+		throws IllegalArgumentException, UninitializedVariableException,
 		IllegalExpressionException, IllegalFunctionException, InstantiationException,
 		IllegalAccessException, InvocationTargetException, IllegalOperatorException, NullPointerException {
 		LinkedList<Double> list = new LinkedList<Double>();

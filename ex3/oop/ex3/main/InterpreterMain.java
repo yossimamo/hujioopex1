@@ -2,7 +2,6 @@ package oop.ex3.main;
 
 import java.util.Scanner;
 
-import oop.ex3.exceptions.NullPointerException;
 
 public class InterpreterMain {
 	

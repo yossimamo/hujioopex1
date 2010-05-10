@@ -50,6 +50,10 @@ public class MaxFunction extends Function {
 		return max;
 	}
 
+	/**
+	 * returns the name of the function.
+	 * @return the name of the function
+	 */
 	public String getFunctionName() {
 		return NAME;
 	}

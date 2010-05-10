@@ -32,11 +32,11 @@ public class MinFunction extends Function {
 	}
 
 	/**
-	 * calculates the absolute value of the input number.
+	 * returns the minimum number of the input numbers.
 	 * @param input a linked list holding the input value/s.
 	 * @throws IllegalArgumentException in case the arguments are illegal 
 	 * (wrong number of parameters, wrong value, etc.)
-	 * @return the absolute value of the input number.
+	 * @return the minimum number of the input numbers.
 	 */
 	public Double calculate(LinkedList<Double> input)
 								throws IllegalArgumentException {
@@ -50,6 +50,10 @@ public class MinFunction extends Function {
 		return min;
 	}
 
+	/**
+	 * returns the name of the function.
+	 * @return the name of the function
+	 */
 	public String getFunctionName() {
 		return NAME;
 	}

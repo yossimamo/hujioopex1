@@ -47,6 +47,10 @@ public class LogFunction extends Function {
 		return solution;
 	}
 
+	/**
+	 * returns the name of the function.
+	 * @return the name of the function
+	 */
 	public String getFunctionName() {
 		return NAME;
 	}
