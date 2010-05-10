@@ -34,6 +34,9 @@ public class AbsFunction extends Function {
 	/**
 	 * calculates the absolute value of the input number.
 	 * @param input a linked list holding the input value/s.
+	 * @throws IllegalArgumentException in case the arguments are illegal 
+	 * (wrong number of parameters, wrong value, etc.)
+	 * @return the absolute value of the input number.
 	 */
 	public Double calculate(LinkedList<Double> input)
 								throws IllegalArgumentException {
@@ -43,6 +46,7 @@ public class AbsFunction extends Function {
 
 	/**
 	 * returns the name of the function.
+	 * @return the name of the function
 	 */
 	public String getFunctionName() {
 		return NAME;
