@@ -13,7 +13,8 @@ import java.util.LinkedList;
 import oop.ex3.exceptions.IllegalArgumentException;
 
 /**
- * this class is a function which returns the absolute value of the input.
+ * this class is a function which returns the power of two
+ * numbers.
  * @author Uri Greenberg and Yossi Mamo
  *
  */
