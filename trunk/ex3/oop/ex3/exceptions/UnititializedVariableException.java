@@ -1,6 +1,6 @@
 package oop.ex3.exceptions;
 
-public class UnititializedVariableException extends Exception {
+public class UnititializedVariableException extends IllegalArgumentException {
 	
 	private static final long serialVersionUID = 1L;
 	

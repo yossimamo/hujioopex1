@@ -14,10 +14,9 @@ public class LogFunction extends Function {
 	public Double calculate(LinkedList<Double> input)
 									throws IllegalArgumentException {
 		checkInput(input, NUM_OF_ARGS);
-		if (input.getFirst() <= 0) {
-			throw new IllegalArgumentException();
-		}
-		return Math.log(input.getFirst());
+		Double solution = Math.log(input.getFirst());
+		checkOutput(solution);
+		return solution;
 	}
 
 	public String getFunctionName() {

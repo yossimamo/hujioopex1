@@ -14,10 +14,9 @@ public class PowFunction extends Function {
 	public Double calculate(LinkedList<Double> input)
 								throws IllegalArgumentException {
 		checkInput(input, NUM_OF_ARGS);
-		if (input.getFirst() == 0 && input.getLast()<0) {
-			throw new IllegalArgumentException();
-		}
-		return Math.pow(input.getFirst(), input.getLast());
+		Double solution = Math.pow(input.getFirst(), input.getLast());
+		checkOutput(solution);
+		return solution;
 	}
 
 	public String getFunctionName() {

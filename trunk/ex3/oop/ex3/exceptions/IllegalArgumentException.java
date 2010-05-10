@@ -1,11 +1,10 @@
 package oop.ex3.exceptions;
 
-public class IllegalArgumentException extends Exception {
+public abstract class IllegalArgumentException extends Exception {
 	
 	private static final long serialVersionUID = 1L;
 	
-	public IllegalArgumentException() {
-		super("Error: Invalid argument");
+	public IllegalArgumentException(String error) {
+		super(error);
 	}
-
 }

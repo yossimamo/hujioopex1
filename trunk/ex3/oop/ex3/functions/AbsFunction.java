@@ -11,7 +11,8 @@ public class AbsFunction extends Function {
 	public AbsFunction() {
 	}
 
-	public Double calculate(LinkedList<Double> input) throws IllegalArgumentException {
+	public Double calculate(LinkedList<Double> input)
+								throws IllegalArgumentException {
 		checkInput(input, NUM_OF_ARGS);
 		return Math.abs(input.getFirst());
 	}

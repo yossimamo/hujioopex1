@@ -8,6 +8,7 @@ import java.util.regex.Pattern;
 import oop.ex3.exceptions.IllegalExpressionException;
 import oop.ex3.exceptions.IllegalFunctionException;
 import oop.ex3.exceptions.IllegalOperatorException;
+import oop.ex3.exceptions.NullPointerException;
 import oop.ex3.exceptions.UnititializedVariableException;
 import oop.ex3.functions.Function;
 import oop.ex3.functions.Operator;
@@ -37,7 +38,7 @@ public class Interpreter {
 	private static final int PARENTHESIS_SIGN_GROUP = 1;
 	private static final int PARENTHESIS_INSIDE_GROUP = 2;
 	
-	public Interpreter() {
+	public Interpreter() throws NullPointerException {
 		_functions = new Functions();
 		_operators = new Operators();
 		_variables = new Variables();
@@ -46,7 +47,7 @@ public class Interpreter {
 	public double interpret(String line)
 		throws IllegalArgumentException, UnititializedVariableException,
 		IllegalExpressionException, IllegalFunctionException, InstantiationException,
-		IllegalAccessException, InvocationTargetException, IllegalOperatorException {
+		IllegalAccessException, InvocationTargetException, IllegalOperatorException, NullPointerException {
 		StringBuilder expr = new StringBuilder(line.trim());
 		// Check whether the given line is an assignment expression
 		Pattern patt = Pattern.compile(ASSIGNMENT_EXPR);
@@ -72,7 +73,7 @@ public class Interpreter {
 	private double interpretMathExpression(StringBuilder expr)
 		throws UnititializedVariableException, IllegalExpressionException,
 		IllegalArgumentException, IllegalFunctionException, InstantiationException,
-		IllegalAccessException, InvocationTargetException, IllegalOperatorException {
+		IllegalAccessException, InvocationTargetException, IllegalOperatorException, NullPointerException {
 		double result = interpretRightmostOperand(expr);
 		while (0 != expr.length()) {
 			// get operator
@@ -93,7 +94,7 @@ public class Interpreter {
 	private double interpretRightmostOperand(StringBuilder expr)
 		throws UnititializedVariableException, IllegalExpressionException,
 		IllegalArgumentException, IllegalFunctionException, InstantiationException,
-		IllegalAccessException, InvocationTargetException, IllegalOperatorException {
+		IllegalAccessException, InvocationTargetException, IllegalOperatorException, NullPointerException {
 		// Capture the rightmost operand, which can be one of four: float, variable,
 		// function call of parenthesis expression
 		// TODO make Pattern members
@@ -174,7 +175,7 @@ public class Interpreter {
 	private double interpretFunction(String name, String args)
 		throws IllegalFunctionException, IllegalArgumentException, InstantiationException,
 		IllegalAccessException, InvocationTargetException, UnititializedVariableException,
-		IllegalExpressionException, IllegalOperatorException {
+		IllegalExpressionException, IllegalOperatorException, NullPointerException {
 		Function func = _functions.getFunction(name);
 		LinkedList<Double> argsList = makeArgumentList(args);
 		return func.calculate(argsList);
@@ -183,7 +184,7 @@ public class Interpreter {
 	private LinkedList<Double> makeArgumentList(String args)
 		throws IllegalArgumentException, UnititializedVariableException,
 		IllegalExpressionException, IllegalFunctionException, InstantiationException,
-		IllegalAccessException, InvocationTargetException, IllegalOperatorException {
+		IllegalAccessException, InvocationTargetException, IllegalOperatorException, NullPointerException {
 		LinkedList<Double> list = new LinkedList<Double>();
 		int bracketBalance = 0;
 		int beginIndex = 0;
