@@ -1,6 +1,15 @@
+//###############  
+// FILE : ModFunction.java  
+// WRITER : Uri Greenberg, urig03, 021986039  
+// WRITER : Yossi Mamo, ymamo29, 038073722
+// EXERCISE : oop ex3 2010  
+// DESCRIPTION: 
+//###############
+
 package oop.ex3.functions;
 
 import java.util.LinkedList;
+import oop.ex3.exceptions.IllegalArgumentException;
 
 import oop.ex3.exceptions.IllegalMathOperationException;
 
