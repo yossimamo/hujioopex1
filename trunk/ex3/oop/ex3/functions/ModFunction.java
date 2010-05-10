@@ -35,11 +35,11 @@ public class ModFunction extends Function {
 	}
 
 	/**
-	 * calculates the absolute value of the input number.
+	 * calculates the first number modulo the second one.
 	 * @param input a linked list holding the input value/s.
 	 * @throws IllegalArgumentException in case the arguments are illegal 
 	 * (wrong number of parameters, wrong value, etc.)
-	 * @return the absolute value of the input number.
+	 * @return the first number modulo the second number.
 	 */
 	public Double calculate(LinkedList<Double> input)
 								throws IllegalArgumentException {
@@ -47,9 +47,15 @@ public class ModFunction extends Function {
 		if (input.getLast() == 0){
 			throw new IllegalMathOperationException();  
 		}
-		return input.getFirst() % input.getLast();
+		Double result = input.getFirst() % input.getLast();
+		checkOutput(result);
+		return result;
 	}
 
+	/**
+	 * returns the name of the function.
+	 * @return the name of the function
+	 */
 	public String getFunctionName() {
 		return NAME;
 	}

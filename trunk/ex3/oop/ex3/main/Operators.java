@@ -1,20 +1,37 @@
+//###############  
+// FILE : Operators.java  
+// WRITER : Uri Greenberg, urig03, 021986039  
+// WRITER : Yossi Mamo, ymamo29, 038073722
+// EXERCISE : oop ex3 2010  
+// DESCRIPTION: this class is the programs interface with the operators.
+// it holds them in a hashmap.
+//###############
+
 package oop.ex3.main;
 
 import oop.ex3.dataStructures.ChainedHashMap;
 import oop.ex3.dataStructures.HashString;
 import oop.ex3.exceptions.IllegalOperatorException;
-import oop.ex3.exceptions.NullPointerException;
 import oop.ex3.functions.DivideOperator;
 import oop.ex3.functions.MinusOperator;
 import oop.ex3.functions.Operator;
 import oop.ex3.functions.PlusOperator;
 import oop.ex3.functions.TimesOperator;
 
+/**
+ * this class is the programs interface with the operators.
+ * it holds them in a hashmap.
+ * @author Uri Greenberg and Yossi Mamo.
+ */
 public class Operators {
 	
+	// a hashmap holding the operators.
 	private ChainedHashMap _hashMap;
 	
-	public Operators() throws NullPointerException {
+	/**
+	 * creates a new hashmap and inserts all the operators into it.
+	 */
+	public Operators() {
 		_hashMap = new ChainedHashMap();
 		Operator op = new PlusOperator();
 		HashString key = new HashString(op.getSign());
@@ -31,8 +48,15 @@ public class Operators {
 		// TODO add overloaded operators
 	}
 	
+	/**
+	 * returns the object of the given sign operator.
+	 * @param operatorSign the sign of the operator.
+	 * @return the object of the given sign operator.
+	 * @throws IllegalOperatorException in case the operator does not
+	 * exist.
+	 */
 	public Operator getOperator(String operatorSign)
-					throws IllegalOperatorException, NullPointerException {
+					throws IllegalOperatorException{
 		HashString key = new HashString(operatorSign);
 		if (!_hashMap.containsKey(key)) {
 			throw new IllegalOperatorException();

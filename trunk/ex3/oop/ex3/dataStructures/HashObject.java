@@ -1,3 +1,13 @@
+//###############  
+// FILE : HashObject.java  
+// WRITER : Uri Greenberg, urig03, 021986039  
+// WRITER : Yossi Mamo, ymamo29, 038073722
+// EXERCISE : oop ex3 2010  
+// DESCRIPTION: An object in your HashMap class. 
+// Supplies 2 methods: hashCode of the object and a comparison method
+// to see if 2 object are equal.
+//###############
+
 package oop.ex3.dataStructures;
 
 /**
