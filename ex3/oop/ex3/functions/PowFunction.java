@@ -18,7 +18,7 @@ import oop.ex3.exceptions.IllegalArgumentException;
  * @author Uri Greenberg and Yossi Mamo
  *
  */
-public class PowFunction extends Function {
+public class PowFunction extends Operator {
 
 	// the number of arguments the function is supposed to get in the input.
 	public static final int NUM_OF_ARGS = 2;
@@ -26,10 +26,14 @@ public class PowFunction extends Function {
 	//the name of the function
 	public static final String NAME = "Pow";
 	
+	// the sign of the overloaded operator
+	private static final String SIGN = "**";
+	
 	/**
 	 * an empty constructor.
 	 */
 	public PowFunction() {
+		_sign = SIGN;
 	}
 
 	/**
@@ -53,5 +57,9 @@ public class PowFunction extends Function {
 	 */
 	public String getFunctionName() {
 		return NAME;
+	}
+
+	public boolean isAssignmentAllowed() {
+		return false;
 	}
 }

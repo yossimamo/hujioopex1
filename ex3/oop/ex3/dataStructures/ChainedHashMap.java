@@ -62,7 +62,7 @@ public class ChainedHashMap {
 	 * Isn't found.
 	 * @throws NullPointerException in case the given key was null.
 	 */
-	public Object get(HashObject key) throws NullPointerException {
+	public Object get(HashObject key) {
 		isNull(key);
 		int position = key.hashCode(ARRAY_SIZE);
 		int index = findObjectIndex(_hashMap.get(position) , key);
@@ -82,7 +82,7 @@ public class ChainedHashMap {
 	 * @param value the value
 	 * @throws NullPointerException in case the given key is null.
 	 */
-	public void put(HashObject key, Object value) throws NullPointerException {
+	public void put(HashObject key, Object value) {
 		isNull(key);
 		int position = key.hashCode(ARRAY_SIZE);
 		int index = findObjectIndex(_hashMap.get(position) , key);
@@ -102,7 +102,7 @@ public class ChainedHashMap {
 	 * the key wasn't found in the hashmap).
 	 * @throws NullPointerException in case the given key was null.
 	 */
-	public boolean remove(HashObject key) throws NullPointerException {
+	public boolean remove(HashObject key) {
 		isNull(key);
 		int position = key.hashCode(ARRAY_SIZE);
 		int index = findObjectIndex(_hashMap.get(position) , key);
@@ -120,7 +120,7 @@ public class ChainedHashMap {
 	 * @return true if the hashmap contains the given key and false otherwise.
 	 * @throws NullPointerException in case the given key is null.
 	 */
-	public boolean containsKey(HashObject key) throws NullPointerException {
+	public boolean containsKey(HashObject key) {
 		isNull(key);
 		int position = key.hashCode(ARRAY_SIZE);
 		int index = findObjectIndex(_hashMap.get(position) , key);
@@ -157,7 +157,7 @@ public class ChainedHashMap {
 	 * @param key a key.
 	 * @throws NullPointerException in case the given key is null.
 	 */
-	private void isNull(HashObject key) throws NullPointerException {
+	private void isNull(HashObject key) {
 		if (key == null) {
 			throw new NullPointerException();
 		}
