@@ -7,22 +7,23 @@ import oop.ex4.search.SearchBoard;
 
 public class MyCrossword implements Crossword {
 	
+	private CrosswordDictionary _dict;
+	private CrosswordShape _shape;
+	
 	public MyCrossword() {
 		
 	}
 
 	public void attachDictionary(CrosswordDictionary dictionary) {
-		// TODO Auto-generated method stub
-		
+		_dict = dictionary;
 	}
 
 	public void attachShape(CrosswordShape shape) {
-		// TODO Auto-generated method stub
-		
+		_shape = shape;		
 	}
 
 	public Collection<CrosswordEntry> getCrosswordEntries() {
-		// TODO Auto-generated method stub
+		
 		return null;
 	}
 
