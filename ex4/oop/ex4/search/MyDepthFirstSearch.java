@@ -6,25 +6,35 @@ import java.util.Stack;
 public class MyDepthFirstSearch<B extends SearchBoard<M>, M extends SearchMove> implements DepthFirstSearch<B, M> {
 	
 	private long _startTime;
-	private B _bestBoard;
+	private SearchBoard<M> _bestBoard;
 	private Stack<M> _lastMoves;
+	private boolean _shouldStop;
 	
 	public MyDepthFirstSearch() {
 		_lastMoves = new Stack<M>();
+		_startTime = 0;
+		_bestBoard = null;
+		_shouldStop = false;
 	}
 
 	public B search(B board, int maxDepth, long timeOut) {
 		_startTime =  System.currentTimeMillis();
 		// TODO instead of casting, keep a reference to SearchBoard<M> and
 		// cast only when necessary (in the end) - for performance
-		_bestBoard = (B)board.getCopy();
+		_bestBoard = board.getCopy();
+		_shouldStop = false;
 		searchHelper(board, maxDepth, timeOut);
 		// TODO check if this is ok
-		return (B)_bestBoard.getCopy();
+		System.out.println(System.currentTimeMillis() - _startTime);
+		return (B)_bestBoard;
 	}
 	
 	private void searchHelper(B board, int maxDepth, long timeOut) {
+		if (_shouldStop) {
+			return;
+		}
 		if (timeOut < (System.currentTimeMillis() - _startTime)) {
+			_shouldStop = true;
 			return;
 		}
 		if ((maxDepth < _lastMoves.size()) ||
@@ -33,10 +43,14 @@ public class MyDepthFirstSearch<B extends SearchBoard<M>, M extends SearchMove> 
 			board.undoMove(_lastMoves.pop());
 			return;
 		}
-		
 		if (board.getQuality() > _bestBoard.getQuality()) {
 			// TODO copy?
-			_bestBoard = (B)board.getCopy();
+			_bestBoard = board.getCopy();
+			if (board.isBestSolution()) {
+				// Found the best solution possible - no need to go on
+				_shouldStop = true;
+				return;
+			}
 		}
 		Iterator<M> it = board.getMoveIterator();
 		while (it.hasNext()) {

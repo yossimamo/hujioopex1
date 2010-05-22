@@ -23,7 +23,6 @@ public class MyCrossword implements Crossword {
 	}
 
 	public Collection<CrosswordEntry> getCrosswordEntries() {
-		
 		return null;
 	}
 
