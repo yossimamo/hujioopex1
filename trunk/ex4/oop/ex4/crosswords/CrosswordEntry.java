@@ -1,4 +1,4 @@
-package oop.ex4.crosswords;
+ package oop.ex4.crosswords;
 
 import oop.ex4.search.SearchMove;
 
