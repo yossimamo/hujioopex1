@@ -22,7 +22,7 @@ public interface DepthFirstSearch<B extends SearchBoard<M>,M extends SearchMove>
 	 *            only the given startNode, Depth 1- only startNode and its
 	 *            children...
 	 * @param timeOut
-	 *            - time in milliseconds as estimated by java Date object
+	 *            - time in milliseconds as esti mated by java Date object
 	 * 
 	 * @return SearchNode for which isSolution() returns true; if no such node
 	 *         found within given depth or time - returns SearchNode with
