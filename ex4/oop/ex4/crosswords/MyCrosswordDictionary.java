@@ -10,6 +10,7 @@ import java.util.*;
  * @author Dima
  *
  */
+// TODO combine CrosswordTerms into this
 public class MyCrosswordDictionary implements CrosswordDictionary {
 
 	// Holds dictionary data

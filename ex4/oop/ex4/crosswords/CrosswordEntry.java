@@ -28,7 +28,6 @@ public interface CrosswordEntry extends SearchMove {
 	 */
 	public String getTerm();
 		
-
 	/**
 	 * Retrieves length of the entry (Redundant convenience, may be calculated
 	 * through getTerm())
