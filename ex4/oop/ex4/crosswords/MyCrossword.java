@@ -19,37 +19,29 @@ public class MyCrossword implements Crossword {
 	
 	private MyCrosswordDictionary _dict;
 	private MyCrosswordShape _shape;
-	private CrosswordVacantEntries _vacantEntries;
 	private int _quality = 0;
 	private StrategyType _strategyType;
 	private HashSet<CrosswordEntry> _entries;
-	private HashSet<String> _usedTerms;
-	private HashSet<CrosswordPosition> _usedEntries;
 	private OverlapChecking _overlapChecking;
 	// TODO add overlap checking object
 	
 	public MyCrossword() {
 		
 	}
-	
-	// TODO merge into getCopy()
-	public MyCrossword(CrosswordDictionary dict, CrosswordShape shape,
-			int quality, StrategyType strategyType,
-			HashSet<CrosswordEntry> entries,
-			OverlapChecking overlapChecking) {
-		_dict = dict.getCopy();
-		_shape = shape.getCopy();
-		_quality = quality;
-		_strategyType = strategyType;
-		//TODO check if the shallow clone is sufficient. and casting
-		_entries = (HashSet<CrosswordEntry>) entries.clone();
-		_overlapChecking = overlapChecking.getCopy();
-	}
 
 	public void attachDictionary(CrosswordDictionary dictionary) {
 		_dict = (MyCrosswordDictionary)dictionary;
 		if (null != _shape) {
 			determineStrategy();
+		}
+	}
+
+	private void determineStrategy() {
+		if (_shape.getNumberOfEntries() <= _dict.getNumberOfTerms()) {
+			_strategyType = StrategyType.SMALL_GRID_STRATEGY;
+		}
+		else {
+			_strategyType = StrategyType.SMALL_DICTIONARY_STRATEGY;
 		}
 	}
 
@@ -66,15 +58,22 @@ public class MyCrossword implements Crossword {
 
 	public void doMove(CrosswordEntry move) {
 		_overlapChecking.addEntry(move);
-		_dict.removeTerm(move.getTerm());
-		_shape.removeVacantEntry(move.getPosition());
+		_dict.addEntry(move);
+		_shape.addEntry(move);
 		_entries.add(move);
 		_quality+= move.getLength();
 	}
 
 	public SearchBoard<CrosswordEntry> getCopy() {
-		return new MyCrossword(_dict, _shape, _quality, _strategyType,
-				_entries, _overlapChecking);
+		MyCrossword copiedCrossword = new MyCrossword();
+		copiedCrossword._dict = _dict.clone();
+		copiedCrossword._shape = _shape.clone();
+		copiedCrossword._quality = _quality;
+		copiedCrossword._strategyType = _strategyType;
+		//TODO check if the shallow clone is sufficient. and casting
+		copiedCrossword._entries = (HashSet<CrosswordEntry>) _entries.clone();
+		copiedCrossword._overlapChecking = _overlapChecking.clone();
+		return copiedCrossword;
 	}
 
 	public Iterator<CrosswordEntry> getMoveIterator() {
@@ -84,7 +83,8 @@ public class MyCrossword implements Crossword {
 		case SMALL_DICTIONARY_STRATEGY:
 			return new SmallDictionaryStrategyIterator();
 		default:
-			// TODO throw exception	
+			//TODO throw exception
+			return null;
 		}
 	}
 
@@ -98,6 +98,9 @@ public class MyCrossword implements Crossword {
 			return _quality + getSumOfAvailableEntries();
 		case SMALL_DICTIONARY_STRATEGY:
 			return _quality + getSumOfAvailableWords();
+		default:
+			//TODO throw exception
+			return -1;
 		}
 		
 	}
@@ -105,10 +108,10 @@ public class MyCrossword implements Crossword {
 	private int getSumOfAvailableEntries() {
 		//TODO very inefficient
 		int sum = 0;
-		Iterator<CrosswordVacantEntry> vacantEntiesIterator = _vacantEntries.getIterator();
+		Iterator<CrosswordVacantEntry> vacantEntiesIterator = _shape.getIterator();
 		while (vacantEntiesIterator.hasNext()) {
 			CrosswordVacantEntry nextEntry =  vacantEntiesIterator.next();
-			Iterator<String> termsIterator = _dict.getIterator();
+			Iterator<String> termsIterator = _dict.getIterator(nextEntry.getMaxCapacity());
 			while (termsIterator.hasNext()) {
 				if (_overlapChecking.isOverlapping(nextEntry, termsIterator.next())) {
 					sum+= nextEntry.getMaxCapacity();
@@ -125,7 +128,7 @@ public class MyCrossword implements Crossword {
 		Iterator<String> termsIterator = _dict.getIterator();
 		while (termsIterator.hasNext()) {
 			String nextTerm =  termsIterator.next();
-			Iterator<CrosswordVacantEntry> vacantEntiesIterator = _shape.getIterator();
+			Iterator<CrosswordVacantEntry> vacantEntiesIterator = _shape.getIterator(nextTerm.length());
 			while (vacantEntiesIterator.hasNext()) {
 				if (_overlapChecking.isOverlapping(vacantEntiesIterator.next(), nextTerm)) {
 					sum+= nextTerm.length();
@@ -137,11 +140,6 @@ public class MyCrossword implements Crossword {
 	}
 
 	public boolean isBestSolution() {
-		//best possible is one of:
-		//-all words used
-		//-all vacant entries filled to their maximal length (iterate on all
-		// entries and compare lengths against vacant entries in the same positions
-		
 		if (_dict.isEmpty()) {
 			return true;
 		}
@@ -149,7 +147,7 @@ public class MyCrossword implements Crossword {
 			Iterator<CrosswordEntry> iterator = _entries.iterator();
 			while (iterator.hasNext()) {
 				CrosswordEntry crosswordEntry = iterator.next();
-				if (crosswordEntry.getLength() != _shape.getVacantEntryLength(crosswordEntry.getPosition())) {
+				if (crosswordEntry.getLength() != _shape.getMaxCapacity(crosswordEntry.getPosition())) {
 					return false;
 				}
 			}
@@ -160,8 +158,8 @@ public class MyCrossword implements Crossword {
 
 	public void undoMove(CrosswordEntry move) {
 		_overlapChecking.removeEntry(move);
-		_dict.addTerm(move.getTerm());
-		_shape.addVacantEntry(move.getPosition());
+		_dict.removeEntry(move);
+		_shape.removeEntry(move);
 		_entries.remove(move);
 		_quality-= move.getLength();
 	}
@@ -179,7 +177,7 @@ public class MyCrossword implements Crossword {
 		private CrosswordVacantEntry _currentVacantEntry;
 		
 		public SmallGridStrategyIterator() {
-			_entryIt = _vacantEntries.getIterator();
+			_entryIt = _shape.getIterator();
 			_next = null;
 		}
 
@@ -293,7 +291,7 @@ public class MyCrossword implements Crossword {
 				_currentTerm = _termIt.next();
 			}
 			if (null == _entryIt) {
-				_vacantEntries.getIterator();
+				_shape.getIterator();
 			}
 			CrosswordEntry ret = matchCurrentTerm();
 			if (null != ret) {
