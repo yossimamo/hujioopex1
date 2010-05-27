@@ -4,8 +4,12 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Scanner;
+import java.util.TreeSet;
 
 /**
  * This is a basic implementation of CrosswordShape stored as list of strings
@@ -68,5 +72,6 @@ public class MyCrosswordShape implements CrosswordShape {
 			if (sc!=null) sc.close();
 		}
 	}
-
+	
+	
 }

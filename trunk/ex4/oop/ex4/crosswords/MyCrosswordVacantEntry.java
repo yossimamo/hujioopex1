@@ -1,7 +1,7 @@
 package oop.ex4.crosswords;
 
 // TODO make interface
-public class MyCrosswordVacantEntry implements Comparable {
+public class MyCrosswordVacantEntry implements CrosswordVacantEntry, Comparable {
 	
 	private MyCrosswordPosition _position;
 	private int _maxCapacity;
