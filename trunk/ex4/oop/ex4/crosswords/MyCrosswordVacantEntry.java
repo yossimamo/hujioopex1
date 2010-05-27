@@ -1,6 +1,5 @@
 package oop.ex4.crosswords;
 
-// TODO make interface
 public class MyCrosswordVacantEntry implements CrosswordVacantEntry, Comparable {
 	
 	private MyCrosswordPosition _position;
