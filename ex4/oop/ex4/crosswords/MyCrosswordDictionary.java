@@ -4,12 +4,14 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.*;
 
+import oop.ex4.crosswords.MyCrosswordVacantEntries.VacantEntryIterator;
+
 
 // TODO combine CrosswordTerms into this
 public class MyCrosswordDictionary implements CrosswordDictionary {
 	
 	private ArrayList<TreeMap<String, String>> _data;
-	
+	private int _maxLength;
 	private int _maxLengthPos;
 
 	/*
@@ -82,7 +84,7 @@ public class MyCrosswordDictionary implements CrosswordDictionary {
 		return entry;
 	}
 	
-	public Map.Entry <String, String> pollTerm(int termLength) {
+	public Map.Entry<String, String> pollTerm(int termLength) {
 		while (termLength>=0) {
 			if (!_data.get(termLength - 2).isEmpty()) {
 				return _data.get(termLength).pollLastEntry();
@@ -104,6 +106,43 @@ public class MyCrosswordDictionary implements CrosswordDictionary {
 		while (_maxLengthPos >= 0 && _data.get(_maxLengthPos).isEmpty()) {
 			_maxLengthPos--;
 		}
+	}
+	
+	public TermIterator getIterator() {
+		return new TermIterator(_maxLength);
+	}
+	
+	public TermIterator getIterator(int maxLength) {
+		if (maxLength > _maxLength) {
+			// TODO throw exception
+		}
+		return new TermIterator(maxLength);		
+	}
+	
+	public class TermIterator implements Iterator<String> {
+		
+		private int _currentArrayPos;
+		Iterator<String> _currentIterator;
+		
+		public TermIterator(int maxLength) {
+			_currentArrayPos = maxLength;
+		}
+
+		public boolean hasNext() {
+			// TODO Auto-generated method stub
+			return false;
+		}
+
+		public String next() {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		public void remove() {
+			// TODO Auto-generated method stub
+			
+		}
+		
 	}
 		
 }

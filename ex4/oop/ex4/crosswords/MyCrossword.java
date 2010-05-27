@@ -4,8 +4,12 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.TreeSet;
 
+import oop.ex4.crosswords.MyCrosswordDictionary.TermIterator;
+import oop.ex4.crosswords.MyCrosswordVacantEntries.VacantEntryIterator;
 import oop.ex4.search.SearchBoard;
 
 public class MyCrossword implements Crossword {
@@ -17,9 +21,9 @@ public class MyCrossword implements Crossword {
 	
 	private CrosswordDictionary _dict;
 	private CrosswordShape _shape;
+	private CrosswordVacantEntries _vacantEntries;
 	private int _quality = 0;
 	private StrategyType _strategyType;
-	private MyCrosswordVacantEntries _vacantEntries;
 	private HashSet<CrosswordEntry> _entries;
 	private OverlapChecking _overlapChecking;
 	// TODO add overlap checking object
@@ -28,6 +32,7 @@ public class MyCrossword implements Crossword {
 		
 	}
 	
+	// TODO merge into getCopy()
 	public MyCrossword(CrosswordDictionary dict, CrosswordShape shape,
 			int quality, StrategyType strategyType,
 			HashSet<CrosswordEntry> entries,
@@ -43,10 +48,16 @@ public class MyCrossword implements Crossword {
 
 	public void attachDictionary(CrosswordDictionary dictionary) {
 		_dict = dictionary;
+		if (null != _shape) {
+			determineStrategy();
+		}
 	}
 
 	public void attachShape(CrosswordShape shape) {
-		_shape = shape;		
+		_shape = shape;
+		if (null != _dict) {
+			determineStrategy();
+		}
 	}
 
 	public Collection<CrosswordEntry> getCrosswordEntries() {
@@ -67,8 +78,14 @@ public class MyCrossword implements Crossword {
 	}
 
 	public Iterator<CrosswordEntry> getMoveIterator() {
-		// TODO Auto-generated method stub
-		return null;
+		switch(_strategyType) {
+		case SMALL_GRID_STRATEGY:
+			return new SmallGridStrategyIterator();
+		case SMALL_DICTIONARY_STRATEGY:
+			return new SmallDictionaryStrategyIterator();
+		default:
+			// TODO throw exception	
+		}
 	}
 
 	public int getQuality() {
@@ -88,9 +105,9 @@ public class MyCrossword implements Crossword {
 	private int getSumOfAvailableEntries() {
 		//TODO very inefficient
 		int sum = 0;
-		Iterator<MyCrosswordVacantEntry> vacantEntiesIterator = _shape.getIterator();
+		MyCrosswordVacantEntries.VacantEntryIterator vacantEntiesIterator = _vacantEntries.getIterator();
 		while (vacantEntiesIterator.hasNext()) {
-			MyCrosswordVacantEntry nextEntry =  vacantEntiesIterator.next();
+			CrosswordVacantEntry nextEntry =  vacantEntiesIterator.next();
 			Iterator<String> termsIterator = _dict.getIterator();
 			while (termsIterator.hasNext()) {
 				if (_overlapChecking.isOverlapping(nextEntry, termsIterator.next())) {
@@ -108,7 +125,7 @@ public class MyCrossword implements Crossword {
 		Iterator<String> termsIterator = _dict.getIterator();
 		while (termsIterator.hasNext()) {
 			String nextTerm =  termsIterator.next();
-			Iterator<MyCrosswordVacantEntry> vacantEntiesIterator = _shape.getIterator();
+			Iterator<CrosswordVacantEntry> vacantEntiesIterator = _shape.getIterator();
 			while (vacantEntiesIterator.hasNext()) {
 				if (_overlapChecking.isOverlapping(vacantEntiesIterator.next(), nextTerm)) {
 					sum+= nextTerm.length();
@@ -118,8 +135,6 @@ public class MyCrossword implements Crossword {
 		}
 		return sum;
 	}
-
-	
 
 	public boolean isBestSolution() {
 		//best possible is one of:
@@ -149,6 +164,165 @@ public class MyCrossword implements Crossword {
 		_shape.addVacantEntry(move.getPosition());
 		_entries.remove(move);
 		_quality-= move.getLength();
+	}
+	
+	public abstract class StrategyIterator implements Iterator<CrosswordEntry> {
+		
+		
+	}
+	
+	public class SmallGridStrategyIterator extends StrategyIterator {
+		
+		private VacantEntryIterator _entryIt;
+		private TermIterator _termIt;
+		private CrosswordEntry _next;
+		private CrosswordVacantEntry _currentVacantEntry;
+		
+		public SmallGridStrategyIterator() {
+			_entryIt = _vacantEntries.getIterator();
+			_next = null;
+		}
+
+		public boolean hasNext() {
+			if (null != _next) {
+				return true;
+			} else {
+				try {
+					_next = findNextMove();
+					return true;
+				} catch (NoSuchElementException e) {
+					return false;
+				}
+			}
+		}
+
+		public CrosswordEntry next() {
+			if (null != _next) {
+				CrosswordEntry ret = _next;
+				_next = null;
+				return ret;
+			} else {
+				return findNextMove();
+			}
+		}
+
+		public void remove() {
+			throw new UnsupportedOperationException();
+		}
+		
+		private CrosswordEntry findNextMove() {
+			if (null == _currentVacantEntry) {
+				_currentVacantEntry = _entryIt.next();
+			}
+			if (null == _termIt) {
+				_dict.getIterator();
+			}
+			CrosswordEntry ret = matchCurrentVacantEntry();
+			if (null != ret) {
+				return ret;
+			}
+			while (_entryIt.hasNext()) {
+				_currentVacantEntry = _entryIt.next();
+				ret = matchCurrentVacantEntry();
+				if (null != ret) {
+					return ret;
+				}
+			}
+			throw new NoSuchElementException();							
+		}
+		
+		private CrosswordEntry matchCurrentVacantEntry() {
+			while (_termIt.hasNext()) {
+				// TODO match word to entry
+				String term = _termIt.next();
+				if (isMatch(term, _currentVacantEntry)) {
+					CrosswordPosition pos = _currentVacantEntry.getPosition();
+					return new MyCrosswordEntry(pos.getX(),
+												pos.getY(),
+												term, _dict.getTermDefinition(term),
+												pos.isVertical());
+				}
+			}
+			return null;
+		}
+	}
+	
+	public class SmallDictionaryStrategyIterator extends StrategyIterator {
+		
+		private VacantEntryIterator _entryIt;
+		private TermIterator _termIt;
+		private CrosswordEntry _next;
+		private String _currentTerm;
+		
+		
+		public SmallDictionaryStrategyIterator() {
+			_termIt = _dict.getIterator();
+			_next = null;
+		}
+		
+		public boolean hasNext() {
+			if (null != _next) {
+				return true;
+			} else {
+				try {
+					_next = findNextMove();
+					return true;
+				} catch (NoSuchElementException e) {
+					return false;
+				}
+			}
+		}
+
+		public CrosswordEntry next() {
+			if (null != _next) {
+				CrosswordEntry ret = _next;
+				_next = null;
+				return ret;
+			} else {
+				return findNextMove();
+			}
+		}
+
+		public void remove() {
+			throw new UnsupportedOperationException();			
+		}
+		
+		private CrosswordEntry findNextMove() {
+			if (null == _currentTerm) {
+				_currentTerm = _termIt.next();
+			}
+			if (null == _entryIt) {
+				_vacantEntries.getIterator();
+			}
+			CrosswordEntry ret = matchCurrentTerm();
+			if (null != ret) {
+				return ret;
+			}
+			while (_termIt.hasNext()) {
+				_currentTerm = _termIt.next();
+				ret = matchCurrentTerm();
+				if (null != ret) {
+					return ret;
+				}
+			}
+			throw new NoSuchElementException();
+		}
+		
+		private CrosswordEntry matchCurrentTerm() {
+			while (_entryIt.hasNext()) {
+				// TODO match word to entry
+				CrosswordVacantEntry vacantEntry = _entryIt.next();
+				if (isMatch(_currentTerm, vacantEntry)) {
+					CrosswordPosition pos = vacantEntry.getPosition();
+					return new MyCrosswordEntry(pos.getX(),
+												pos.getY(),
+												_currentTerm, _dict.getTermDefinition(_currentTerm),
+												pos.isVertical());
+				}
+			}
+			return null;
+		}
+
 	}
 
 }
