@@ -109,15 +109,15 @@ public class MyCrosswordShape implements CrosswordShape, CrosswordVacantEntries 
 		}
 	}
 	
-	public Iterator<CrosswordVacantEntry> getIterator() {
-		return new VacantEntryIterator(_maxCapacity);
+	public Iterator<CrosswordVacantEntry> getIterator(boolean isAscending) {
+		return new VacantEntryIterator(_maxCapacity, isAscending);
 	}
 	
-	public Iterator<CrosswordVacantEntry> getIterator(int maxLength) {
+	public Iterator<CrosswordVacantEntry> getIterator(int maxLength, boolean isAscending) {
 		if (maxLength > _maxCapacity) {
 			// TODO throw exception
 		}
-		return new VacantEntryIterator(maxLength);
+		return new VacantEntryIterator(maxLength, isAscending);
 	}
 	
 	public class VacantEntryIterator implements Iterator<CrosswordVacantEntry> {
@@ -125,11 +125,13 @@ public class MyCrosswordShape implements CrosswordShape, CrosswordVacantEntries 
 		private int _currentArrayPos;
 		Iterator<CrosswordVacantEntry> _currentIterator;
 		CrosswordVacantEntry _next;
+		int _increment;
 		
-		public VacantEntryIterator(int maxLength) {
+		public VacantEntryIterator(int maxLength, boolean isAscending) {
 			_currentArrayPos = maxLength;
 			_currentIterator = _data.get(_currentArrayPos).iterator();
 			_next = null;
+			_increment = isAscending ? 1 : -1;
 		}
 
 		public boolean hasNext() {
@@ -142,8 +144,8 @@ public class MyCrosswordShape implements CrosswordShape, CrosswordVacantEntries 
 					return true;
 				}
 			} 
-			while (0 < _currentArrayPos) {
-				_currentArrayPos--;
+			while (arrayPosInBounds()) {
+				_currentArrayPos += _increment;
 				_currentIterator = _data.get(_currentArrayPos).iterator();
 				while (_currentIterator.hasNext()) {
 					_next = _currentIterator.next();
@@ -167,5 +169,14 @@ public class MyCrosswordShape implements CrosswordShape, CrosswordVacantEntries 
 			throw new UnsupportedOperationException();
 		}
 		
+		private boolean arrayPosInBounds() {
+			if ((_increment > 0) && (_currentArrayPos + _increment >= _data.size())) {
+				return false;
+			}
+			if ((_increment < 0) && (_currentArrayPos + _increment < 0)) {
+				return false;
+			}
+			return true;
+		}
 	}	
 }
