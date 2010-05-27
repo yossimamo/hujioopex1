@@ -8,7 +8,7 @@ public interface CrosswordVacantEntries {
 	public int getMaxCapacity(CrosswordPosition pos);
 	public void addEntry(CrosswordEntry entry);
 	public void removeEntry(CrosswordEntry entry);
-	public Iterator<CrosswordVacantEntry> getIterator();
-	public Iterator<CrosswordVacantEntry> getIterator(int maxLength);
+	public Iterator<CrosswordVacantEntry> getIterator(boolean isAscending);
+	public Iterator<CrosswordVacantEntry> getIterator(int maxLength, boolean isAscending);
 
 }

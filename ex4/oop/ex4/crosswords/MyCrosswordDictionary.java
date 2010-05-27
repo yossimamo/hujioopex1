@@ -91,15 +91,15 @@ public class MyCrosswordDictionary implements CrosswordDictionary, CrosswordTerm
 		}
 	}
 	
-	public Iterator<String> getIterator() {
-		return new TermIterator(_maxLength);
+	public Iterator<String> getIterator(boolean isAscending) {
+		return new TermIterator(_maxLength, isAscending);
 	}
 	
-	public Iterator<String> getIterator(int maxLength) {
+	public Iterator<String> getIterator(int maxLength, boolean isAscending) {
 		if (maxLength > _maxLength) {
 			// TODO throw exception
 		}
-		return new TermIterator(maxLength);		
+		return new TermIterator(maxLength, isAscending);		
 	}
 	
 	// TODO this is almost the same as VacantEntryIterator!!!
@@ -109,11 +109,13 @@ public class MyCrosswordDictionary implements CrosswordDictionary, CrosswordTerm
 		private int _currentArrayPos;
 		Iterator<String> _currentIterator;
 		String _next;
+		int _increment;
 		
-		public TermIterator(int maxLength) {
+		public TermIterator(int maxLength, boolean isAscending) {
 			_currentArrayPos = maxLength;
 			_currentIterator = _data.get(_currentArrayPos).keySet().iterator();
 			_next = null;
+			_increment = isAscending ? 1 : -1;
 		}
 		
 		public boolean hasNext() {
@@ -126,8 +128,8 @@ public class MyCrosswordDictionary implements CrosswordDictionary, CrosswordTerm
 					return true;
 				}
 			} 
-			while (0 < _currentArrayPos) {
-				_currentArrayPos--;
+			while (arrayPosInBounds()) {
+				_currentArrayPos += _increment;
 				_currentIterator = _data.get(_currentArrayPos).keySet().iterator();
 				while (_currentIterator.hasNext()) {
 					_next = _currentIterator.next();
@@ -151,6 +153,16 @@ public class MyCrosswordDictionary implements CrosswordDictionary, CrosswordTerm
 			throw new UnsupportedOperationException();			
 		}
 		
+		private boolean arrayPosInBounds() {
+			if ((_increment > 0) && (_currentArrayPos + _increment >= _data.size())) {
+				return false;
+			}
+			if ((_increment < 0) && (_currentArrayPos + _increment < 0)) {
+				return false;
+			}
+			return true;
+			
+		}
 	}
 		
 }
