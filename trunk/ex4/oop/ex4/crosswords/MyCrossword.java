@@ -8,8 +8,6 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.TreeSet;
 
-import oop.ex4.crosswords.MyCrosswordDictionary.TermIterator;
-import oop.ex4.crosswords.MyCrosswordVacantEntries.VacantEntryIterator;
 import oop.ex4.search.SearchBoard;
 
 public class MyCrossword implements Crossword {
@@ -19,12 +17,14 @@ public class MyCrossword implements Crossword {
 		SMALL_DICTIONARY_STRATEGY
 	}
 	
-	private CrosswordDictionary _dict;
-	private CrosswordShape _shape;
+	private MyCrosswordDictionary _dict;
+	private MyCrosswordShape _shape;
 	private CrosswordVacantEntries _vacantEntries;
 	private int _quality = 0;
 	private StrategyType _strategyType;
 	private HashSet<CrosswordEntry> _entries;
+	private HashSet<String> _usedTerms;
+	private HashSet<CrosswordPosition> _usedEntries;
 	private OverlapChecking _overlapChecking;
 	// TODO add overlap checking object
 	
@@ -47,14 +47,14 @@ public class MyCrossword implements Crossword {
 	}
 
 	public void attachDictionary(CrosswordDictionary dictionary) {
-		_dict = dictionary;
+		_dict = (MyCrosswordDictionary)dictionary;
 		if (null != _shape) {
 			determineStrategy();
 		}
 	}
 
 	public void attachShape(CrosswordShape shape) {
-		_shape = shape;
+		_shape = (MyCrosswordShape)shape;
 		if (null != _dict) {
 			determineStrategy();
 		}
@@ -105,7 +105,7 @@ public class MyCrossword implements Crossword {
 	private int getSumOfAvailableEntries() {
 		//TODO very inefficient
 		int sum = 0;
-		MyCrosswordVacantEntries.VacantEntryIterator vacantEntiesIterator = _vacantEntries.getIterator();
+		Iterator<CrosswordVacantEntry> vacantEntiesIterator = _vacantEntries.getIterator();
 		while (vacantEntiesIterator.hasNext()) {
 			CrosswordVacantEntry nextEntry =  vacantEntiesIterator.next();
 			Iterator<String> termsIterator = _dict.getIterator();
@@ -173,8 +173,8 @@ public class MyCrossword implements Crossword {
 	
 	public class SmallGridStrategyIterator extends StrategyIterator {
 		
-		private VacantEntryIterator _entryIt;
-		private TermIterator _termIt;
+		private Iterator<CrosswordVacantEntry> _entryIt;
+		private Iterator<String> _termIt;
 		private CrosswordEntry _next;
 		private CrosswordVacantEntry _currentVacantEntry;
 		
@@ -233,6 +233,7 @@ public class MyCrossword implements Crossword {
 		
 		private CrosswordEntry matchCurrentVacantEntry() {
 			while (_termIt.hasNext()) {
+				// TODO check if word is already in crossword, if so, continue to next
 				// TODO match word to entry
 				String term = _termIt.next();
 				if (isMatch(term, _currentVacantEntry)) {
@@ -249,8 +250,8 @@ public class MyCrossword implements Crossword {
 	
 	public class SmallDictionaryStrategyIterator extends StrategyIterator {
 		
-		private VacantEntryIterator _entryIt;
-		private TermIterator _termIt;
+		private Iterator<CrosswordVacantEntry> _entryIt;
+		private Iterator<String> _termIt;
 		private CrosswordEntry _next;
 		private String _currentTerm;
 		

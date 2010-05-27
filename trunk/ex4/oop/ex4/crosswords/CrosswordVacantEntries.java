@@ -1,11 +1,11 @@
 package oop.ex4.crosswords;
 
-import oop.ex4.crosswords.MyCrosswordVacantEntries.VacantEntryIterator;
+import java.util.Iterator;
 
 public interface CrosswordVacantEntries {
 	
 	public int getMaxCapacity(CrosswordPosition pos);
-	public VacantEntryIterator getIterator();
-	public VacantEntryIterator getIterator(int maxLength);
+	public Iterator<CrosswordVacantEntry> getIterator();
+	public Iterator<CrosswordVacantEntry> getIterator(int maxLength);
 
 }
