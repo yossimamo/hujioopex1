@@ -4,11 +4,9 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.*;
 
-import oop.ex4.crosswords.MyCrosswordVacantEntries.VacantEntryIterator;
-
 
 // TODO combine CrosswordTerms into this
-public class MyCrosswordDictionary implements CrosswordDictionary {
+public class MyCrosswordDictionary implements CrosswordDictionary, CrosswordTerms {
 	
 	private ArrayList<TreeMap<String, String>> _data;
 	private int _maxLength;
@@ -75,7 +73,7 @@ public class MyCrosswordDictionary implements CrosswordDictionary {
 		}
 	}
 	
-	public Map.Entry<String, String> pollLongestTerm() {
+	/*public Map.Entry<String, String> pollLongestTerm() {
 		Map.Entry<String,String> entry =
 					_data.get(_maxLengthPos).pollLastEntry();
 		if (_data.get(_maxLengthPos).isEmpty()) {
@@ -106,13 +104,13 @@ public class MyCrosswordDictionary implements CrosswordDictionary {
 		while (_maxLengthPos >= 0 && _data.get(_maxLengthPos).isEmpty()) {
 			_maxLengthPos--;
 		}
-	}
+	}*/
 	
-	public TermIterator getIterator() {
+	public Iterator<String> getIterator() {
 		return new TermIterator(_maxLength);
 	}
 	
-	public TermIterator getIterator(int maxLength) {
+	public Iterator<String> getIterator(int maxLength) {
 		if (maxLength > _maxLength) {
 			// TODO throw exception
 		}
