@@ -9,8 +9,8 @@ import java.util.*;
 public class MyCrosswordDictionary implements CrosswordDictionary, CrosswordTerms {
 	
 	private ArrayList<TreeMap<String, String>> _data;
+	private HashSet<CrosswordPosition> _usedEntries;
 	private int _maxLength;
-	private int _maxLengthPos;
 
 	/*
 	 * (non-Javadoc)
@@ -26,7 +26,7 @@ public class MyCrosswordDictionary implements CrosswordDictionary, CrosswordTerm
 	 */
 	public Set<String> getTerms() {
 		Set<String> terms = _data.get(0).keySet();
-		for (int i=1 ; i<=_maxLengthPos ; i++) {
+		for (int i=1 ; i<=_maxLength ; i++) {
 			terms.addAll(_data.get(i).keySet());
 		}
 		return terms;
@@ -37,7 +37,7 @@ public class MyCrosswordDictionary implements CrosswordDictionary, CrosswordTerm
 	 * @see oop.ex4.crosswords.CrosswordDictionary#load(java.lang.String)
 	 */
 	public void load(String dictionaryFileName) throws IOException {
-		_maxLengthPos = 0;
+		_maxLength = 0;
 		HashSet<String> glosCheck=new HashSet<String>();
 		int counter = 1;
 		String word, glos;
@@ -61,10 +61,8 @@ public class MyCrosswordDictionary implements CrosswordDictionary, CrosswordTerm
 					glos = "Dummy" + counter;
 				}
 				//Ignoring repetitive terms
-				if (word.length() > 1) {
-					_data.get(word.length() - 2).put(word.toLowerCase(), glos);
-					_maxLengthPos = Math.max(_maxLengthPos, word.length() - 2);
-				}
+				_data.get(word.length()).put(word.toLowerCase(), glos);
+				_maxLength = Math.max(_maxLength, word.length());
 				counter++;
 			}
 		} finally {
@@ -73,38 +71,25 @@ public class MyCrosswordDictionary implements CrosswordDictionary, CrosswordTerm
 		}
 	}
 	
-	/*public Map.Entry<String, String> pollLongestTerm() {
-		Map.Entry<String,String> entry =
-					_data.get(_maxLengthPos).pollLastEntry();
-		if (_data.get(_maxLengthPos).isEmpty()) {
-			updateMaxLengthPos();
-		}
-		return entry;
+	public int getNumberOfTerms() {
+		return _data.size();
 	}
 	
-	public Map.Entry<String, String> pollTerm(int termLength) {
-		while (termLength>=0) {
-			if (!_data.get(termLength - 2).isEmpty()) {
-				return _data.get(termLength).pollLastEntry();
-			}
-			termLength--;
-		}
-		//TODO change exception
-		throw new NullPointerException();
+	public void addEntry(CrosswordEntry entry) {
+		_usedEntries.add(entry.getPosition());
+	}
+
+	public void removeEntry(CrosswordEntry entry) {
+		_usedEntries.remove(entry.getPosition());
 	}
 	
-	public boolean isEmpty() {
-		if (_maxLengthPos < 0) {
+	private boolean isUsed(String term) {
+		if (_usedEntries.contains(term)) {
+			return true;
+		} else {
 			return false;
 		}
-		return true;
 	}
-	
-	private void updateMaxLengthPos() {
-		while (_maxLengthPos >= 0 && _data.get(_maxLengthPos).isEmpty()) {
-			_maxLengthPos--;
-		}
-	}*/
 	
 	public Iterator<String> getIterator() {
 		return new TermIterator(_maxLength);
@@ -117,28 +102,53 @@ public class MyCrosswordDictionary implements CrosswordDictionary, CrosswordTerm
 		return new TermIterator(maxLength);		
 	}
 	
+	// TODO this is almost the same as VacantEntryIterator!!!
+	// consider doing something better
 	public class TermIterator implements Iterator<String> {
 		
 		private int _currentArrayPos;
 		Iterator<String> _currentIterator;
+		String _next;
 		
 		public TermIterator(int maxLength) {
 			_currentArrayPos = maxLength;
+			_currentIterator = _data.get(_currentArrayPos).keySet().iterator();
+			_next = null;
 		}
-
+		
 		public boolean hasNext() {
-			// TODO Auto-generated method stub
+			if (null != _next) {
+				return true;
+			}
+			while (_currentIterator.hasNext()) {
+				_next = _currentIterator.next();
+				if (!isUsed(_next)) {
+					return true;
+				}
+			} 
+			while (0 < _currentArrayPos) {
+				_currentArrayPos--;
+				_currentIterator = _data.get(_currentArrayPos).keySet().iterator();
+				while (_currentIterator.hasNext()) {
+					_next = _currentIterator.next();
+					if (!isUsed(_next)) {
+						return true;
+					}
+				}
+			}
 			return false;
 		}
 
 		public String next() {
-			// TODO Auto-generated method stub
-			return null;
+			if (this.hasNext()) {
+				return _currentIterator.next();
+			} else {
+				throw new NoSuchElementException();
+			}
 		}
 
 		public void remove() {
-			// TODO Auto-generated method stub
-			
+			throw new UnsupportedOperationException();			
 		}
 		
 	}
