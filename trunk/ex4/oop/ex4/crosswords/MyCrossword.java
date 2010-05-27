@@ -22,7 +22,7 @@ public class MyCrossword implements Crossword {
 	private int _quality = 0;
 	private StrategyType _strategyType;
 	private HashSet<CrosswordEntry> _entries;
-	private OverlapChecking _overlapChecking;
+	private OverlapManager _overlapChecking;
 	// TODO add overlap checking object
 	
 	public MyCrossword() {
@@ -113,7 +113,7 @@ public class MyCrossword implements Crossword {
 			CrosswordVacantEntry nextEntry =  vacantEntiesIterator.next();
 			Iterator<String> termsIterator = _dict.getIterator(nextEntry.getMaxCapacity());
 			while (termsIterator.hasNext()) {
-				if (_overlapChecking.isOverlapping(nextEntry, termsIterator.next())) {
+				if (_overlapChecking.isOverlapping(termsIterator.next(), nextEntry )) {
 					sum+= nextEntry.getMaxCapacity();
 					break;
 				}
@@ -130,7 +130,7 @@ public class MyCrossword implements Crossword {
 			String nextTerm =  termsIterator.next();
 			Iterator<CrosswordVacantEntry> vacantEntiesIterator = _shape.getIterator(nextTerm.length());
 			while (vacantEntiesIterator.hasNext()) {
-				if (_overlapChecking.isOverlapping(vacantEntiesIterator.next(), nextTerm)) {
+				if (_overlapChecking.isOverlapping(nextTerm, vacantEntiesIterator.next())) {
 					sum+= nextTerm.length();
 					break;
 				}
