@@ -68,9 +68,8 @@ public class MyCrossword implements Crossword {
 		copiedCrossword._shape = new MyCrosswordShape(_shape);
 		copiedCrossword._quality = _quality;
 		copiedCrossword._strategyType = _strategyType;
-		//TODO check if the shallow clone is sufficient. and casting
 		copiedCrossword._entries = (HashSet<CrosswordEntry>) _entries.clone();
-		// TODO copiedCrossword._overlapManager = (OverlapManager)_overlapManager.clone();
+		copiedCrossword._overlapManager = new OverlapManager(_overlapManager);
 		return copiedCrossword;
 	}
 
