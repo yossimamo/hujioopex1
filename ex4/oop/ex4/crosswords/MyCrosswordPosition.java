@@ -21,9 +21,13 @@ public class MyCrosswordPosition implements CrosswordPosition {
 		return _y;
 	}
 
-	
 	public boolean isVertical() {
 		return _isVertical;
+	}
+	
+	// For debugging purposes
+	public String toString() {
+		return String.format("(%d,%d) %s", _x, _y, _isVertical ? "V" : "H");
 	}
 
 }

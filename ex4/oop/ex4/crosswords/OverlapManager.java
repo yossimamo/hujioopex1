@@ -98,6 +98,11 @@ public class OverlapManager {
 			_char = '\0';
 			_instances = 0;
 		}
+		
+		// For debugging purposes
+		public String toString() {
+			return String.format("%c(%d)", _char, _instances);
+		}
 	}
 	
 }

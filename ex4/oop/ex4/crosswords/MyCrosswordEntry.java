@@ -26,5 +26,10 @@ public class MyCrosswordEntry implements CrosswordEntry {
 	public String getTerm() {
 		return _term;
 	}
+	
+	// For debugging purposes
+	public String toString() {
+		return String.format("%s (%d,%d) %s", _term, _pos.getX(), _pos.getY(), _pos.isVertical()?"V":"H");
+	}
 
 }
