@@ -19,7 +19,7 @@ public class MyCrossword implements Crossword {
 	private MyCrosswordShape _shape;
 	private int _quality = 0;
 	private StrategyType _strategyType;
-	private HashSet<CrosswordEntry> _entries;
+	private HashSet<CrosswordEntry> _entries = new HashSet<CrosswordEntry>();
 	private OverlapManager _overlapManager;
 	
 	public MyCrossword() {
@@ -47,6 +47,7 @@ public class MyCrossword implements Crossword {
 		if (null != _dict) {
 			determineStrategy();
 		}
+		 _overlapManager = new OverlapManager(_shape.getWidth(), _shape.getHeight());
 	}
 
 	public Collection<CrosswordEntry> getCrosswordEntries() {

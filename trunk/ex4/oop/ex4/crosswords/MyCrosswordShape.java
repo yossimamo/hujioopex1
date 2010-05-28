@@ -23,7 +23,7 @@ public class MyCrosswordShape implements CrosswordShape, CrosswordVacantEntries 
 	protected List<String> _oldData = new ArrayList<String>();
 	private ArrayList<TreeSet<CrosswordVacantEntry>> _data;
 	private HashMap<CrosswordPosition, CrosswordVacantEntry> _initialVacantEntries;
-	private HashSet<CrosswordPosition> _usedEntries;
+	private HashSet<CrosswordPosition> _usedEntries = new HashSet<CrosswordPosition>();
 	private int _maxCapacity;
 	
 	public MyCrosswordShape() {
