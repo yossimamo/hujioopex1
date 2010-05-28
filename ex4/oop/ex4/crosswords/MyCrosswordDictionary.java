@@ -10,6 +10,7 @@ public class MyCrosswordDictionary implements CrosswordDictionary, CrosswordTerm
 	private ArrayList<TreeMap<String, String>> _data;
 	private HashSet<String> _usedEntries = new HashSet<String>();
 	private int _maxLength;
+	private int _numOfTotalTerms;
 	
 	public MyCrosswordDictionary() {
 		
@@ -73,6 +74,7 @@ public class MyCrosswordDictionary implements CrosswordDictionary, CrosswordTerm
 					//Handling gloss-less files, you don't have to do it
 					//If there is no ":" all glosses represented as numbers
 					word = entryLine;
+					if (word.length()<2) continue;
 					glos = "Dummy" + counter;
 				}
 				//Ignoring repetitive terms
@@ -89,14 +91,15 @@ public class MyCrosswordDictionary implements CrosswordDictionary, CrosswordTerm
 			if (sc != null)
 				sc.close();
 		}
+		_numOfTotalTerms = counter - 1;
 	}
 	
 	public int getNumberOfTerms() {
-		return _data.size();
+		return _numOfTotalTerms;
 	}
 	
 	public boolean isFullyOccupied() {
-		return (_data.size() == _usedEntries.size());
+		return (_numOfTotalTerms == _usedEntries.size());
 	}
 	
 	public void addEntry(CrosswordEntry entry) {
