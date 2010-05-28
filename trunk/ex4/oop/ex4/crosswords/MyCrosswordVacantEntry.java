@@ -37,5 +37,10 @@ public class MyCrosswordVacantEntry implements CrosswordVacantEntry, Comparable<
 			return (this._maxCapacity - other.getMaxCapacity());
 		}
 	}
+	
+	// For debugging purposes
+	public String toString() {
+		return String.format("<%d> (%d,%d) %s", _maxCapacity, _position.getX(), _position.getY(), _position.isVertical() ? "V" : "H");
+	}
 
 }
