@@ -78,7 +78,7 @@ public class MyCrosswordDictionary implements CrosswordDictionary, CrosswordTerm
 					glos = "Dummy" + counter;
 				}
 				//Ignoring repetitive terms
-				if (_data.size() < word.length()) {
+				if (_data.size() <= word.length()) {
 					for (int i = _data.size(); i <= word.length(); i++) {
 						_data.add(new TreeMap<String, String>());
 					}
