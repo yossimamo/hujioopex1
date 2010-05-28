@@ -8,7 +8,7 @@ import java.util.*;
 public class MyCrosswordDictionary implements CrosswordDictionary, CrosswordTerms {
 	
 	private ArrayList<TreeMap<String, String>> _data;
-	private HashSet<CrosswordPosition> _usedEntries = new HashSet<CrosswordPosition>();
+	private HashSet<String> _usedEntries = new HashSet<String>();
 	private int _maxLength;
 	
 	public MyCrosswordDictionary() {
@@ -20,7 +20,7 @@ public class MyCrosswordDictionary implements CrosswordDictionary, CrosswordTerm
 			_data = (ArrayList<TreeMap<String, String>>)other._data.clone();
 		}
 		if (null != other._usedEntries) {
-			_usedEntries = (HashSet<CrosswordPosition>)other._usedEntries.clone();
+			_usedEntries = (HashSet<String>)other._usedEntries.clone();
 		}
 		
 		_maxLength = other._maxLength;
@@ -100,11 +100,11 @@ public class MyCrosswordDictionary implements CrosswordDictionary, CrosswordTerm
 	}
 	
 	public void addEntry(CrosswordEntry entry) {
-		_usedEntries.add(entry.getPosition());
+		_usedEntries.add(entry.getTerm());
 	}
 
 	public void removeEntry(CrosswordEntry entry) {
-		_usedEntries.remove(entry.getPosition());
+		_usedEntries.remove(entry.getTerm());
 	}
 	
 	private boolean isUsed(String term) {
@@ -120,9 +120,6 @@ public class MyCrosswordDictionary implements CrosswordDictionary, CrosswordTerm
 	}
 	
 	public Iterator<String> getIterator(int maxLength, boolean isAscending) {
-		if (maxLength > _maxLength) {
-			// TODO throw exception
-		}
 		return new TermIterator(maxLength, isAscending);		
 	}
 	
