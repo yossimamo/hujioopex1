@@ -1,12 +1,10 @@
 package oop.ex4.crosswords;
 
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.Map;
 import java.util.NoSuchElementException;
-import java.util.TreeSet;
+
 
 import oop.ex4.search.SearchBoard;
 
@@ -22,8 +20,7 @@ public class MyCrossword implements Crossword {
 	private int _quality = 0;
 	private StrategyType _strategyType;
 	private HashSet<CrosswordEntry> _entries;
-	private OverlapManager _overlapChecking;
-	// TODO add overlap checking object
+	private OverlapManager _overlapManager;
 	
 	public MyCrossword() {
 		
@@ -57,7 +54,7 @@ public class MyCrossword implements Crossword {
 	}
 
 	public void doMove(CrosswordEntry move) {
-		_overlapChecking.addEntry(move);
+		_overlapManager.addEntry(move);
 		_dict.addEntry(move);
 		_shape.addEntry(move);
 		_entries.add(move);
@@ -66,13 +63,13 @@ public class MyCrossword implements Crossword {
 
 	public SearchBoard<CrosswordEntry> getCopy() {
 		MyCrossword copiedCrossword = new MyCrossword();
-		copiedCrossword._dict = _dict.clone();
-		copiedCrossword._shape = _shape.clone();
+		copiedCrossword._dict = new MyCrosswordDictionary(_dict);
+		copiedCrossword._shape = new MyCrosswordShape(_shape);
 		copiedCrossword._quality = _quality;
 		copiedCrossword._strategyType = _strategyType;
 		//TODO check if the shallow clone is sufficient. and casting
 		copiedCrossword._entries = (HashSet<CrosswordEntry>) _entries.clone();
-		copiedCrossword._overlapChecking = _overlapChecking.clone();
+		// TODO copiedCrossword._overlapManager = (OverlapManager)_overlapManager.clone();
 		return copiedCrossword;
 	}
 
@@ -108,12 +105,12 @@ public class MyCrossword implements Crossword {
 	private int getSumOfAvailableEntries() {
 		//TODO very inefficient
 		int sum = 0;
-		Iterator<CrosswordVacantEntry> vacantEntiesIterator = _shape.getIterator();
+		Iterator<CrosswordVacantEntry> vacantEntiesIterator = _shape.getIterator(true);
 		while (vacantEntiesIterator.hasNext()) {
 			CrosswordVacantEntry nextEntry =  vacantEntiesIterator.next();
-			Iterator<String> termsIterator = _dict.getIterator(nextEntry.getMaxCapacity());
+			Iterator<String> termsIterator = _dict.getIterator(nextEntry.getMaxCapacity(), false);
 			while (termsIterator.hasNext()) {
-				if (_overlapChecking.isOverlapping(termsIterator.next(), nextEntry )) {
+				if (_overlapManager.isOverlapping(termsIterator.next(), nextEntry )) {
 					sum+= nextEntry.getMaxCapacity();
 					break;
 				}
@@ -125,12 +122,12 @@ public class MyCrossword implements Crossword {
 	private int getSumOfAvailableWords() {
 		//TODO very inefficient. maybe can use in common with previous function
 		int sum = 0;
-		Iterator<String> termsIterator = _dict.getIterator();
+		Iterator<String> termsIterator = _dict.getIterator(true);
 		while (termsIterator.hasNext()) {
 			String nextTerm =  termsIterator.next();
-			Iterator<CrosswordVacantEntry> vacantEntiesIterator = _shape.getIterator(nextTerm.length());
+			Iterator<CrosswordVacantEntry> vacantEntiesIterator = _shape.getIterator(nextTerm.length(), false);
 			while (vacantEntiesIterator.hasNext()) {
-				if (_overlapChecking.isOverlapping(nextTerm, vacantEntiesIterator.next())) {
+				if (_overlapManager.isOverlapping(nextTerm, vacantEntiesIterator.next())) {
 					sum+= nextTerm.length();
 					break;
 				}
@@ -140,10 +137,10 @@ public class MyCrossword implements Crossword {
 	}
 
 	public boolean isBestSolution() {
-		if (_dict.isEmpty()) {
+		if (_dict.isFullyOccupied()) {
 			return true;
 		}
-		if (_shape.isEmpty()) {
+		if (_shape.isFullyOccupied()) {
 			Iterator<CrosswordEntry> iterator = _entries.iterator();
 			while (iterator.hasNext()) {
 				CrosswordEntry crosswordEntry = iterator.next();
@@ -157,7 +154,7 @@ public class MyCrossword implements Crossword {
 	}
 
 	public void undoMove(CrosswordEntry move) {
-		_overlapChecking.removeEntry(move);
+		_overlapManager.removeEntry(move);
 		_dict.removeEntry(move);
 		_shape.removeEntry(move);
 		_entries.remove(move);
@@ -177,7 +174,7 @@ public class MyCrossword implements Crossword {
 		private CrosswordVacantEntry _currentVacantEntry;
 		
 		public SmallGridStrategyIterator() {
-			_entryIt = _shape.getIterator();
+			_entryIt = _shape.getIterator(false);
 			_next = null;
 		}
 
@@ -213,7 +210,7 @@ public class MyCrossword implements Crossword {
 				_currentVacantEntry = _entryIt.next();
 			}
 			if (null == _termIt) {
-				_dict.getIterator();
+				_dict.getIterator(false);
 			}
 			CrosswordEntry ret = matchCurrentVacantEntry();
 			if (null != ret) {
@@ -231,10 +228,8 @@ public class MyCrossword implements Crossword {
 		
 		private CrosswordEntry matchCurrentVacantEntry() {
 			while (_termIt.hasNext()) {
-				// TODO check if word is already in crossword, if so, continue to next
-				// TODO match word to entry
 				String term = _termIt.next();
-				if (isMatch(term, _currentVacantEntry)) {
+				if (_overlapManager.isOverlapping(term, _currentVacantEntry)) {
 					CrosswordPosition pos = _currentVacantEntry.getPosition();
 					return new MyCrosswordEntry(pos.getX(),
 												pos.getY(),
@@ -255,7 +250,7 @@ public class MyCrossword implements Crossword {
 		
 		
 		public SmallDictionaryStrategyIterator() {
-			_termIt = _dict.getIterator();
+			_termIt = _dict.getIterator(false);
 			_next = null;
 		}
 		
@@ -291,7 +286,7 @@ public class MyCrossword implements Crossword {
 				_currentTerm = _termIt.next();
 			}
 			if (null == _entryIt) {
-				_shape.getIterator();
+				_shape.getIterator(false);
 			}
 			CrosswordEntry ret = matchCurrentTerm();
 			if (null != ret) {
@@ -309,9 +304,8 @@ public class MyCrossword implements Crossword {
 		
 		private CrosswordEntry matchCurrentTerm() {
 			while (_entryIt.hasNext()) {
-				// TODO match word to entry
 				CrosswordVacantEntry vacantEntry = _entryIt.next();
-				if (isMatch(_currentTerm, vacantEntry)) {
+				if (_overlapManager.isOverlapping(_currentTerm, vacantEntry)) {
 					CrosswordPosition pos = vacantEntry.getPosition();
 					return new MyCrosswordEntry(pos.getX(),
 												pos.getY(),
