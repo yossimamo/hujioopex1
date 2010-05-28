@@ -112,9 +112,10 @@ public class MyCrosswordShape implements CrosswordShape, CrosswordVacantEntries 
 				while (SlotType.UNUSED_SLOT == getSlotType(pos)) {
 					entryLength++;
 					if (entryLength >= MINIMUM_ENTRY_LENGTH) {
-						MyCrosswordVacantEntry vacantEntry = new MyCrosswordVacantEntry(pos, entryLength);
+						CrosswordPosition entryPos = new MyCrosswordPosition(pos); 
+						MyCrosswordVacantEntry vacantEntry = new MyCrosswordVacantEntry(entryPos, entryLength);
 						_data.get(entryLength).add(vacantEntry);
-						_initialVacantEntries.put(pos, vacantEntry);
+						_initialVacantEntries.put(entryPos, vacantEntry);
 					}
 					pos = new MyCrosswordPosition(i, j+entryLength, true);
 				}
@@ -130,9 +131,10 @@ public class MyCrosswordShape implements CrosswordShape, CrosswordVacantEntries 
 				while (SlotType.UNUSED_SLOT == getSlotType(pos)) {
 					entryLength++;
 					if (entryLength >= MINIMUM_ENTRY_LENGTH) {
-						MyCrosswordVacantEntry vacantEntry = new MyCrosswordVacantEntry(pos, entryLength);
+						CrosswordPosition entryPos = new MyCrosswordPosition(pos); 
+						MyCrosswordVacantEntry vacantEntry = new MyCrosswordVacantEntry(entryPos, entryLength);
 						_data.get(entryLength).add(vacantEntry);
-						_initialVacantEntries.put(pos, vacantEntry);
+						_initialVacantEntries.put(entryPos, vacantEntry);
 					}
 					pos = new MyCrosswordPosition(i+entryLength, j, false);
 				}

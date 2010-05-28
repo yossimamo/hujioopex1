@@ -109,6 +109,7 @@ public class MyCrossword implements Crossword {
 		Iterator<CrosswordVacantEntry> vacantEntiesIterator = _shape.getIterator(true);
 		while (vacantEntiesIterator.hasNext()) {
 			CrosswordVacantEntry nextEntry =  vacantEntiesIterator.next();
+			// Iterate on terms that are at most as long as the vacant entry
 			Iterator<String> termsIterator = _dict.getIterator(nextEntry.getMaxCapacity(), false);
 			while (termsIterator.hasNext()) {
 				if (_overlapManager.isOverlapping(termsIterator.next(), nextEntry )) {
@@ -126,7 +127,8 @@ public class MyCrossword implements Crossword {
 		Iterator<String> termsIterator = _dict.getIterator(true);
 		while (termsIterator.hasNext()) {
 			String nextTerm =  termsIterator.next();
-			Iterator<CrosswordVacantEntry> vacantEntiesIterator = _shape.getIterator(nextTerm.length(), false);
+			// Iterate on vacant entries that are at least as long as the term
+			Iterator<CrosswordVacantEntry> vacantEntiesIterator = _shape.getIterator(nextTerm.length(), true);
 			while (vacantEntiesIterator.hasNext()) {
 				if (_overlapManager.isOverlapping(nextTerm, vacantEntiesIterator.next())) {
 					sum+= nextTerm.length();
