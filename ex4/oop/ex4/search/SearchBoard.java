@@ -37,7 +37,7 @@ public interface SearchBoard<M> {
 	 * 
 	 * @return The quality value of given node
 	 */
-	int getQuality(); // TODO calculate and cache the value
+	int getQuality();
 
 	/**
 	 * This function allows estimation of potential 
@@ -50,7 +50,7 @@ public interface SearchBoard<M> {
 	 * 
 	 * @return The upper bound on quality of given node
 	 */
-	int getQualityBound(); // TODO calculate and cache the value
+	int getQualityBound();
 	
 	/**
 	 * Performs a move on the board potentially (reversibly) changing 

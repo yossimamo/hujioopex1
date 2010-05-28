@@ -127,10 +127,11 @@ public class MyCrossword implements Crossword {
 		while (termsIterator.hasNext()) {
 			String nextTerm =  termsIterator.next();
 			// Iterate on vacant entries that are at least as long as the term
-			Iterator<CrosswordVacantEntry> vacantEntiesIterator = _shape.getIterator(nextTerm.length(), true);
-			while (vacantEntiesIterator.hasNext()) {
-				if (_overlapManager.isOverlapping(nextTerm, vacantEntiesIterator.next())) {
-					sum+= nextTerm.length();
+			Iterator<CrosswordVacantEntry> vacantEntriesIterator = _shape.getIterator(nextTerm.length(), true);
+			while (vacantEntriesIterator.hasNext()) {
+				CrosswordVacantEntry vacantEntry = vacantEntriesIterator.next();
+				if (_overlapManager.isOverlapping(nextTerm, vacantEntry)) {
+					sum += nextTerm.length();
 					break;
 				}
 			}

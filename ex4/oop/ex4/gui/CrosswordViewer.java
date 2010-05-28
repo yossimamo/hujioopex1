@@ -85,8 +85,9 @@ public class CrosswordViewer extends JFrame implements ActionListener,
 			System.err.println("Invalid numbers in arguments!");
 			return;
 		} catch (Exception e) {
-			System.err.println("Exception during crossword creation!" + e);
-			//e.printStackTrace();
+			System.err.println("Exception during crossword creation!");
+			System.err.println(e.getMessage());
+			e.printStackTrace();
 			return;
 		}
 		if (args.length !=4) { 
