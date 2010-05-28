@@ -13,6 +13,17 @@ public class OverlapManager {
 		}
 	}
 	
+	public OverlapManager(OverlapManager other) {
+		int width = other._overlapTable.length;
+		int height = other._overlapTable[0].length;
+		_overlapTable = new OverlappedChar[width][height];
+		for (int i = 0; i < width; i++) {
+			for (int j = 0; j < height; j++) {
+				_overlapTable[i][j] = new OverlappedChar(other._overlapTable[i][j]);
+			}
+		}
+	}
+	
 	public void addEntry (CrosswordEntry entry) {
 		OverlappedChar[] chars = getOverlappedChars(entry.getLength(), entry.getPosition());
 		for (int i=0; i<chars.length; i++) {
@@ -97,6 +108,11 @@ public class OverlapManager {
 		public OverlappedChar() {
 			_char = '\0';
 			_instances = 0;
+		}
+		
+		public OverlappedChar(OverlappedChar other) {
+			_char = other._char;
+			_instances = other._instances;
 		}
 		
 		// For debugging purposes

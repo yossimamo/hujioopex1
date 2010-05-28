@@ -61,6 +61,9 @@ public class MyDepthFirstSearch<B extends SearchBoard<M>, M extends SearchMove> 
 			_lastMoves.push(move);
 			board.doMove(move);
 			searchHelper(board, maxDepth, timeOut);
+			if (_shouldStop) {
+				return;
+			}
 		}
 		if (!_lastMoves.empty()) {
 			board.undoMove(_lastMoves.pop());
