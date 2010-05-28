@@ -112,7 +112,7 @@ public class MyCrosswordShape implements CrosswordShape, CrosswordVacantEntries 
 				while (SlotType.UNUSED_SLOT == getSlotType(pos)) {
 					entryLength++;
 					if (entryLength >= MINIMUM_ENTRY_LENGTH) {
-						CrosswordPosition entryPos = new MyCrosswordPosition(pos); 
+						CrosswordPosition entryPos = new MyCrosswordPosition(i, j, true); 
 						MyCrosswordVacantEntry vacantEntry = new MyCrosswordVacantEntry(entryPos, entryLength);
 						_data.get(entryLength).add(vacantEntry);
 						_initialVacantEntries.put(entryPos, vacantEntry);
@@ -131,7 +131,7 @@ public class MyCrosswordShape implements CrosswordShape, CrosswordVacantEntries 
 				while (SlotType.UNUSED_SLOT == getSlotType(pos)) {
 					entryLength++;
 					if (entryLength >= MINIMUM_ENTRY_LENGTH) {
-						CrosswordPosition entryPos = new MyCrosswordPosition(pos); 
+						CrosswordPosition entryPos = new MyCrosswordPosition(i, j, false); 
 						MyCrosswordVacantEntry vacantEntry = new MyCrosswordVacantEntry(entryPos, entryLength);
 						_data.get(entryLength).add(vacantEntry);
 						_initialVacantEntries.put(entryPos, vacantEntry);
