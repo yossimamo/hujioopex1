@@ -22,12 +22,9 @@ public class MyDepthFirstSearch<B extends SearchBoard<M>, M extends SearchMove> 
 	public B search(B board, int maxDepth, long timeOut) {
 		_startTime =  System.currentTimeMillis();
 		SearchBoard<M> initialBoard = board.getCopy();
-		// TODO instead of casting, keep a reference to SearchBoard<M> and
-		// cast only when necessary (in the end) - for performance
-		//_bestBoard = board.getCopy();
 		_shouldStop = false;
 		searchHelper(board, maxDepth, timeOut);
-		// TODO check if this is ok
+		// TODO remove print
 		System.out.printf("Working time: %d ms\n", System.currentTimeMillis() - _startTime);
 		return (B)makeBestBoard(initialBoard);
 	}

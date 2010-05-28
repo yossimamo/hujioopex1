@@ -18,12 +18,30 @@ import java.util.TreeSet;
  * @author Dmitry
  */
 public class MyCrosswordShape implements CrosswordShape, CrosswordVacantEntries {
+	private static final int MINIMUM_ENTRY_LENGTH = 2;
+	
 	protected List<String> _oldData = new ArrayList<String>();
 	private ArrayList<TreeSet<CrosswordVacantEntry>> _data;
 	private HashMap<CrosswordPosition, CrosswordVacantEntry> _initialVacantEntries;
 	private HashSet<CrosswordPosition> _usedEntries;
 	private int _maxCapacity;
-	private CrosswordShape _shape;
+	
+	public MyCrosswordShape() {
+		
+	}
+	
+	public MyCrosswordShape(MyCrosswordShape other) {
+		if (null != other._data) {
+			_data = (ArrayList<TreeSet<CrosswordVacantEntry>>)other._data.clone();
+		}
+		if (null != other._initialVacantEntries) {
+			_initialVacantEntries = (HashMap<CrosswordPosition, CrosswordVacantEntry>)other._initialVacantEntries.clone();
+		}
+		if (null != _usedEntries) {
+			_usedEntries = (HashSet<CrosswordPosition>)other._usedEntries.clone();
+		}
+		_maxCapacity = other._maxCapacity;
+	}
 
 	/*
 	 * (non-Javadoc)
@@ -77,16 +95,57 @@ public class MyCrosswordShape implements CrosswordShape, CrosswordVacantEntries 
 		} finally {
 			if (sc!=null) sc.close();
 		}
-		_maxCapacity = Math.max(_shape.getHeight(), _shape.getWidth());
+		_maxCapacity = Math.max(getHeight(), getWidth());
 		assert(0 < _maxCapacity);
 		_data = new ArrayList<TreeSet<CrosswordVacantEntry>>(_maxCapacity);
-		// TODO iterate on all positions and create vacant entries for each
-		// insert into availableVacantEntries and (with position as a key) to
-		// initialvacantentries
+		for (int i = 0; i <= _maxCapacity; i++) {
+			_data.add(new TreeSet<CrosswordVacantEntry>());
+		}
+		_initialVacantEntries = new HashMap<CrosswordPosition, CrosswordVacantEntry>();
+		
+		// TODO inefficient
+		// Vertical spaces
+		for (int i = 0; i < getWidth(); i++) {
+			for (int j = 0; j < getHeight(); j++) {
+				int entryLength = 0;
+				CrosswordPosition pos = new MyCrosswordPosition(i, j+entryLength, true);
+				while (SlotType.UNUSED_SLOT == getSlotType(pos)) {
+					entryLength++;
+					if (entryLength >= MINIMUM_ENTRY_LENGTH) {
+						MyCrosswordVacantEntry vacantEntry = new MyCrosswordVacantEntry(pos, entryLength);
+						_data.get(entryLength).add(vacantEntry);
+						_initialVacantEntries.put(pos, vacantEntry);
+					}
+					pos = new MyCrosswordPosition(i, j+entryLength, true);
+				}
+			}
+		}
+
+		// TODO inefficient
+		// Horizontal spaces
+		for (int j = 0; j < getHeight(); j++) {
+			for (int i = 0; i < getWidth(); i++) {
+				int entryLength = 0;
+				CrosswordPosition pos = new MyCrosswordPosition(i+entryLength, j, false);
+				while (SlotType.UNUSED_SLOT == getSlotType(pos)) {
+					entryLength++;
+					if (entryLength >= MINIMUM_ENTRY_LENGTH) {
+						MyCrosswordVacantEntry vacantEntry = new MyCrosswordVacantEntry(pos, entryLength);
+						_data.get(entryLength).add(vacantEntry);
+						_initialVacantEntries.put(pos, vacantEntry);
+					}
+					pos = new MyCrosswordPosition(i+entryLength, j, false);
+				}
+			}
+		}
 	}
 	
 	public int getMaxCapacity(CrosswordPosition pos) {
 		return (_initialVacantEntries.get(pos)).getMaxCapacity();
+	}
+	
+	public boolean isFullyOccupied() {
+		return (_data.size() == _usedEntries.size());
 	}
 	
 	public int getNumberOfEntries() {

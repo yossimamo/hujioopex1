@@ -5,12 +5,26 @@ import java.io.IOException;
 import java.util.*;
 
 
-// TODO combine CrosswordTerms into this
 public class MyCrosswordDictionary implements CrosswordDictionary, CrosswordTerms {
 	
 	private ArrayList<TreeMap<String, String>> _data;
 	private HashSet<CrosswordPosition> _usedEntries;
 	private int _maxLength;
+	
+	public MyCrosswordDictionary() {
+		
+	}
+	
+	public MyCrosswordDictionary(MyCrosswordDictionary other) {
+		if (null != other._data) {
+			_data = (ArrayList<TreeMap<String, String>>)other._data.clone();
+		}
+		if (null != other._usedEntries) {
+			_usedEntries = (HashSet<CrosswordPosition>)other._usedEntries.clone();
+		}
+		
+		_maxLength = other._maxLength;
+	}
 
 	/*
 	 * (non-Javadoc)
@@ -38,6 +52,7 @@ public class MyCrosswordDictionary implements CrosswordDictionary, CrosswordTerm
 	 */
 	public void load(String dictionaryFileName) throws IOException {
 		_maxLength = 0;
+		_data = new ArrayList<TreeMap<String, String>>();
 		HashSet<String> glosCheck=new HashSet<String>();
 		int counter = 1;
 		String word, glos;
@@ -73,6 +88,10 @@ public class MyCrosswordDictionary implements CrosswordDictionary, CrosswordTerm
 	
 	public int getNumberOfTerms() {
 		return _data.size();
+	}
+	
+	public boolean isFullyOccupied() {
+		return (_data.size() == _usedEntries.size());
 	}
 	
 	public void addEntry(CrosswordEntry entry) {
