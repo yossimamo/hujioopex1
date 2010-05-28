@@ -167,7 +167,9 @@ public class MyCrosswordDictionary implements CrosswordDictionary, CrosswordTerm
 
 		public String next() {
 			if (this.hasNext()) {
-				return _next;
+				String ret = _next;
+				_next = null;
+				return ret;
 			} else {
 				throw new NoSuchElementException();
 			}
