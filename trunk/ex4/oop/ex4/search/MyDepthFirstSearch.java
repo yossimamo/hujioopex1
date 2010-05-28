@@ -24,8 +24,6 @@ public class MyDepthFirstSearch<B extends SearchBoard<M>, M extends SearchMove> 
 		SearchBoard<M> initialBoard = board.getCopy();
 		_shouldStop = false;
 		searchHelper(board, maxDepth, timeOut);
-		// TODO remove print
-		System.out.printf("Working time: %d ms\n", System.currentTimeMillis() - _startTime);
 		return (B)makeBestBoard(initialBoard);
 	}
 	

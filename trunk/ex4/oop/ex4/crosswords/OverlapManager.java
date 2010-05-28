@@ -89,13 +89,13 @@ public class OverlapManager {
 		int x = position.getX();
 		int y = position.getY();
 		if (position.isVertical()) {
-			for (int i=y ; i< y+length ; i++) {
-				overlappedChars[i - y] = _overlapTable[i][x];
+			for (int i = y ; i < y + length ; i++) {
+				overlappedChars[i - y] = _overlapTable[x][i];
 			}
 		}
 		else {
-			for (int i=x ; i< x+length ; i++) {
-				overlappedChars[i - x] = _overlapTable[y][i];
+			for (int i = x ; i < x + length ; i++) {
+				overlappedChars[i - x] = _overlapTable[i][y];
 			}
 		}
 		return overlappedChars;
