@@ -289,7 +289,7 @@ public class MyCrossword implements Crossword {
 				_currentTerm = _termIt.next();
 			}
 			if (null == _entryIt) {
-				_shape.getIterator(false);
+				_entryIt = _shape.getIterator(false);
 			}
 			CrosswordEntry ret = matchCurrentTerm();
 			if (null != ret) {
