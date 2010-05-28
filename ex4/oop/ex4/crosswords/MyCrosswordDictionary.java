@@ -8,7 +8,7 @@ import java.util.*;
 public class MyCrosswordDictionary implements CrosswordDictionary, CrosswordTerms {
 	
 	private ArrayList<TreeMap<String, String>> _data;
-	private HashSet<CrosswordPosition> _usedEntries;
+	private HashSet<CrosswordPosition> _usedEntries = new HashSet<CrosswordPosition>();
 	private int _maxLength;
 	
 	public MyCrosswordDictionary() {
@@ -39,8 +39,8 @@ public class MyCrosswordDictionary implements CrosswordDictionary, CrosswordTerm
 	 * @see oop.ex4.crosswords.CrosswordDictionary#getTerms()
 	 */
 	public Set<String> getTerms() {
-		Set<String> terms = _data.get(0).keySet();
-		for (int i=1 ; i<=_maxLength ; i++) {
+		Set<String> terms = new TreeSet<String>();
+		for (int i = 0 ; i <= _maxLength ; i++) {
 			terms.addAll(_data.get(i).keySet());
 		}
 		return terms;
@@ -76,6 +76,11 @@ public class MyCrosswordDictionary implements CrosswordDictionary, CrosswordTerm
 					glos = "Dummy" + counter;
 				}
 				//Ignoring repetitive terms
+				if (_data.size() < word.length()) {
+					for (int i = _data.size(); i <= word.length(); i++) {
+						_data.add(new TreeMap<String, String>());
+					}
+				}
 				_data.get(word.length()).put(word.toLowerCase(), glos);
 				_maxLength = Math.max(_maxLength, word.length());
 				counter++;
@@ -162,7 +167,7 @@ public class MyCrosswordDictionary implements CrosswordDictionary, CrosswordTerm
 
 		public String next() {
 			if (this.hasNext()) {
-				return _currentIterator.next();
+				return _next;
 			} else {
 				throw new NoSuchElementException();
 			}
