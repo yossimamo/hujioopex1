@@ -220,7 +220,9 @@ public class MyCrosswordShape implements CrosswordShape, CrosswordVacantEntries 
 
 		public CrosswordVacantEntry next() {
 			if (this.hasNext()) {
-				return _next;
+				CrosswordVacantEntry ret = _next;
+				_next = null;
+				return ret;
 			} else {
 				throw new NoSuchElementException();
 			}

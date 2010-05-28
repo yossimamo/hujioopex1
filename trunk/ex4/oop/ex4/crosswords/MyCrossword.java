@@ -124,7 +124,7 @@ public class MyCrossword implements Crossword {
 	private int getSumOfAvailableWords() {
 		//TODO very inefficient. maybe can use in common with previous function
 		int sum = 0;
-		Iterator<String> termsIterator = _dict.getIterator(true);
+		Iterator<String> termsIterator = _dict.getIterator(false);
 		while (termsIterator.hasNext()) {
 			String nextTerm =  termsIterator.next();
 			// Iterate on vacant entries that are at least as long as the term
