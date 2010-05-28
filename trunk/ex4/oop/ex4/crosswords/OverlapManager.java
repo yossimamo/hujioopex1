@@ -37,7 +37,7 @@ public class OverlapManager {
 	public boolean isOverlapping(String term, CrosswordVacantEntry vacantEntry) {
 		OverlappedChar[] chars = getOverlappedChars(term.length(), vacantEntry.getPosition());
 		for (int i=0 ; i < chars.length ; i++) {
-			if (term.charAt(i) != chars[i]._char && term.charAt(i) != '\0') {
+			if (term.charAt(i) != chars[i]._char && chars[i]._char != '\0') {
 				return false;
 			}
 		}
@@ -54,6 +54,23 @@ public class OverlapManager {
 		}
 		return sum;
 	}
+	//TODO delete
+	public void print() {
+		for (int x=0 ; x<_overlapTable.length ; x++) {
+			for (int y = 0 ; y<_overlapTable[0].length ; y++) {
+				System.out.print(_overlapTable[x][y]._char);
+			}
+			System.out.println();
+		}
+		System.out.println();
+		System.out.println();
+		for (int x=0 ; x<_overlapTable.length ; x++) {
+			for (int y = 0 ; y<_overlapTable[0].length ; y++) {
+				System.out.print(_overlapTable[x][y]._instances);
+			}
+			System.out.println();
+		}
+	}
 	
 	private OverlappedChar[] getOverlappedChars(int length,
 			CrosswordPosition position) {
@@ -62,12 +79,12 @@ public class OverlapManager {
 		int y = position.getY();
 		if (position.isVertical()) {
 			for (int i=y ; i< y+length ; i++) {
-				overlappedChars[i] = _overlapTable[x][i];
+				overlappedChars[i - y] = _overlapTable[i][x];
 			}
 		}
 		else {
 			for (int i=x ; i< x+length ; i++) {
-				overlappedChars[i] = _overlapTable[i][y];
+				overlappedChars[i - x] = _overlapTable[y][i];
 			}
 		}
 		return overlappedChars;
