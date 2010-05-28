@@ -12,6 +12,12 @@ public class MyCrosswordPosition implements CrosswordPosition {
 		_isVertical = isVertical;
 	}
 	
+	public MyCrosswordPosition(CrosswordPosition other) {
+		_x = other.getX();
+		_y = other.getY();
+		_isVertical = other.isVertical();
+	}
+	
 	public int getX() {
 		return _x;
 	}
