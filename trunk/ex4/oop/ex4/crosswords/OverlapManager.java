@@ -2,6 +2,8 @@ package oop.ex4.crosswords;
 
 public class OverlapManager {
 	
+	public static final int MISMATCH = -1;
+	private static final char NO_CHAR = '\0';
 	private OverlappedChar _overlapTable[][];	
 
 	public OverlapManager(int width, int height) {
@@ -39,48 +41,33 @@ public class OverlapManager {
 		OverlappedChar[] chars = getOverlappedChars(entry.getLength() , entry.getPosition());
 		for (int i=0; i<chars.length; i++) {
 			if (chars[i]._instances == 1) {
-				chars[i]._char = '\0';
+				chars[i]._char = NO_CHAR;
 			}
 			chars[i]._instances--;
 		}
 	}
 
-	public boolean isOverlapping(String term, CrosswordVacantEntry vacantEntry) {
-		OverlappedChar[] chars = getOverlappedChars(term.length(), vacantEntry.getPosition());
-		for (int i=0 ; i < chars.length ; i++) {
-			if (term.charAt(i) != chars[i]._char && chars[i]._char != '\0') {
-				return false;
-			}
+	public boolean isMatch(String term, CrosswordVacantEntry vacantEntry) {
+		if (getOverlapCount(term, vacantEntry) != MISMATCH) {
+			return true;
+		} else {
+			return false;
 		}
-		return true;
 	}
 
 	public int getOverlapCount(String term, CrosswordVacantEntry vacantEntry) {
 		int sum = 0;
 		OverlappedChar[] chars = getOverlappedChars(term.length(), vacantEntry.getPosition());
-		for (int i=0 ; i < chars.length ; i++) {
+		for (int i = 0 ; i < chars.length ; i++) {
+			if ((term.charAt(i) != chars[i]._char) && (chars[i]._char != NO_CHAR)) {
+				sum = MISMATCH;
+				break;
+			}
 			if (term.charAt(i) == chars[i]._char) {
 				sum++;
 			}
 		}
 		return sum;
-	}
-	//TODO delete
-	public void print() {
-		for (int x=0 ; x<_overlapTable.length ; x++) {
-			for (int y = 0 ; y<_overlapTable[0].length ; y++) {
-				System.out.print(_overlapTable[x][y]._char);
-			}
-			System.out.println();
-		}
-		System.out.println();
-		System.out.println();
-		for (int x=0 ; x<_overlapTable.length ; x++) {
-			for (int y = 0 ; y<_overlapTable[0].length ; y++) {
-				System.out.print(_overlapTable[x][y]._instances);
-			}
-			System.out.println();
-		}
 	}
 	
 	// For debugging purposes
