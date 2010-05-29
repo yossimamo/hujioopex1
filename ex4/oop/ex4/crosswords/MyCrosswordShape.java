@@ -104,13 +104,12 @@ public class MyCrosswordShape implements CrosswordShape, CrosswordVacantEntries 
 		_positions = new HashMap<CrosswordPosition, PositionInfo>();
 		_height = shape.size();
 		_width = shape.get(0).length();
-		_data.add(new TreeSet<CrosswordVacantEntry>());
-		for (int y=0 ; y<shape.size() ; y++) {
+		for (int y = 0; y < shape.size(); y++) {
 			initLineInDatabase(shape.get(y), HORIZONTAL, y);
 		}
-		for (int x=0; x < shape.get(0).length() ; x++) {
+		for (int x = 0; x < shape.get(0).length() ; x++) {
 			StringBuilder currentColumn = new StringBuilder();
-			for (int i=0; i<shape.size() ; i++) {
+			for (int i=0; i < shape.size(); i++) {
 				currentColumn.append(shape.get(i).charAt(x));
 			}
 			initLineInDatabase(currentColumn.toString(), VERTICAL, x);
@@ -118,16 +117,16 @@ public class MyCrosswordShape implements CrosswordShape, CrosswordVacantEntries 
 	}
 	
 	private void initLineInDatabase(String currentLine, boolean isVertical, int otherCoordinate) {
-		for (int i=0 ; i < currentLine.length() ; i++) {
+		for (int i = 0 ; i < currentLine.length() ; i++) {
 			if (currentLine.charAt(i) == '_') {
 				int vacantEntryLength = getVacantEntryLength(currentLine, i);
-				if (_data.size() < vacantEntryLength) {
+				if (_data.size() < vacantEntryLength + 1) {
 					for (int j = _data.size(); j <= vacantEntryLength ; j++) {
 						_data.add(new TreeSet<CrosswordVacantEntry>());
 					}
 				}
 				if (isVertical) {
-					for (int j=0 ; j < vacantEntryLength - 1 ; j++) {
+					for (int j = 0 ; j < vacantEntryLength; j++) {
 						MyCrosswordPosition position = new MyCrosswordPosition(otherCoordinate, i+j, VERTICAL);
 						MyCrosswordVacantEntry entry = new MyCrosswordVacantEntry(position, vacantEntryLength - j);
 						_positions.put(position, new PositionInfo(entry, SlotType.UNUSED_SLOT));
@@ -138,7 +137,7 @@ public class MyCrosswordShape implements CrosswordShape, CrosswordVacantEntries 
 					_positions.put(position, new PositionInfo(null, SlotType.UNUSED_SLOT));
 				}
 				else {
-					for (int j=0 ; j < vacantEntryLength - 1 ; j++) {
+					for (int j = 0; j < vacantEntryLength; j++) {
 						MyCrosswordPosition position = new MyCrosswordPosition(i+j, otherCoordinate, HORIZONTAL);
 						MyCrosswordVacantEntry entry = new MyCrosswordVacantEntry(position, vacantEntryLength - j);
 						_positions.put(position, new PositionInfo(entry, SlotType.UNUSED_SLOT));
