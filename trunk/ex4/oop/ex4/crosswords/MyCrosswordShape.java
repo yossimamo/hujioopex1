@@ -10,6 +10,7 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
 import java.util.TreeSet;
+import java.util.Map.Entry;
 
 /**
  * This is a basic implementation of CrosswordShape stored as list of strings
@@ -126,12 +127,11 @@ public class MyCrosswordShape implements CrosswordShape, CrosswordVacantEntries 
 					}
 				}
 				for (int j = 0 ; j < vacantEntryLength - 1; j++) {
-					MyCrosswordPosition position = new MyCrosswordPosition(isVertical ? otherCoordinate : i + j, isVertical ? i+j : otherCoordinate, isVertical);
+					MyCrosswordPosition position = new MyCrosswordPosition(isVertical ? otherCoordinate : i+j, isVertical ? i+j : otherCoordinate, isVertical);
 					MyCrosswordVacantEntry entry = new MyCrosswordVacantEntry(position, vacantEntryLength - j);
 					_positions.put(position, new PositionInfo(entry, SlotType.UNUSED_SLOT));
 					_data.get(entry.getMaxCapacity()).add(entry);
 				}
-				// This is a vacant entry of length = 1
 				i = i + vacantEntryLength - 1;
 				MyCrosswordPosition position = new MyCrosswordPosition(isVertical ? otherCoordinate : i, isVertical ? i : otherCoordinate, isVertical);
 				_positions.put(position, new PositionInfo(null, SlotType.UNUSED_SLOT));
@@ -167,8 +167,7 @@ public class MyCrosswordShape implements CrosswordShape, CrosswordVacantEntries 
 	}
 	
 	public boolean isFullyOccupied() {
-		// TODO this is wrong
-		return (_data.size() == _usedEntries.size());
+		return (getNumberOfEntries() == _usedEntries.size());
 	}
 	
 	public int getNumberOfEntries() {
@@ -178,6 +177,7 @@ public class MyCrosswordShape implements CrosswordShape, CrosswordVacantEntries 
 		}
 		return numOfEntries;
 	}
+	
 	//TODO check
 	public void addEntry(CrosswordEntry entry) {
 		_usedEntries.add(entry.getPosition());
@@ -192,6 +192,34 @@ public class MyCrosswordShape implements CrosswordShape, CrosswordVacantEntries 
 		int newSize = --_dataLengths[entry.getLength()];
 		if (0 == newSize) {
 			_maxVacantEntryLength = findMaxVacantEntryLength(_maxVacantEntryLength);
+		}
+	}
+	
+	//TODO delete
+	public void print() {
+		boolean prob = true;
+		for (int y=0 ; y<_width ; y++) {
+			for (int x=0 ; x<_height ; x++) {
+				Iterator<Entry<CrosswordPosition, PositionInfo>> it = _positions.entrySet().iterator();
+				prob = true;
+				while (it.hasNext()) {
+					Entry<CrosswordPosition, PositionInfo> next = it.next();
+					if (next.getKey().getX() == x && next.getKey().getY() == y) {
+						
+						if (next.getValue()._slotType == SlotType.UNUSED_SLOT) {
+							System.out.print("_");
+						}
+						else {
+							System.out.print("#");
+						}
+						prob = false;
+						break;
+					}
+				}
+				if (prob) System.out.println("prob");
+			}
+			System.out.println();
+			
 		}
 	}
 	
