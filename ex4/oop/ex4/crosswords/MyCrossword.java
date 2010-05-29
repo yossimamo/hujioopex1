@@ -366,10 +366,6 @@ public class MyCrossword implements Crossword {
 				}
 			}
 
-			public int getMaxCapacity() {
-				return _entry.getMaxCapacity();
-			}
-
 			public CrosswordPosition getPosition() {
 				return _entry.getPosition();
 			}

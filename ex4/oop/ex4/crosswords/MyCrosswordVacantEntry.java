@@ -25,7 +25,7 @@ public class MyCrosswordVacantEntry extends CrosswordVacantEntry {
 					if (this._position.isVertical() == other.getPosition().isVertical()) {
 						return 0;
 					} else {
-						return (this._position.isVertical() ? -1 : 1);
+						return (this._position.isVertical() ? 1 : -1);
 					}
 				} else {
 					return (other.getPosition().getY() - this._position.getY());
