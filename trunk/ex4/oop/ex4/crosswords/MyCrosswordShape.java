@@ -117,46 +117,27 @@ public class MyCrosswordShape implements CrosswordShape, CrosswordVacantEntries 
 	}
 	
 	private void initLineInDatabase(String currentLine, boolean isVertical, int otherCoordinate) {
-		for (int i = 0 ; i < currentLine.length() ; i++) {
+		for (int i = 0; i < currentLine.length(); i++) {
 			if (currentLine.charAt(i) == '_') {
 				int vacantEntryLength = getVacantEntryLength(currentLine, i);
 				if (_data.size() < vacantEntryLength + 1) {
-					for (int j = _data.size(); j <= vacantEntryLength ; j++) {
+					for (int j = _data.size(); j <= vacantEntryLength; j++) {
 						_data.add(new TreeSet<CrosswordVacantEntry>());
 					}
 				}
-				if (isVertical) {
-					for (int j = 0 ; j < vacantEntryLength; j++) {
-						MyCrosswordPosition position = new MyCrosswordPosition(otherCoordinate, i+j, VERTICAL);
-						MyCrosswordVacantEntry entry = new MyCrosswordVacantEntry(position, vacantEntryLength - j);
-						_positions.put(position, new PositionInfo(entry, SlotType.UNUSED_SLOT));
-						_data.get(entry.getMaxCapacity()).add(entry);
-					}
-					i = i + vacantEntryLength - 1;
-					MyCrosswordPosition position = new MyCrosswordPosition(otherCoordinate, i, VERTICAL);
-					_positions.put(position, new PositionInfo(null, SlotType.UNUSED_SLOT));
+				for (int j = 0 ; j < vacantEntryLength; j++) {
+					MyCrosswordPosition position = new MyCrosswordPosition(isVertical ? otherCoordinate : i+j, isVertical ? i+j : otherCoordinate, isVertical);
+					MyCrosswordVacantEntry entry = new MyCrosswordVacantEntry(position, vacantEntryLength - j);
+					_positions.put(position, new PositionInfo(entry, SlotType.UNUSED_SLOT));
+					_data.get(entry.getMaxCapacity()).add(entry);
 				}
-				else {
-					for (int j = 0; j < vacantEntryLength; j++) {
-						MyCrosswordPosition position = new MyCrosswordPosition(i+j, otherCoordinate, HORIZONTAL);
-						MyCrosswordVacantEntry entry = new MyCrosswordVacantEntry(position, vacantEntryLength - j);
-						_positions.put(position, new PositionInfo(entry, SlotType.UNUSED_SLOT));
-						_data.get(entry.getMaxCapacity()).add(entry);
-					}
-					i = i + vacantEntryLength - 1;
-					MyCrosswordPosition position = new MyCrosswordPosition(i, otherCoordinate, HORIZONTAL);
-					_positions.put(position, new PositionInfo(null, SlotType.UNUSED_SLOT));
-				}
+				i = i + vacantEntryLength - 1;
+				MyCrosswordPosition position = new MyCrosswordPosition(isVertical ? otherCoordinate : i, isVertical ? i : otherCoordinate, isVertical);
+				_positions.put(position, new PositionInfo(null, SlotType.UNUSED_SLOT));
 			}
 			else {
-				if (isVertical) {
-					MyCrosswordPosition position = new MyCrosswordPosition(otherCoordinate, i, VERTICAL);
-					_positions.put(position, new PositionInfo(null, SlotType.FRAME_SLOT));
-				}
-				else {
-					MyCrosswordPosition position = new MyCrosswordPosition(i, otherCoordinate, HORIZONTAL);
-					_positions.put(position, new PositionInfo(null, SlotType.FRAME_SLOT));
-				}
+				MyCrosswordPosition position = new MyCrosswordPosition(isVertical ? otherCoordinate : i, isVertical ? i : otherCoordinate, isVertical);
+				_positions.put(position, new PositionInfo(null, SlotType.FRAME_SLOT));
 			}
 		}
 		
