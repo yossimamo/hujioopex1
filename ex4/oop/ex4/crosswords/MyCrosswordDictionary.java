@@ -129,6 +129,10 @@ public class MyCrosswordDictionary implements CrosswordDictionary, CrosswordTerm
 		}
 	}
 	
+	public int getMaxAvailableTermLength() {
+		return _maxAvailableTermLength;
+	}
+	
 	private int findMaxAvailableTermLength(int upperBound) {
 		for (int i = upperBound; i >= 0; i--) {
 			if (_data.get(i).size() > 0) {
@@ -151,8 +155,12 @@ public class MyCrosswordDictionary implements CrosswordDictionary, CrosswordTerm
 	}
 	
 	// Assumes non negative maxLength
-	public Iterator<String> getIterator(int maxLength, boolean isAscending) {
-		return new TermIterator(Math.min(maxLength, _maxAvailableTermLength), isAscending);		
+	public Iterator<String> getIterator(int startingLength, boolean isAscending) {
+		return new TermIterator(Math.min(startingLength, _maxAvailableTermLength), isAscending);		
+	}
+	
+	public Iterator<String> getIterator(int exactLength) {
+		return _data.get(exactLength).keySet().iterator();
 	}
 	
 	// TODO this is almost the same as VacantEntryIterator!!!
@@ -164,8 +172,8 @@ public class MyCrosswordDictionary implements CrosswordDictionary, CrosswordTerm
 		String _next;
 		int _increment;
 		
-		public TermIterator(int maxLength, boolean isAscending) {
-			_currentArrayPos = maxLength;
+		public TermIterator(int startingLength, boolean isAscending) {
+			_currentArrayPos = startingLength;
 			_currentIterator = _data.get(_currentArrayPos).keySet().iterator();
 			_next = null;
 			_increment = isAscending ? 1 : -1;

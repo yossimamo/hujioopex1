@@ -28,10 +28,10 @@ public class MyCrosswordVacantEntry implements CrosswordVacantEntry, Comparable<
 						return (this._position.isVertical() ? -1 : 1);
 					}
 				} else {
-					return (this._position.getY() - other.getPosition().getY());
+					return (other.getPosition().getY() - this._position.getY());
 				}
 			} else {
-				return (this._position.getX() - other.getPosition().getX());
+				return (other.getPosition().getX() - this._position.getX());
 			}
 		} else {
 			return (this._maxCapacity - other.getMaxCapacity());
