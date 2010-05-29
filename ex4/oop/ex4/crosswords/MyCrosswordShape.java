@@ -209,22 +209,32 @@ public class MyCrosswordShape implements CrosswordShape, CrosswordVacantEntries 
 		return new VacantEntryIterator(Math.min(maxLength, _maxVacantEntryLength), isAscending);
 	}
 	
-	public Iterator<MyCrosswordVacantEntry> getIterator(int exactLength) {
-		return _data.get(exactLength).iterator();
+	public Iterator<CrosswordVacantEntry> getIterator(int exactLength) {
+		return new VacantEntryIterator(exactLength);
 	}
 	
+	// TODO this is the same as TermIterator...
 	public class VacantEntryIterator implements Iterator<CrosswordVacantEntry> {
 		
 		private int _currentArrayPos;
 		Iterator<MyCrosswordVacantEntry> _currentIterator;
 		CrosswordVacantEntry _next;
 		int _increment;
+		boolean _isContinuous;
 		
 		public VacantEntryIterator(int maxLength, boolean isAscending) {
+			_isContinuous = true;
 			_currentArrayPos = maxLength;
 			_currentIterator = _data.get(_currentArrayPos).iterator();
 			_next = null;
 			_increment = isAscending ? 1 : -1;
+		}
+		
+		public VacantEntryIterator(int exactLength) {
+			_isContinuous = false;
+			_currentArrayPos = exactLength;
+			_currentIterator = _data.get(_currentArrayPos).iterator();
+			_next = null;
 		}
 
 		public boolean hasNext() {
@@ -236,14 +246,17 @@ public class MyCrosswordShape implements CrosswordShape, CrosswordVacantEntries 
 				if (!isUsed(_next)) {
 					return true;
 				}
-			} 
-			while (arrayPosInBounds()) {
-				_currentArrayPos += _increment;
-				_currentIterator = _data.get(_currentArrayPos).iterator();
-				while (_currentIterator.hasNext()) {
-					_next = _currentIterator.next();
-					if (!isUsed(_next)) {
-						return true;
+			}
+			if (_isContinuous) {
+				// Modify array position length and continue
+				while (arrayPosInBounds()) {
+					_currentArrayPos += _increment;
+					_currentIterator = _data.get(_currentArrayPos).iterator();
+					while (_currentIterator.hasNext()) {
+						_next = _currentIterator.next();
+						if (!isUsed(_next)) {
+							return true;
+						}
 					}
 				}
 			}

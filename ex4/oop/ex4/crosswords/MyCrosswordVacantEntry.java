@@ -1,6 +1,6 @@
 package oop.ex4.crosswords;
 
-public class MyCrosswordVacantEntry implements CrosswordVacantEntry, Comparable<CrosswordVacantEntry> {
+public class MyCrosswordVacantEntry extends CrosswordVacantEntry {
 	
 	private CrosswordPosition _position;
 	private int _maxCapacity;
