@@ -125,12 +125,13 @@ public class MyCrosswordShape implements CrosswordShape, CrosswordVacantEntries 
 						_data.add(new TreeSet<CrosswordVacantEntry>());
 					}
 				}
-				for (int j = 0 ; j < vacantEntryLength; j++) {
-					MyCrosswordPosition position = new MyCrosswordPosition(isVertical ? otherCoordinate : i+j, isVertical ? i+j : otherCoordinate, isVertical);
+				for (int j = 0 ; j < vacantEntryLength - 1; j++) {
+					MyCrosswordPosition position = new MyCrosswordPosition(isVertical ? otherCoordinate : i + j, isVertical ? i+j : otherCoordinate, isVertical);
 					MyCrosswordVacantEntry entry = new MyCrosswordVacantEntry(position, vacantEntryLength - j);
 					_positions.put(position, new PositionInfo(entry, SlotType.UNUSED_SLOT));
 					_data.get(entry.getMaxCapacity()).add(entry);
 				}
+				// This is a vacant entry of length = 1
 				i = i + vacantEntryLength - 1;
 				MyCrosswordPosition position = new MyCrosswordPosition(isVertical ? otherCoordinate : i, isVertical ? i : otherCoordinate, isVertical);
 				_positions.put(position, new PositionInfo(null, SlotType.UNUSED_SLOT));
