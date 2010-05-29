@@ -160,7 +160,7 @@ public class MyCrosswordDictionary implements CrosswordDictionary, CrosswordTerm
 	}
 	
 	public Iterator<String> getIterator(int exactLength) {
-		return _data.get(exactLength).keySet().iterator();
+		return new TermIterator(exactLength);
 	}
 	
 	// TODO this is almost the same as VacantEntryIterator!!!
@@ -171,12 +171,21 @@ public class MyCrosswordDictionary implements CrosswordDictionary, CrosswordTerm
 		Iterator<String> _currentIterator;
 		String _next;
 		int _increment;
+		boolean _isContinuous;
 		
 		public TermIterator(int startingLength, boolean isAscending) {
+			_isContinuous = true;
 			_currentArrayPos = startingLength;
 			_currentIterator = _data.get(_currentArrayPos).keySet().iterator();
 			_next = null;
 			_increment = isAscending ? 1 : -1;
+		}
+		
+		public TermIterator(int exactLength) {
+			_isContinuous = false;
+			_currentArrayPos = exactLength;
+			_currentIterator = _data.get(_currentArrayPos).keySet().iterator();
+			_next = null;
 		}
 		
 		public boolean hasNext() {
@@ -188,17 +197,21 @@ public class MyCrosswordDictionary implements CrosswordDictionary, CrosswordTerm
 				if (!isUsed(_next)) {
 					return true;
 				}
-			} 
-			while (arrayPosInBounds()) {
-				_currentArrayPos += _increment;
-				_currentIterator = _data.get(_currentArrayPos).keySet().iterator();
-				while (_currentIterator.hasNext()) {
-					_next = _currentIterator.next();
-					if (!isUsed(_next)) {
-						return true;
+			}
+			if (_isContinuous) {
+				// Modify array position length and continue
+				while (arrayPosInBounds()) {
+					_currentArrayPos += _increment;
+					_currentIterator = _data.get(_currentArrayPos).keySet().iterator();
+					while (_currentIterator.hasNext()) {
+						_next = _currentIterator.next();
+						if (!isUsed(_next)) {
+							return true;
+						}
 					}
 				}
 			}
+			
 			return false;
 		}
 

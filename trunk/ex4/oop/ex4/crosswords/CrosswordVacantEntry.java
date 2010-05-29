@@ -1,8 +1,9 @@
 package oop.ex4.crosswords;
 
-public interface CrosswordVacantEntry {
+public abstract class CrosswordVacantEntry implements Comparable<CrosswordVacantEntry> {
 	
-	public CrosswordPosition getPosition();
-	public int getMaxCapacity();
+	public abstract CrosswordPosition getPosition();
+	public abstract int getMaxCapacity();
+	public abstract int compareTo(CrosswordVacantEntry other);
 	
 }

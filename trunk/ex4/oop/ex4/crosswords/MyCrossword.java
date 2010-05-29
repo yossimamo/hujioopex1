@@ -250,7 +250,7 @@ public class MyCrossword implements Crossword {
 	
 	public class SmallDictionaryStrategyIterator extends StrategyIterator {
 		
-		private Iterator<MyCrosswordVacantEntry> _entryIt;
+		private Iterator<CrosswordVacantEntry> _entryIt;
 		private Iterator<String> _termIt;
 		private CrosswordEntry _next;
 		private String _currentTerm;
@@ -334,7 +334,7 @@ public class MyCrossword implements Crossword {
 			_currentMatchingEntries = new TreeSet<CrosswordMatchingVacantEntry>();
 			_entryIt = _shape.getIterator(term.length());
 			while (_entryIt.hasNext()) {
-				MyCrosswordVacantEntry entry = _entryIt.next();
+				CrosswordVacantEntry entry = _entryIt.next();
 				try {
 					_currentMatchingEntries.add(new CrosswordMatchingVacantEntry(term, entry));
 				} catch (TermMismatchException e) {
@@ -344,12 +344,12 @@ public class MyCrossword implements Crossword {
 			return _currentMatchingEntries.iterator();
 		}
 		
-		private class CrosswordMatchingVacantEntry implements CrosswordVacantEntry, Comparable<CrosswordMatchingVacantEntry> {
+		private class CrosswordMatchingVacantEntry implements Comparable<CrosswordMatchingVacantEntry> {
 			private int _overlapCount;
 			private String _term;
-			private MyCrosswordVacantEntry _entry;
+			private CrosswordVacantEntry _entry;
 			
-			public CrosswordMatchingVacantEntry(String term, MyCrosswordVacantEntry entry)
+			public CrosswordMatchingVacantEntry(String term, CrosswordVacantEntry entry)
 				throws TermMismatchException {
 				_term = term;
 				_entry = entry;
