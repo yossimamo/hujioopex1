@@ -105,7 +105,7 @@ public class MyCrossword implements Crossword {
 	private int getSumOfAvailableEntries() {
 		//TODO very inefficient
 		int sum = 0;
-		Iterator<CrosswordVacantEntry> vacantEntiesIterator = _shape.getIterator(true);
+		Iterator<CrosswordVacantEntry> vacantEntiesIterator = _shape.getIterator(2, true);
 		while (vacantEntiesIterator.hasNext()) {
 			CrosswordVacantEntry nextEntry =  vacantEntiesIterator.next();
 			// Iterate on terms that are at most as long as the vacant entry
@@ -213,7 +213,7 @@ public class MyCrossword implements Crossword {
 				_currentVacantEntry = _entryIt.next();
 			}
 			if (null == _termIt) {
-				_dict.getIterator(false);
+				_termIt = _dict.getIterator(_currentVacantEntry.getMaxCapacity(), false);
 			}
 			CrosswordEntry ret = matchCurrentVacantEntry();
 			if (null != ret) {
@@ -244,6 +244,10 @@ public class MyCrossword implements Crossword {
 		}
 	}
 	
+	public String toString() {
+		return _overlapManager.toString();
+	}
+	
 	public class SmallDictionaryStrategyIterator extends StrategyIterator {
 		
 		private Iterator<CrosswordVacantEntry> _entryIt;
@@ -253,7 +257,7 @@ public class MyCrossword implements Crossword {
 		
 		
 		public SmallDictionaryStrategyIterator() {
-			_termIt = _dict.getIterator(false);
+			_termIt = _dict.getIterator(_shape.getMaxVacantEntryLength(), false);
 			_next = null;
 		}
 		
@@ -289,7 +293,7 @@ public class MyCrossword implements Crossword {
 				_currentTerm = _termIt.next();
 			}
 			if (null == _entryIt) {
-				_entryIt = _shape.getIterator(false);
+				_entryIt = _shape.getIterator(_currentTerm.length(), true);
 			}
 			CrosswordEntry ret = matchCurrentTerm();
 			if (null != ret) {

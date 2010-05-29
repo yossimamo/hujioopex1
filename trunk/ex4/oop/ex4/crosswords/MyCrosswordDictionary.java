@@ -7,10 +7,13 @@ import java.util.*;
 
 public class MyCrosswordDictionary implements CrosswordDictionary, CrosswordTerms {
 	
+	private static final int MINIMUM_TERM_LENGTH = 2;
+	
 	private ArrayList<TreeMap<String, String>> _data;
+	private int _dataLengths[];
 	private HashSet<String> _usedEntries = new HashSet<String>();
-	private int _maxLength;
-	private int _numOfTotalTerms;
+	private int _maxAvailableTermLength = 0;
+	private int _numOfTerms = 0;
 	
 	public MyCrosswordDictionary() {
 		
@@ -23,8 +26,10 @@ public class MyCrosswordDictionary implements CrosswordDictionary, CrosswordTerm
 		if (null != other._usedEntries) {
 			_usedEntries = (HashSet<String>)other._usedEntries.clone();
 		}
-		
-		_maxLength = other._maxLength;
+		_dataLengths = new int[other._dataLengths.length];
+		System.arraycopy(other._dataLengths, 0, _dataLengths, 0, other._dataLengths.length);
+		_maxAvailableTermLength = other._maxAvailableTermLength;
+		_numOfTerms = other._numOfTerms;
 	}
 
 	/*
@@ -41,7 +46,7 @@ public class MyCrosswordDictionary implements CrosswordDictionary, CrosswordTerm
 	 */
 	public Set<String> getTerms() {
 		Set<String> terms = new TreeSet<String>();
-		for (int i = 0 ; i <= _maxLength ; i++) {
+		for (int i = 0 ; i < _data.size(); i++) {
 			terms.addAll(_data.get(i).keySet());
 		}
 		return terms;
@@ -52,7 +57,6 @@ public class MyCrosswordDictionary implements CrosswordDictionary, CrosswordTerm
 	 * @see oop.ex4.crosswords.CrosswordDictionary#load(java.lang.String)
 	 */
 	public void load(String dictionaryFileName) throws IOException {
-		_maxLength = 0;
 		_data = new ArrayList<TreeMap<String, String>>();
 		HashSet<String> glosCheck=new HashSet<String>();
 		int counter = 1;
@@ -64,7 +68,7 @@ public class MyCrosswordDictionary implements CrosswordDictionary, CrosswordTerm
 				String entryLine = sc.nextLine();
 				if (entryLine.indexOf(':') != -1) {
 					word = entryLine.substring(0, entryLine.indexOf(':'));
-					if (word.length()<2) continue;
+					if (word.length() < MINIMUM_TERM_LENGTH) continue;
 					glos = entryLine.substring(entryLine.indexOf(':') + 1);
 					//Adding stars to repetitive glosses for convenience
 					//if you implement your dictionary you don't have to do it
@@ -74,7 +78,7 @@ public class MyCrosswordDictionary implements CrosswordDictionary, CrosswordTerm
 					//Handling gloss-less files, you don't have to do it
 					//If there is no ":" all glosses represented as numbers
 					word = entryLine;
-					if (word.length()<2) continue;
+					if (word.length() < MINIMUM_TERM_LENGTH) continue;
 					glos = "Dummy" + counter;
 				}
 				//Ignoring repetitive terms
@@ -84,30 +88,54 @@ public class MyCrosswordDictionary implements CrosswordDictionary, CrosswordTerm
 					}
 				}
 				_data.get(word.length()).put(word.toLowerCase(), glos);
-				_maxLength = Math.max(_maxLength, word.length());
 				counter++;
 			}
 		} finally {
 			if (sc != null)
 				sc.close();
 		}
-		_numOfTotalTerms = counter - 1;
+		_numOfTerms = counter - 1;
+		// Initialize terms lengths counter
+		_dataLengths = new int[_data.size()];
+		for (int i = 0; i < _data.size(); i++) {
+			int size = _data.get(i).size();
+			_dataLengths[i] = _data.get(i).size();
+			if (size > 0) {
+				_maxAvailableTermLength = i;
+			}
+		}
 	}
 	
 	public int getNumberOfTerms() {
-		return _numOfTotalTerms;
+		return _numOfTerms;
 	}
 	
 	public boolean isFullyOccupied() {
-		return (_numOfTotalTerms == _usedEntries.size());
+		return (_numOfTerms == _usedEntries.size());
 	}
 	
 	public void addEntry(CrosswordEntry entry) {
 		_usedEntries.add(entry.getTerm());
+		_dataLengths[entry.getLength()]++;
+		_maxAvailableTermLength = Math.max(_maxAvailableTermLength, entry.getLength());
 	}
 
 	public void removeEntry(CrosswordEntry entry) {
+		assert (_dataLengths[entry.getLength()] > 0);
 		_usedEntries.remove(entry.getTerm());
+		int newSize = --_dataLengths[entry.getLength()];
+		if (0 == newSize) {
+			_maxAvailableTermLength = findMaxAvailableTermLength(_maxAvailableTermLength);
+		}
+	}
+	
+	private int findMaxAvailableTermLength(int upperBound) {
+		for (int i = upperBound; i >= 0; i--) {
+			if (_data.get(i).size() > 0) {
+				return i;
+			}
+		}
+		return 0;
 	}
 	
 	private boolean isUsed(String term) {
@@ -119,11 +147,12 @@ public class MyCrosswordDictionary implements CrosswordDictionary, CrosswordTerm
 	}
 	
 	public Iterator<String> getIterator(boolean isAscending) {
-		return new TermIterator(_maxLength, isAscending);
+		return new TermIterator(isAscending ? MINIMUM_TERM_LENGTH : _maxAvailableTermLength, isAscending);
 	}
 	
+	// Assumes non negative maxLength
 	public Iterator<String> getIterator(int maxLength, boolean isAscending) {
-		return new TermIterator(maxLength, isAscending);		
+		return new TermIterator(Math.min(maxLength, _maxAvailableTermLength), isAscending);		
 	}
 	
 	// TODO this is almost the same as VacantEntryIterator!!!

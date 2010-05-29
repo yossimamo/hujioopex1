@@ -83,6 +83,20 @@ public class OverlapManager {
 		}
 	}
 	
+	// For debugging purposes
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		for (int j = 0; j < _overlapTable[0].length; j++) {
+			for (int i = 0; i < _overlapTable.length; i++) {
+				sb.append(' ');
+				sb.append(_overlapTable[i][j]._char);
+				sb.append(' ');
+			}
+			sb.append("\n");
+		}
+		return sb.toString();
+	}
+	
 	private OverlappedChar[] getOverlappedChars(int length,
 			CrosswordPosition position) {
 		OverlappedChar[] overlappedChars = new OverlappedChar[length];
