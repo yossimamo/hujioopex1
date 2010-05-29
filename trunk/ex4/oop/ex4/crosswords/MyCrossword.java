@@ -310,7 +310,6 @@ public class MyCrossword implements Crossword {
 													  _currentTerm,
 													  _dict.getTermDefinition(_currentTerm),
 													  entry.getPosition().isVertical());
-			System.out.println(ret.getTerm() + " at " + ret.getPosition());
 			return ret;
 		}
 		

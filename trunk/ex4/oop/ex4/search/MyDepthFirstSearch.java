@@ -28,7 +28,6 @@ public class MyDepthFirstSearch<B extends SearchBoard<M>, M extends SearchMove> 
 	}
 	
 	private void searchHelper(B board, int maxDepth, long timeOut) {
-		//System.out.println(board.toString()); // TODO remove print
 		if (_shouldStop) {
 			return;
 		}
