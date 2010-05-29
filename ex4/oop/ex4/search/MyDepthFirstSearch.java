@@ -28,6 +28,7 @@ public class MyDepthFirstSearch<B extends SearchBoard<M>, M extends SearchMove> 
 	}
 	
 	private void searchHelper(B board, int maxDepth, long timeOut) {
+		//System.out.println(board.toString()); // TODO remove print
 		if (_shouldStop) {
 			return;
 		}
@@ -38,8 +39,14 @@ public class MyDepthFirstSearch<B extends SearchBoard<M>, M extends SearchMove> 
 		if ((maxDepth < _lastMoves.size()) ||
 				(board.getQualityBound() <= _bestQuality)) {
 			// This direction is either too deep, or of a lower quality
-			board.undoMove(_lastMoves.pop());
-			return;
+			if (!_lastMoves.empty()) {
+				board.undoMove(_lastMoves.pop());
+				return;
+			} else {
+				// We are at square one and there does not seem to be a better solution
+				_shouldStop = true;
+				return;
+			}
 		}
 		int currentBoardQuality = board.getQuality();
 		if (currentBoardQuality > _bestQuality) {
@@ -65,6 +72,10 @@ public class MyDepthFirstSearch<B extends SearchBoard<M>, M extends SearchMove> 
 		}
 		if (!_lastMoves.empty()) {
 			board.undoMove(_lastMoves.pop());
+			return;
+		} else {
+			_shouldStop = true;
+			return;
 		}
 	}
 	
