@@ -26,6 +26,7 @@ public class MyCrosswordShape implements CrosswordShape, CrosswordVacantEntries 
 	private HashMap<CrosswordPosition, CrosswordVacantEntry> _initialVacantEntries;
 	private HashSet<CrosswordPosition> _usedEntries = new HashSet<CrosswordPosition>();
 	private int _maxVacantEntryLength = 0;
+	private int _numOfEntries = 0;
 	
 	public MyCrosswordShape() {
 		
@@ -118,6 +119,8 @@ public class MyCrosswordShape implements CrosswordShape, CrosswordVacantEntries 
 						CrosswordPosition entryPos = new MyCrosswordPosition(i, j, true); 
 						MyCrosswordVacantEntry vacantEntry = new MyCrosswordVacantEntry(entryPos, entryLength);
 						_data.get(entryLength).add(vacantEntry);
+						// Let the put operation overwrite the previous vacant entry associated with
+						// this position, since the current one is longer
 						_initialVacantEntries.put(entryPos, vacantEntry);
 					}
 					pos = new MyCrosswordPosition(i, j+entryLength, true);
@@ -137,8 +140,9 @@ public class MyCrosswordShape implements CrosswordShape, CrosswordVacantEntries 
 						CrosswordPosition entryPos = new MyCrosswordPosition(i, j, false); 
 						MyCrosswordVacantEntry vacantEntry = new MyCrosswordVacantEntry(entryPos, entryLength);
 						_data.get(entryLength).add(vacantEntry);
-						_initialVacantEntries.put(entryPos, vacantEntry);
-					}
+						// Let the put operation overwrite the previous vacant entry associated with
+						// this position, since the current one is longer
+						_initialVacantEntries.put(entryPos, vacantEntry);					}
 					pos = new MyCrosswordPosition(i+entryLength, j, false);
 				}
 			}
@@ -152,6 +156,7 @@ public class MyCrosswordShape implements CrosswordShape, CrosswordVacantEntries 
 			if (size > 0) {
 				_maxVacantEntryLength = i;
 			}
+			_numOfEntries += size;
 		}
 	}
 	
@@ -160,11 +165,11 @@ public class MyCrosswordShape implements CrosswordShape, CrosswordVacantEntries 
 	}
 	
 	public boolean isFullyOccupied() {
-		return (_initialVacantEntries.size() == _usedEntries.size());
+		return (_numOfEntries == _usedEntries.size());
 	}
 	
 	public int getNumberOfEntries() {
-		return _initialVacantEntries.size();
+		return _numOfEntries;
 	}
 	
 	public void addEntry(CrosswordEntry entry) {
@@ -184,7 +189,7 @@ public class MyCrosswordShape implements CrosswordShape, CrosswordVacantEntries 
 	//TODO can use _dataLengths?
 	private int findMaxVacantEntryLength(int upperBound) {
 		for (int i = upperBound; i >= 0; i--) {
-			if (_data.get(i).size() > 0) {
+			if (_dataLengths[i] > 0) {
 				return i;
 			}
 		}
