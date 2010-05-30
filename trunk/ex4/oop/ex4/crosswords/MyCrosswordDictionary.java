@@ -13,6 +13,7 @@ public class MyCrosswordDictionary implements CrosswordDictionary, CrosswordTerm
 	private int _dataLengths[];
 	private HashSet<String> _usedEntries = new HashSet<String>();
 	private int _maxAvailableTermLength = 0;
+	private int _minAvailableTermLength = 0;
 	private int _numOfTerms = 0;
 	
 	public MyCrosswordDictionary() {
@@ -29,6 +30,7 @@ public class MyCrosswordDictionary implements CrosswordDictionary, CrosswordTerm
 		_dataLengths = new int[other._dataLengths.length];
 		System.arraycopy(other._dataLengths, 0, _dataLengths, 0, other._dataLengths.length);
 		_maxAvailableTermLength = other._maxAvailableTermLength;
+		_minAvailableTermLength = other._minAvailableTermLength;
 		_numOfTerms = other._numOfTerms;
 	}
 
@@ -104,6 +106,7 @@ public class MyCrosswordDictionary implements CrosswordDictionary, CrosswordTerm
 				_maxAvailableTermLength = i;
 			}
 		}
+		_minAvailableTermLength = findMinAvailableTermLength(_minAvailableTermLength);
 	}
 	
 	public int getNumberOfTerms() {
@@ -118,6 +121,7 @@ public class MyCrosswordDictionary implements CrosswordDictionary, CrosswordTerm
 		_usedEntries.add(entry.getTerm());
 		_dataLengths[entry.getLength()]++;
 		_maxAvailableTermLength = Math.max(_maxAvailableTermLength, entry.getLength());
+		_minAvailableTermLength = Math.min(_minAvailableTermLength, entry.getLength());
 	}
 
 	public void removeEntry(CrosswordEntry entry) {
@@ -126,6 +130,7 @@ public class MyCrosswordDictionary implements CrosswordDictionary, CrosswordTerm
 		int newSize = --_dataLengths[entry.getLength()];
 		if (0 == newSize) {
 			_maxAvailableTermLength = findMaxAvailableTermLength(_maxAvailableTermLength);
+			_minAvailableTermLength = findMinAvailableTermLength(_minAvailableTermLength);
 		}
 	}
 	
@@ -133,8 +138,21 @@ public class MyCrosswordDictionary implements CrosswordDictionary, CrosswordTerm
 		return _maxAvailableTermLength;
 	}
 	
+	public int getMinAvailableTermLength() {
+		return _minAvailableTermLength;
+	}
+	
 	private int findMaxAvailableTermLength(int upperBound) {
 		for (int i = upperBound; i >= 0; i--) {
+			if (_data.get(i).size() > 0) {
+				return i;
+			}
+		}
+		return 0;
+	}
+	
+	private int findMinAvailableTermLength(int lowerBound) {
+		for (int i = lowerBound; i < _data.size(); i++) {
 			if (_data.get(i).size() > 0) {
 				return i;
 			}
@@ -150,17 +168,8 @@ public class MyCrosswordDictionary implements CrosswordDictionary, CrosswordTerm
 		}
 	}
 	
-	public Iterator<String> getIterator(boolean isAscending) {
-		return new TermIterator(isAscending ? MINIMUM_TERM_LENGTH : _maxAvailableTermLength, isAscending);
-	}
-	
-	// Assumes non negative maxLength
-	public Iterator<String> getIterator(int startingLength, boolean isAscending) {
-		return new TermIterator(Math.min(startingLength, _maxAvailableTermLength), isAscending);		
-	}
-	
-	public Iterator<String> getIterator(int exactLength) {
-		return new TermIterator(exactLength);
+	public Iterator<String> getIterator(int startLength, int endLength) {
+		return new TermIterator(startLength, endLength);
 	}
 	
 	// TODO this is almost the same as VacantEntryIterator!!!
@@ -168,24 +177,25 @@ public class MyCrosswordDictionary implements CrosswordDictionary, CrosswordTerm
 	public class TermIterator implements Iterator<String> {
 		
 		private int _currentArrayPos;
-		Iterator<String> _currentIterator;
-		String _next;
-		int _increment;
-		boolean _isContinuous;
+		private int _lastArrayPos;
+		private Iterator<String> _currentIterator;
+		private String _next;
+		private int _increment;
+		private boolean _isContinuous;
 		
-		public TermIterator(int startingLength, boolean isAscending) {
-			_isContinuous = true;
-			_currentArrayPos = startingLength;
+		public TermIterator(int startLength, int endLength) {
+			if ((startLength < 0) || (endLength >= _data.size())) {
+				throw new IndexOutOfBoundsException();
+			}
+			if (startLength != endLength) {
+				_isContinuous = true;
+				_increment = startLength < endLength ? 1 : -1;
+			} else {
+				_isContinuous = false;
+			}
+			_currentArrayPos = startLength;
+			_lastArrayPos = endLength;
 			_currentIterator = _data.get(_currentArrayPos).keySet().iterator();
-			_next = null;
-			_increment = isAscending ? 1 : -1;
-		}
-		
-		public TermIterator(int exactLength) {
-			_isContinuous = false;
-			_currentArrayPos = exactLength;
-			_currentIterator = _data.get(_currentArrayPos).keySet().iterator();
-			_next = null;
 		}
 		
 		public boolean hasNext() {
@@ -230,10 +240,10 @@ public class MyCrosswordDictionary implements CrosswordDictionary, CrosswordTerm
 		}
 		
 		private boolean arrayPosInBounds() {
-			if ((_increment > 0) && (_currentArrayPos + _increment >= _data.size())) {
+			if ((_increment > 0) && (_currentArrayPos + _increment >= _lastArrayPos)) {
 				return false;
 			}
-			if ((_increment < 0) && (_currentArrayPos + _increment < 0)) {
+			if ((_increment < 0) && (_currentArrayPos + _increment < _lastArrayPos)) {
 				return false;
 			}
 			return true;

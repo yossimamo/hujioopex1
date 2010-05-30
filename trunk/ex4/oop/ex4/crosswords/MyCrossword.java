@@ -37,9 +37,11 @@ public class MyCrossword implements Crossword {
 	private void determineStrategy() {
 		if (_shape.getNumberOfEntries() <= _dict.getNumberOfTerms()) {
 			_strategyType = StrategyType.SMALL_GRID_STRATEGY;
+			// System.out.println("Small Grid");// TODO remove print
 		}
 		else {
 			_strategyType = StrategyType.SMALL_DICTIONARY_STRATEGY;
+			// System.out.println("Small Dictionary"); // TODO remove print
 		}
 	}
 
@@ -105,26 +107,33 @@ public class MyCrossword implements Crossword {
 
 	private int getSumOfAvailableEntries() {
 		//TODO very inefficient
+		// long startTime = System.currentTimeMillis();
+		HashSet<MyCrosswordPosition> positionHashset = new HashSet<MyCrosswordPosition>();
 		int sum = 0;
-		Iterator<CrosswordVacantEntry> vacantEntiesIterator = _shape.getIterator(2, true);
-		while (vacantEntiesIterator.hasNext()) {
-			CrosswordVacantEntry nextEntry =  vacantEntiesIterator.next();
-			// Iterate on terms that are at most as long as the vacant entry
-			Iterator<String> termsIterator = _dict.getIterator(nextEntry.getMaxCapacity(), false);
+		int minTermLength = _dict.getMinAvailableTermLength();
+		Iterator<CrosswordVacantEntry> vacantEntriesIterator = _shape.getIterator(minTermLength, true);
+		while (vacantEntriesIterator.hasNext()) {
+			CrosswordVacantEntry nextEntry =  vacantEntriesIterator.next();
+			if (positionHashset.contains(nextEntry.getPosition())) continue;
+			// Iterate only on terms that are exactly as long as the vacant entry
+			Iterator<String> termsIterator = _dict.getIterator(nextEntry.getMaxCapacity(), nextEntry.getMaxCapacity());
 			while (termsIterator.hasNext()) {
 				if (_overlapManager.isMatch(termsIterator.next(), nextEntry )) {
+					positionHashset.add((MyCrosswordPosition)nextEntry.getPosition());
 					sum+= nextEntry.getMaxCapacity();
 					break;
 				}
 			}
 		}
+		// System.out.printf("getSumOfAvailableEntries took: %d ms\n", System.currentTimeMillis() - startTime);
 		return sum;
 	}
 	
 	private int getSumOfAvailableWords() {
 		//TODO very inefficient. maybe can use in common with previous function
+		long startTime = System.currentTimeMillis();
 		int sum = 0;
-		Iterator<String> termsIterator = _dict.getIterator(false);
+		Iterator<String> termsIterator = _dict.getIterator(_dict.getMaxAvailableTermLength(), _dict.getMinAvailableTermLength());
 		while (termsIterator.hasNext()) {
 			String nextTerm =  termsIterator.next();
 			// Iterate on vacant entries that are at least as long as the term
@@ -137,6 +146,7 @@ public class MyCrossword implements Crossword {
 				}
 			}
 		}
+		//System.out.printf("getSumOfAvailableWords took: %d ms\n", System.currentTimeMillis() - startTime);
 		return sum;
 	}
 
@@ -211,18 +221,23 @@ public class MyCrossword implements Crossword {
 		private CrosswordEntry findNextMove() {
 			if (null == _currentVacantEntry) {
 				_currentVacantEntry = _entryIt.next();
+				//System.out.printf("Current vacant entry: %s\n", _currentVacantEntry);
 			}
 			if (null == _termIt) {
-				_termIt = _dict.getIterator(_currentVacantEntry.getMaxCapacity(), false);
+				_termIt = _dict.getIterator(_currentVacantEntry.getMaxCapacity(), _dict.getMinAvailableTermLength());
 			}
 			CrosswordEntry ret = matchCurrentVacantEntry();
 			if (null != ret) {
+				//System.out.printf("Current match: %s\n", ret);
 				return ret;
 			}
 			while (_entryIt.hasNext()) {
 				_currentVacantEntry = _entryIt.next();
+				_termIt = _dict.getIterator(_currentVacantEntry.getMaxCapacity(), _dict.getMinAvailableTermLength());
+				//System.out.printf("Current vacant entry: %s\n", _currentVacantEntry);
 				ret = matchCurrentVacantEntry();
 				if (null != ret) {
+					//System.out.printf("Current match: %s\n", ret);
 					return ret;
 				}
 			}
@@ -232,6 +247,7 @@ public class MyCrossword implements Crossword {
 		private CrosswordEntry matchCurrentVacantEntry() {
 			while (_termIt.hasNext()) {
 				String term = _termIt.next();
+				// TODO System.out.printf("Current term: %s\n", term);
 				if (_overlapManager.isMatch(term, _currentVacantEntry)) {
 					CrosswordPosition pos = _currentVacantEntry.getPosition();
 					return new MyCrosswordEntry(pos.getX(),
@@ -256,12 +272,11 @@ public class MyCrossword implements Crossword {
 		private String _currentTerm;
 		private TreeSet<CrosswordMatchingVacantEntry> _currentMatchingEntries;
 		private Iterator<CrosswordMatchingVacantEntry> _matchingEntriesIt;
-		private int _currentTermLength;
 		
 		public SmallDictionaryStrategyIterator() {
 			// No point in trying to match words that are longer than the longest vacant entry
-			_currentTermLength = Math.min(_dict.getMaxAvailableTermLength(), _shape.getMaxVacantEntryLength());
-			_termIt = _dict.getIterator(_currentTermLength);
+			int startingTermLength = Math.min(_dict.getMaxAvailableTermLength(), _shape.getMaxVacantEntryLength());
+			_termIt = _dict.getIterator(startingTermLength, _dict.getMinAvailableTermLength());
 			_next = null;
 		}
 		
@@ -294,14 +309,14 @@ public class MyCrossword implements Crossword {
 		
 		private CrosswordEntry findNextMove() {
 			if (null == _currentTerm) {
-				_currentTerm = getNextTerm();
+				_currentTerm = _termIt.next();
 			}
 			if (null == _matchingEntriesIt) {
 				_matchingEntriesIt = getMatchingEntriesIterator(_currentTerm);
 			}
 			
 			while (!_matchingEntriesIt.hasNext()) {
-				_currentTerm = getNextTerm();
+				_currentTerm = _termIt.next();
 				_matchingEntriesIt = getMatchingEntriesIterator(_currentTerm);
 			}
 			CrosswordMatchingVacantEntry entry = _matchingEntriesIt.next();
@@ -311,22 +326,6 @@ public class MyCrossword implements Crossword {
 													  _dict.getTermDefinition(_currentTerm),
 													  entry.getPosition().isVertical());
 			return ret;
-		}
-		
-		private String getNextTerm() {
-			if (_termIt.hasNext()) {
-				return _termIt.next();
-			} else {
-				do {
-					_termIt = _dict.getIterator(--_currentTermLength);
-					// TODO change 2 into constant
-				} while ((_currentTermLength >= 2) && ((!_termIt.hasNext())));
-				if (_termIt.hasNext()) {
-					return _termIt.next();
-				} else {
-					throw new NoSuchElementException();
-				}
-			}
 		}
 		
 		private Iterator<CrosswordMatchingVacantEntry> getMatchingEntriesIterator(String term) {
