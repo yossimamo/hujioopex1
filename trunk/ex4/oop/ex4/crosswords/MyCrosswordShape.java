@@ -160,8 +160,7 @@ public class MyCrosswordShape implements CrosswordShape, CrosswordVacantEntries 
 	}
 	
 	public boolean isFullyOccupied() {
-		// TODO this is wrong
-		return (_data.size() == _usedEntries.size());
+		return (_initialVacantEntries.size() == _usedEntries.size());
 	}
 	
 	public int getNumberOfEntries() {
@@ -182,7 +181,7 @@ public class MyCrosswordShape implements CrosswordShape, CrosswordVacantEntries 
 			_maxVacantEntryLength = findMaxVacantEntryLength(_maxVacantEntryLength);
 		}
 	}
-	
+	//TODO can use _dataLengths?
 	private int findMaxVacantEntryLength(int upperBound) {
 		for (int i = upperBound; i >= 0; i--) {
 			if (_data.get(i).size() > 0) {
