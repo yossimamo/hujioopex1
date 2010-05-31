@@ -27,20 +27,20 @@ public class MyCrossword implements Crossword {
 		}
 	}
 
+	public void attachShape(CrosswordShape shape) {
+		_shape = (MyCrosswordShape)shape;
+		_overlapManager = new MyCrosswordOverlapManager(_shape.getWidth(), _shape.getHeight());
+		if (null != _dict) {
+			determineStrategy();
+		}
+	}
+	
 	private void determineStrategy() {
 		if (_shape.getNumberOfEntries() <= _dict.getNumberOfTerms()) {
 			_strategy = new SmallGridStrategy(_shape, _dict, _overlapManager);
 		} else {
 			_strategy = new SmallDictionaryStrategy(_shape, _dict, _overlapManager);
 		}
-	}
-
-	public void attachShape(CrosswordShape shape) {
-		_shape = (MyCrosswordShape)shape;
-		if (null != _dict) {
-			determineStrategy();
-		}
-		 _overlapManager = new MyCrosswordOverlapManager(_shape.getWidth(), _shape.getHeight());
 	}
 
 	public Collection<CrosswordEntry> getCrosswordEntries() {
