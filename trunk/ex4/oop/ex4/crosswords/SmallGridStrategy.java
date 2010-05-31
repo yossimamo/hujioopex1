@@ -51,8 +51,7 @@ public class SmallGridStrategy implements CrosswordStrategy {
 	}
 
 	public Iterator<CrosswordEntry> getIterator() {
-		// TODO Auto-generated method stub
-		return null;
+		return new SmallGridStrategyIterator(_shape, _dict, _overlapManager);
 	}
 
 }
