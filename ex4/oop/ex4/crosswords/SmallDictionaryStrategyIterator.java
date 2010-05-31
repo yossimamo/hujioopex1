@@ -4,7 +4,7 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.TreeSet;
 
-public class SmallDictionaryStrategyIterator extends StrategyIterator {
+public class SmallDictionaryStrategyIterator extends CrosswordStrategyIterator {
 		
 	private CrosswordVacantEntries _shape;
 	private CrosswordTerms _dict;
