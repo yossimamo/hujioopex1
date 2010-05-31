@@ -3,9 +3,9 @@ package oop.ex4.crosswords;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-import oop.ex4.crosswords.StrategyIterator;
+import oop.ex4.crosswords.CrosswordStrategyIterator;
 
-public class SmallGridStrategyIterator extends StrategyIterator {
+public class SmallGridStrategyIterator extends CrosswordStrategyIterator {
 	
 	private CrosswordTerms _dict;
 	private CrosswordOverlapManager _overlapManager;
@@ -78,7 +78,6 @@ public class SmallGridStrategyIterator extends StrategyIterator {
 	private CrosswordEntry matchCurrentVacantEntry() {
 		while (_termIt.hasNext()) {
 			String term = _termIt.next();
-			// TODO System.out.printf("Current term: %s\n", term);
 			if (_overlapManager.isMatch(term, _currentVacantEntry)) {
 				CrosswordPosition pos = _currentVacantEntry.getPosition();
 				return new MyCrosswordEntry(pos.getX(),
