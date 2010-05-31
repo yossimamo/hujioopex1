@@ -1,12 +1,12 @@
 package oop.ex4.crosswords;
 
-public class OverlapManager {
+public class MyCrosswordOverlapManager implements CrosswordOverlapManager {
 	
 	public static final int MISMATCH = -1;
 	private static final char NO_CHAR = '\0';
 	private OverlappedChar _overlapTable[][];	
 
-	public OverlapManager(int width, int height) {
+	public MyCrosswordOverlapManager(int width, int height) {
 		_overlapTable = new OverlappedChar[width][height];
 		for (int i = 0; i < width; i++) {
 			for (int j = 0; j < height; j++) {
@@ -15,7 +15,7 @@ public class OverlapManager {
 		}
 	}
 	
-	public OverlapManager(OverlapManager other) {
+	public MyCrosswordOverlapManager(MyCrosswordOverlapManager other) {
 		int width = other._overlapTable.length;
 		int height = other._overlapTable[0].length;
 		_overlapTable = new OverlappedChar[width][height];

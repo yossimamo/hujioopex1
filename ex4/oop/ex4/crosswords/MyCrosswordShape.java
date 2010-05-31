@@ -26,6 +26,7 @@ public class MyCrosswordShape implements CrosswordShape, CrosswordVacantEntries 
 	private HashMap<CrosswordPosition, CrosswordVacantEntry> _initialVacantEntries;
 	private HashSet<CrosswordPosition> _usedEntries = new HashSet<CrosswordPosition>();
 	private int _maxVacantEntryLength = 0;
+	private int _totalEntryLengthsSum = 0;
 	private int _numOfEntries = 0;
 	
 	public MyCrosswordShape() {
@@ -157,7 +158,12 @@ public class MyCrosswordShape implements CrosswordShape, CrosswordVacantEntries 
 				_maxVacantEntryLength = i;
 			}
 			_numOfEntries += size;
+			_totalEntryLengthsSum += i*size;
 		}
+	}
+	
+	public int getTotalEntryLengthsSum() {
+		return _totalEntryLengthsSum;
 	}
 	
 	public int getMaxCapacity(CrosswordPosition pos) {
