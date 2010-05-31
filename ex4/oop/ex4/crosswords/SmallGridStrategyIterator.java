@@ -18,7 +18,7 @@ public class SmallGridStrategyIterator extends StrategyIterator {
 	public SmallGridStrategyIterator(CrosswordVacantEntries shape, CrosswordTerms dict, CrosswordOverlapManager overlapManager) {
 		_dict = dict;
 		_overlapManager = overlapManager;
-		_entryIt = shape.getIterator(false);
+		_entryIt = shape.getIterator(shape.getMaxVacantEntryLength(), shape.getMinVacantEntryLength());
 		_next = null;
 	}
 	
