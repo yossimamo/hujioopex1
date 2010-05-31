@@ -11,6 +11,8 @@ import java.util.List;
 import java.util.Scanner;
 import java.util.TreeSet;
 
+import oop.ex4.crosswords.CrosswordShape.SlotType;
+
 /**
  * This is a basic implementation of CrosswordShape stored as list of strings
  * 
@@ -18,6 +20,8 @@ import java.util.TreeSet;
  */
 public class MyCrosswordShape implements CrosswordShape, CrosswordVacantEntries, PartitionedDataCollection<CrosswordVacantEntry> {
 	private static final int MINIMUM_ENTRY_LENGTH = 2;
+	private static final boolean HORIZONTAL = false;
+	private static final boolean VERTICAL = true;
 	
 	protected List<String> _oldData = new ArrayList<String>();
 	private ArrayList<TreeSet<CrosswordVacantEntry>> _data;
@@ -108,48 +112,16 @@ public class MyCrosswordShape implements CrosswordShape, CrosswordVacantEntries,
 			_data.add(new TreeSet<CrosswordVacantEntry>());
 		}
 		_initialVacantEntries = new HashMap<CrosswordPosition, CrosswordVacantEntry>();
-		
-		// TODO inefficient
-		// Vertical spaces
-		for (int i = 0; i < getWidth(); i++) {
-			for (int j = 0; j < getHeight(); j++) {
-				int entryLength = 0;
-				CrosswordPosition pos = new MyCrosswordPosition(i, j+entryLength, true);
-				while (SlotType.UNUSED_SLOT == getSlotType(pos)) {
-					entryLength++;
-					if (entryLength >= MINIMUM_ENTRY_LENGTH) {
-						CrosswordPosition entryPos = new MyCrosswordPosition(i, j, true); 
-						MyCrosswordVacantEntry vacantEntry = new MyCrosswordVacantEntry(entryPos, entryLength);
-						_data.get(entryLength).add(vacantEntry);
-						// Let the put operation overwrite the previous vacant entry associated with
-						// this position, since the current one is longer
-						_initialVacantEntries.put(entryPos, vacantEntry);
-					}
-					pos = new MyCrosswordPosition(i, j+entryLength, true);
-				}
-			}
+		for (int y = 0; y < _oldData.size(); y++) {
+			initLineInDatabase(_oldData.get(y), HORIZONTAL, y);
 		}
-
-		// TODO inefficient
-		// Horizontal spaces
-		for (int j = 0; j < getHeight(); j++) {
-			for (int i = 0; i < getWidth(); i++) {
-				int entryLength = 0;
-				CrosswordPosition pos = new MyCrosswordPosition(i+entryLength, j, false);
-				while (SlotType.UNUSED_SLOT == getSlotType(pos)) {
-					entryLength++;
-					if (entryLength >= MINIMUM_ENTRY_LENGTH) {
-						CrosswordPosition entryPos = new MyCrosswordPosition(i, j, false); 
-						MyCrosswordVacantEntry vacantEntry = new MyCrosswordVacantEntry(entryPos, entryLength);
-						_data.get(entryLength).add(vacantEntry);
-						// Let the put operation overwrite the previous vacant entry associated with
-						// this position, since the current one is longer
-						_initialVacantEntries.put(entryPos, vacantEntry);					}
-					pos = new MyCrosswordPosition(i+entryLength, j, false);
-				}
+		for (int x = 0; x < _oldData.get(0).length() ; x++) {
+			StringBuilder currentColumn = new StringBuilder();
+			for (int i=0; i < _oldData.size(); i++) {
+				currentColumn.append(_oldData.get(i).charAt(x));
 			}
+			initLineInDatabase(currentColumn.toString(), VERTICAL, x);
 		}
-		
 		// Initialize vacant entries lengths counter
 		_dataLengths = new int[_data.size()];
 		for (int i = 0; i < _data.size(); i++) {
@@ -162,6 +134,42 @@ public class MyCrosswordShape implements CrosswordShape, CrosswordVacantEntries,
 			_totalEntryLengthsSum += i*size;
 		}
 		_minVacantEntryLength = findMinVacantEntryLength(_minVacantEntryLength);
+	}
+	
+	
+
+	private void initLineInDatabase(String currentLine, boolean isVertical, int otherCoordinate) {
+		for (int i = 0; i < currentLine.length(); i++) {
+			if (currentLine.charAt(i) == '_') {
+				int vacantEntryMaxLength = getVacantEntryMaxLength(currentLine, i);
+				//adds more treesets to the array list if the vacant entry
+				//is the longest so far
+				if (_data.size() < vacantEntryMaxLength + 1) {
+					for (int j = _data.size(); j <= vacantEntryMaxLength; j++) {
+						_data.add(new TreeSet<CrosswordVacantEntry>());
+					}
+				}
+				for (int j = 0 ; j < vacantEntryMaxLength - 1; j++) {
+					MyCrosswordPosition position = new MyCrosswordPosition(isVertical ? otherCoordinate : i+j, isVertical ? i+j : otherCoordinate, isVertical);
+					for (int k =1 ; k < vacantEntryMaxLength - j ; k++) {
+						
+						MyCrosswordVacantEntry entry = new MyCrosswordVacantEntry(position, k + 1);
+						_initialVacantEntries.put(position, new MyCrosswordVacantEntry(position, k+1));
+						_data.get(entry.getMaxCapacity()).add(entry);
+					}
+				}
+				i = i + vacantEntryMaxLength + 1;
+			}
+		}
+	}
+
+	private int getVacantEntryMaxLength(String currentLine, int indexInLine) {
+		int vacantEntryLength = 0;
+		while ((indexInLine < currentLine.length()) && (currentLine.charAt(indexInLine) == '_')) {
+			indexInLine++;
+			vacantEntryLength++;
+		} 
+		return vacantEntryLength;
 	}
 	
 	public int getTotalEntryLengthsSum() {
