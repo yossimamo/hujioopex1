@@ -8,7 +8,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Scanner;
 import java.util.TreeSet;
 
@@ -17,15 +16,16 @@ import java.util.TreeSet;
  * 
  * @author Dmitry
  */
-public class MyCrosswordShape implements CrosswordShape, CrosswordVacantEntries {
+public class MyCrosswordShape implements CrosswordShape, CrosswordVacantEntries, PartitionedDataCollection<CrosswordVacantEntry> {
 	private static final int MINIMUM_ENTRY_LENGTH = 2;
 	
 	protected List<String> _oldData = new ArrayList<String>();
-	private ArrayList<TreeSet<MyCrosswordVacantEntry>> _data;
+	private ArrayList<TreeSet<CrosswordVacantEntry>> _data;
 	private int _dataLengths[];
 	private HashMap<CrosswordPosition, CrosswordVacantEntry> _initialVacantEntries;
 	private HashSet<CrosswordPosition> _usedEntries = new HashSet<CrosswordPosition>();
 	private int _maxVacantEntryLength = 0;
+	private int _minVacantEntryLength = 0;
 	private int _totalEntryLengthsSum = 0;
 	private int _numOfEntries = 0;
 	
@@ -35,7 +35,7 @@ public class MyCrosswordShape implements CrosswordShape, CrosswordVacantEntries 
 	
 	public MyCrosswordShape(MyCrosswordShape other) {
 		if (null != other._data) {
-			_data = (ArrayList<TreeSet<MyCrosswordVacantEntry>>)other._data.clone();
+			_data = (ArrayList<TreeSet<CrosswordVacantEntry>>)other._data.clone();
 		}
 		if (null != other._initialVacantEntries) {
 			_initialVacantEntries = (HashMap<CrosswordPosition, CrosswordVacantEntry>)other._initialVacantEntries.clone();
@@ -46,6 +46,7 @@ public class MyCrosswordShape implements CrosswordShape, CrosswordVacantEntries 
 		_dataLengths = new int[other._dataLengths.length];
 		System.arraycopy(other._dataLengths, 0, _dataLengths, 0, other._dataLengths.length);
 		_maxVacantEntryLength = other._maxVacantEntryLength;
+		_minVacantEntryLength = other._minVacantEntryLength;
 	}
 
 	/*
@@ -102,9 +103,9 @@ public class MyCrosswordShape implements CrosswordShape, CrosswordVacantEntries 
 		}
 		int maxCapacity = Math.max(getHeight(), getWidth());
 		assert(0 < maxCapacity);
-		_data = new ArrayList<TreeSet<MyCrosswordVacantEntry>>(maxCapacity);
+		_data = new ArrayList<TreeSet<CrosswordVacantEntry>>(maxCapacity);
 		for (int i = 0; i <= maxCapacity; i++) {
-			_data.add(new TreeSet<MyCrosswordVacantEntry>());
+			_data.add(new TreeSet<CrosswordVacantEntry>());
 		}
 		_initialVacantEntries = new HashMap<CrosswordPosition, CrosswordVacantEntry>();
 		
@@ -160,6 +161,7 @@ public class MyCrosswordShape implements CrosswordShape, CrosswordVacantEntries 
 			_numOfEntries += size;
 			_totalEntryLengthsSum += i*size;
 		}
+		_minVacantEntryLength = findMinVacantEntryLength(_minVacantEntryLength);
 	}
 	
 	public int getTotalEntryLengthsSum() {
@@ -178,6 +180,10 @@ public class MyCrosswordShape implements CrosswordShape, CrosswordVacantEntries 
 		return _numOfEntries;
 	}
 	
+	public int getMaxVacantEntryLength() {
+		return _maxVacantEntryLength;
+	}
+	
 	public void addEntry(CrosswordEntry entry) {
 		_usedEntries.add(entry.getPosition());
 		_dataLengths[entry.getLength()]++;
@@ -192,7 +198,7 @@ public class MyCrosswordShape implements CrosswordShape, CrosswordVacantEntries 
 			_maxVacantEntryLength = findMaxVacantEntryLength(_maxVacantEntryLength);
 		}
 	}
-	//TODO can use _dataLengths?
+
 	private int findMaxVacantEntryLength(int upperBound) {
 		for (int i = upperBound; i >= 0; i--) {
 			if (_dataLengths[i] > 0) {
@@ -202,7 +208,16 @@ public class MyCrosswordShape implements CrosswordShape, CrosswordVacantEntries 
 		return 0;
 	}
 	
-	private boolean isUsed(CrosswordVacantEntry entry) {
+	private int findMinVacantEntryLength(int lowerBound) {
+		for (int i = lowerBound; i < _data.size(); i++) {
+			if (_data.get(i).size() > 0) {
+				return i;
+			}
+		}
+		return 0;
+	}
+	
+	public boolean isUsed(CrosswordVacantEntry entry) {
 		if (_usedEntries.contains(entry.getPosition())) {
 			return true;
 		} else {
@@ -210,95 +225,19 @@ public class MyCrosswordShape implements CrosswordShape, CrosswordVacantEntries 
 		}
 	}
 	
-	public Iterator<CrosswordVacantEntry> getIterator(boolean isAscending) {
-		return new VacantEntryIterator(isAscending ? MINIMUM_ENTRY_LENGTH : _maxVacantEntryLength, isAscending);
-	}
-	
-	// Assume legal input (2 <= length <= max)
-	public Iterator<CrosswordVacantEntry> getIterator(int maxLength, boolean isAscending) {
-		return new VacantEntryIterator(Math.min(maxLength, _maxVacantEntryLength), isAscending);
-	}
-	
-	public Iterator<CrosswordVacantEntry> getIterator(int exactLength) {
-		return new VacantEntryIterator(exactLength);
-	}
-	
-	// TODO this is the same as TermIterator...
-	public class VacantEntryIterator implements Iterator<CrosswordVacantEntry> {
-		
-		private int _currentArrayPos;
-		Iterator<MyCrosswordVacantEntry> _currentIterator;
-		CrosswordVacantEntry _next;
-		int _increment;
-		boolean _isContinuous;
-		
-		public VacantEntryIterator(int maxLength, boolean isAscending) {
-			_isContinuous = true;
-			_currentArrayPos = maxLength;
-			_currentIterator = _data.get(_currentArrayPos).iterator();
-			_next = null;
-			_increment = isAscending ? 1 : -1;
-		}
-		
-		public VacantEntryIterator(int exactLength) {
-			_isContinuous = false;
-			_currentArrayPos = exactLength;
-			_currentIterator = _data.get(_currentArrayPos).iterator();
-			_next = null;
-		}
+	public Iterator<CrosswordVacantEntry> getIterator(int startLength, int endLength) {
+		return new MyContinuousIterator<MyCrosswordShape, CrosswordVacantEntry>(this, startLength, endLength);	}
 
-		public boolean hasNext() {
-			if (null != _next) {
-				return true;
-			}
-			while (_currentIterator.hasNext()) {
-				_next = _currentIterator.next();
-				if (!isUsed(_next)) {
-					return true;
-				}
-			}
-			if (_isContinuous) {
-				// Modify array position length and continue
-				while (arrayPosInBounds()) {
-					_currentArrayPos += _increment;
-					_currentIterator = _data.get(_currentArrayPos).iterator();
-					while (_currentIterator.hasNext()) {
-						_next = _currentIterator.next();
-						if (!isUsed(_next)) {
-							return true;
-						}
-					}
-				}
-			}
-			return false;
-		}
-
-		public CrosswordVacantEntry next() {
-			if (this.hasNext()) {
-				CrosswordVacantEntry ret = _next;
-				_next = null;
-				return ret;
-			} else {
-				throw new NoSuchElementException();
-			}
-		}
-
-		public void remove() {
-			throw new UnsupportedOperationException();
-		}
-		
-		private boolean arrayPosInBounds() {
-			if ((_increment > 0) && (_currentArrayPos + _increment >= _data.size())) {
-				return false;
-			}
-			if ((_increment < 0) && (_currentArrayPos + _increment < 0)) {
-				return false;
-			}
-			return true;
-		}
+	public int getNumOfPartitions() {
+		return _data.size();
 	}
 
-	public int getMaxVacantEntryLength() {
-		return _maxVacantEntryLength;
-	}	
+	public Iterator<CrosswordVacantEntry> getRawDataIterator(int partitionNumber) {
+		return _data.get(partitionNumber).iterator();
+	}
+
+	@Override
+	public int getMinVacantEntryLength() {
+		return _minVacantEntryLength;
+	}
 }

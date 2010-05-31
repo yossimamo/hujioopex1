@@ -3,8 +3,6 @@ package oop.ex4.crosswords;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.NoSuchElementException;
-import java.util.TreeSet;
 
 
 import oop.ex4.search.SearchBoard;
@@ -81,7 +79,7 @@ public class MyCrossword implements Crossword {
 		case SMALL_GRID_STRATEGY:
 			return new SmallGridStrategyIterator(_shape, _dict, _overlapManager);
 		case SMALL_DICTIONARY_STRATEGY:
-			return new SmallDictionaryStrategyIterator();
+			return new SmallDictionaryStrategyIterator(_shape, _dict, _overlapManager);
 		default:
 			//TODO throw exception
 			return null;
@@ -111,7 +109,7 @@ public class MyCrossword implements Crossword {
 		HashSet<MyCrosswordPosition> positionHashset = new HashSet<MyCrosswordPosition>();
 		int sum = 0;
 		int minTermLength = _dict.getMinAvailableTermLength();
-		Iterator<CrosswordVacantEntry> vacantEntriesIterator = _shape.getIterator(minTermLength, true);
+		Iterator<CrosswordVacantEntry> vacantEntriesIterator = _shape.getIterator(minTermLength, _shape.getMaxVacantEntryLength());
 		while (vacantEntriesIterator.hasNext()) {
 			CrosswordVacantEntry nextEntry =  vacantEntriesIterator.next();
 			if (positionHashset.contains(nextEntry.getPosition())) continue;
@@ -137,7 +135,7 @@ public class MyCrossword implements Crossword {
 		while (termsIterator.hasNext()) {
 			String nextTerm =  termsIterator.next();
 			// Iterate on vacant entries that are at least as long as the term
-			Iterator<CrosswordVacantEntry> vacantEntriesIterator = _shape.getIterator(nextTerm.length(), true);
+			Iterator<CrosswordVacantEntry> vacantEntriesIterator = _shape.getIterator(nextTerm.length(), _shape.getMaxVacantEntryLength());
 			while (vacantEntriesIterator.hasNext()) {
 				CrosswordVacantEntry vacantEntry = vacantEntriesIterator.next();
 				if (_overlapManager.isMatch(nextTerm, vacantEntry)) {
@@ -165,120 +163,8 @@ public class MyCrossword implements Crossword {
 		_quality -= move.getLength();
 	}
 	
-	public abstract class StrategyIterator implements Iterator<CrosswordEntry> {
-		
-	}
-	
 	public String toString() {
 		return _overlapManager.toString();
-	}
-	
-	public class SmallDictionaryStrategyIterator extends StrategyIterator {
-		
-		private Iterator<CrosswordVacantEntry> _entryIt;
-		private Iterator<String> _termIt;
-		private CrosswordEntry _next;
-		private String _currentTerm;
-		private TreeSet<CrosswordMatchingVacantEntry> _currentMatchingEntries;
-		private Iterator<CrosswordMatchingVacantEntry> _matchingEntriesIt;
-		
-		public SmallDictionaryStrategyIterator() {
-			// No point in trying to match words that are longer than the longest vacant entry
-			int startingTermLength = Math.min(_dict.getMaxAvailableTermLength(), _shape.getMaxVacantEntryLength());
-			_termIt = _dict.getIterator(startingTermLength, _dict.getMinAvailableTermLength());
-			_next = null;
-		}
-		
-		public boolean hasNext() {
-			if (null != _next) {
-				return true;
-			} else {
-				try {
-					_next = next();
-					return true;
-				} catch (NoSuchElementException e) {
-					return false;
-				}
-			}
-		}
-
-		public CrosswordEntry next() {
-			if (null != _next) {
-				CrosswordEntry ret = _next;
-				_next = null;
-				return ret;
-			} else {
-				return findNextMove();
-			}
-		}
-
-		public void remove() {
-			throw new UnsupportedOperationException();			
-		}
-		
-		private CrosswordEntry findNextMove() {
-			if (null == _currentTerm) {
-				_currentTerm = _termIt.next();
-			}
-			if (null == _matchingEntriesIt) {
-				_matchingEntriesIt = getMatchingEntriesIterator(_currentTerm);
-			}
-			
-			while (!_matchingEntriesIt.hasNext()) {
-				_currentTerm = _termIt.next();
-				_matchingEntriesIt = getMatchingEntriesIterator(_currentTerm);
-			}
-			CrosswordMatchingVacantEntry entry = _matchingEntriesIt.next();
-			CrosswordEntry ret = new MyCrosswordEntry(entry.getPosition().getX(),
-													  entry.getPosition().getY(),
-													  _currentTerm,
-													  _dict.getTermDefinition(_currentTerm),
-													  entry.getPosition().isVertical());
-			return ret;
-		}
-		
-		private Iterator<CrosswordMatchingVacantEntry> getMatchingEntriesIterator(String term) {
-			_currentMatchingEntries = new TreeSet<CrosswordMatchingVacantEntry>();
-			_entryIt = _shape.getIterator(term.length());
-			while (_entryIt.hasNext()) {
-				CrosswordVacantEntry entry = _entryIt.next();
-				try {
-					_currentMatchingEntries.add(new CrosswordMatchingVacantEntry(term, entry));
-				} catch (TermMismatchException e) {
-					// This entry mismatches the term, skip it
-				}
-			}
-			return _currentMatchingEntries.iterator();
-		}
-		
-		private class CrosswordMatchingVacantEntry implements Comparable<CrosswordMatchingVacantEntry> {
-			private int _overlapCount;
-			private String _term;
-			private CrosswordVacantEntry _entry;
-			
-			public CrosswordMatchingVacantEntry(String term, CrosswordVacantEntry entry)
-				throws TermMismatchException {
-				_term = term;
-				_entry = entry;
-				_overlapCount = _overlapManager.getOverlapCount(_term, _entry);
-				if (MyCrosswordOverlapManager.MISMATCH == _overlapCount) {
-					throw new TermMismatchException();
-				}
-			}
-
-			public int compareTo(CrosswordMatchingVacantEntry other) {
-				if (this._overlapCount == other._overlapCount) {
-					return this._entry.compareTo(other._entry);
-				} else {
-					return this._overlapCount - other._overlapCount;
-				}
-			}
-
-			public CrosswordPosition getPosition() {
-				return _entry.getPosition();
-			}
-		}
-
 	}
 
 }

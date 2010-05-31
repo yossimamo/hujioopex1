@@ -5,7 +5,7 @@ import java.io.IOException;
 import java.util.*;
 
 
-public class MyCrosswordDictionary implements CrosswordDictionary, CrosswordTerms {
+public class MyCrosswordDictionary implements CrosswordDictionary, CrosswordTerms, PartitionedDataCollection<String> {
 	
 	private static final int MINIMUM_TERM_LENGTH = 2;
 	
@@ -160,7 +160,7 @@ public class MyCrosswordDictionary implements CrosswordDictionary, CrosswordTerm
 		return 0;
 	}
 	
-	private boolean isUsed(String term) {
+	public boolean isUsed(String term) {
 		if (_usedEntries.contains(term)) {
 			return true;
 		} else {
@@ -168,87 +168,16 @@ public class MyCrosswordDictionary implements CrosswordDictionary, CrosswordTerm
 		}
 	}
 	
-	public Iterator<String> getIterator(int startLength, int endLength) {
-		return new TermIterator(startLength, endLength);
+	public int getNumOfPartitions() {
+		return _data.size();
 	}
 	
-	// TODO this is almost the same as VacantEntryIterator!!!
-	// consider doing something better
-	public class TermIterator implements Iterator<String> {
-		
-		private int _currentArrayPos;
-		private int _lastArrayPos;
-		private Iterator<String> _currentIterator;
-		private String _next;
-		private int _increment;
-		private boolean _isContinuous;
-		
-		public TermIterator(int startLength, int endLength) {
-			if ((startLength < 0) || (endLength >= _data.size())) {
-				throw new IndexOutOfBoundsException();
-			}
-			if (startLength != endLength) {
-				_isContinuous = true;
-				_increment = startLength < endLength ? 1 : -1;
-			} else {
-				_isContinuous = false;
-			}
-			_currentArrayPos = startLength;
-			_lastArrayPos = endLength;
-			_currentIterator = _data.get(_currentArrayPos).keySet().iterator();
-		}
-		
-		public boolean hasNext() {
-			if (null != _next) {
-				return true;
-			}
-			while (_currentIterator.hasNext()) {
-				_next = _currentIterator.next();
-				if (!isUsed(_next)) {
-					return true;
-				}
-			}
-			if (_isContinuous) {
-				// Modify array position length and continue
-				while (arrayPosInBounds()) {
-					_currentArrayPos += _increment;
-					_currentIterator = _data.get(_currentArrayPos).keySet().iterator();
-					while (_currentIterator.hasNext()) {
-						_next = _currentIterator.next();
-						if (!isUsed(_next)) {
-							return true;
-						}
-					}
-				}
-			}
-			
-			return false;
-		}
-
-		public String next() {
-			if (this.hasNext()) {
-				String ret = _next;
-				_next = null;
-				return ret;
-			} else {
-				throw new NoSuchElementException();
-			}
-		}
-
-		public void remove() {
-			throw new UnsupportedOperationException();			
-		}
-		
-		private boolean arrayPosInBounds() {
-			if ((_increment > 0) && (_currentArrayPos + _increment >= _lastArrayPos)) {
-				return false;
-			}
-			if ((_increment < 0) && (_currentArrayPos + _increment < _lastArrayPos)) {
-				return false;
-			}
-			return true;
-			
-		}
+	public Iterator<String> getRawDataIterator(int partitionNumber) {
+		return _data.get(partitionNumber).keySet().iterator();
 	}
-		
+	
+	public Iterator<String> getIterator(int startLength, int endLength) {
+		return new MyContinuousIterator<MyCrosswordDictionary, String>(this, startLength, endLength);
+	}
+	
 }

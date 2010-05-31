@@ -12,5 +12,4 @@ public interface CrosswordTerms {
 	public void addEntry(CrosswordEntry entry);
 	public void removeEntry(CrosswordEntry entry);
 	public Iterator<String> getIterator(int startLength, int endLength);
-	
 }
