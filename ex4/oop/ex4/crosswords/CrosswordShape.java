@@ -1,3 +1,15 @@
+//###############  
+// FILE : CrosswordShape.java  
+// WRITER : Uri Greenberg, urig03, 021986039  
+// WRITER : Yossi Mamo, ymamo29, 038073722
+// EXERCISE : oop ex4 2010  
+// DESCRIPTION:  A crossword shape represents rectangular form of crossword.
+// Each cell in this
+// from can be either FRAME_SLOT - the crossword background, 
+// or UNUSED_SLOT - slot not belonging to
+// background or any crossword entry 
+//###############
+
 package oop.ex4.crosswords;
 
 import java.io.IOException;
