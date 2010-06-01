@@ -24,6 +24,12 @@ public interface CrosswordTerms {
 	public int getNumberOfTerms();
 	
 	/**
+	 * Returns true iff all terms have been inserted into the crossword.
+	 * @return True iff all terms have been inserted into the crossword.
+	 */
+	public boolean isFullyOccupied();
+	
+	/**
 	 * Returns the length of the longest word in the dictionary that hadn't 
 	 * been inserted into the crossword.
 	 * @return The length of the longest word in the dictionary that hadn't 
