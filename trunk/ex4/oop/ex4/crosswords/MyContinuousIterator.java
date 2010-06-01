@@ -1,9 +1,26 @@
+//###############  
+// FILE : MyContinuousIterator.java  
+// WRITER : Uri Greenberg, urig03, 021986039  
+// WRITER : Yossi Mamo, ymamo29, 038073722
+// EXERCISE : oop ex4 2010  
+// DESCRIPTION: A Generic Iterator which iterates on a number
+//  of non-continuous segments.
+//###############
+
 package oop.ex4.crosswords;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-public class MyContinuousIterator<D extends PartitionedDataCollection<E>, E> extends ContinuousIterator<D, E> {
+/**
+ * A Generic Iterator which iterates on a number
+//  of non-continuous segments.
+ * @author Uri Greenberg and Yossi Mamo.
+ * @param <D>
+ * @param <E>
+ */
+public class MyContinuousIterator<D extends PartitionedDataCollection<E>, E>
+											extends ContinuousIterator<D, E> {
 	
 	private D _data;
 	private int _currentArrayPos;
@@ -71,10 +88,12 @@ public class MyContinuousIterator<D extends PartitionedDataCollection<E>, E> ext
 	}
 	
 	private boolean arrayPosInBounds() {
-		if ((_increment > 0) && (_currentArrayPos + _increment >= _lastArrayPos)) {
+		if ((_increment > 0) && 
+				(_currentArrayPos + _increment >= _lastArrayPos)) {
 			return false;
 		}
-		if ((_increment < 0) && (_currentArrayPos + _increment < _lastArrayPos)) {
+		if ((_increment < 0) && 
+				(_currentArrayPos + _increment < _lastArrayPos)) {
 			return false;
 		}
 		return true;
