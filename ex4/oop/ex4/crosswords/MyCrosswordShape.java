@@ -1,3 +1,12 @@
+//###############  
+// FILE : MyCrosswordShape.java  
+// WRITER : Uri Greenberg, urig03, 021986039  
+// WRITER : Yossi Mamo, ymamo29, 038073722
+// EXERCISE : oop ex4 2010  
+// DESCRIPTION:  A class handling the shape of the crossword and the vacant 
+// entries in it.
+//###############
+
 package oop.ex4.crosswords;
 
 import java.io.FileReader;
@@ -14,41 +23,83 @@ import java.util.TreeSet;
 import oop.ex4.crosswords.CrosswordShape.SlotType;
 
 /**
- * This is a basic implementation of CrosswordShape stored as list of strings
- * 
- * @author Dmitry
+ * A class handling the shape of the crossword and the vacant 
+ * entries in it.
+ * @author Uri Greenberg and Yossi Mamo.
  */
-public class MyCrosswordShape implements CrosswordShape, CrosswordVacantEntries, PartitionedDataCollection<CrosswordVacantEntry> {
+public class MyCrosswordShape implements CrosswordShape,
+	CrosswordVacantEntries, PartitionedDataCollection<CrosswordVacantEntry> {
+	
+	// The minimal length of entries allowed.
 	private static final int MINIMUM_ENTRY_LENGTH = 2;
+	
+	// The boolean value of horizontal.
 	private static final boolean HORIZONTAL = false;
+	
+	// The boolean value of vertical.
 	private static final boolean VERTICAL = true;
 	
+	// An arrayList of strings, when each string is a line in the
+	// crossword shape.txt file
 	protected List<String> _oldData = new ArrayList<String>();
+	
+	// Holds in each cell of the array a treeSet of vacant entries with the 
+	// same maximal capacity as the number of the cell in the array it is being
+	//held at.
 	private ArrayList<TreeSet<CrosswordVacantEntry>> _data;
+	
+	// An array holding in each cell the number of unused vacant entries
+	// with the cells number max capacity left. 
 	private int _dataLengths[];
-	private HashMap<CrosswordPosition, CrosswordVacantEntry> _initialVacantEntries;
-	private HashSet<CrosswordPosition> _usedEntries = new HashSet<CrosswordPosition>();
+	
+	// A hashMap connecting positions to the corresponding vacant entry.
+	private HashMap<CrosswordPosition,
+	CrosswordVacantEntry>_initialVacantEntries;
+	
+	// The positions that terms were inserted into them.
+	private HashSet<CrosswordPosition> _usedEntries =
+		new HashSet<CrosswordPosition>();
+	
+	// The longest vacant entry which hasn't been used in the crossword.
 	private int _maxVacantEntryLength = 0;
+	
+	// The shortest vacant entry which hasn't been used in the crossword.
 	private int _minVacantEntryLength = 0;
+	
+	// The total sum of lengths of all vacant entries.
 	private int _totalEntryLengthsSum = 0;
+	
+	// The total number of vacant entries existing.
 	private int _numOfEntries = 0;
 	
+	/**
+	 * An empty constructor.
+	 */
 	public MyCrosswordShape() {
 		
 	}
 	
+	/**
+	 * A copy constructor.
+	 * @param other another MyCrosswordShape object.
+	 */
 	public MyCrosswordShape(MyCrosswordShape other) {
 		if (null != other._data) {
-			_data = (ArrayList<TreeSet<CrosswordVacantEntry>>)other._data.clone();
+			_data = 
+				(ArrayList<TreeSet<CrosswordVacantEntry>>)other._data.clone();
 		}
 		if (null != other._initialVacantEntries) {
-			_initialVacantEntries = (HashMap<CrosswordPosition, CrosswordVacantEntry>)other._initialVacantEntries.clone();
+			_initialVacantEntries = 
+				(HashMap<CrosswordPosition, CrosswordVacantEntry>)
+				other._initialVacantEntries.clone();
 		}
 		if (null != _usedEntries) {
-			_usedEntries = (HashSet<CrosswordPosition>)other._usedEntries.clone();
+			_usedEntries =
+				(HashSet<CrosswordPosition>)other._usedEntries.clone();
 		}
 		_dataLengths = new int[other._dataLengths.length];
-		System.arraycopy(other._dataLengths, 0, _dataLengths, 0, other._dataLengths.length);
+		System.arraycopy(other._dataLengths, 0, _dataLengths, 0,
+				other._dataLengths.length);
 		_maxVacantEntryLength = other._maxVacantEntryLength;
 		_minVacantEntryLength = other._minVacantEntryLength;
 	}
@@ -89,10 +140,10 @@ public class MyCrosswordShape implements CrosswordShape, CrosswordVacantEntries,
 		}
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see CrosswordGrid#Load
+	/**
+	 * loads the data related to the shape of the crossword and the vacant
+	 *  entries from the file and initializes all database accordingly.
+	 *  @param textFileName the path to the file of the shape.
 	 */
 	public void load(String textFileName) throws IOException {
 		Scanner sc=null;
@@ -108,15 +159,19 @@ public class MyCrosswordShape implements CrosswordShape, CrosswordVacantEntries,
 		int maxCapacity = Math.max(getHeight(), getWidth());
 		assert(0 < maxCapacity);
 		_data = new ArrayList<TreeSet<CrosswordVacantEntry>>(maxCapacity);
+		// Makes the ArrayList as long as the longest vacant entry capacity
+		// possible in this crossword.
 		for (int i = 0; i <= maxCapacity; i++) {
 			_data.add(new TreeSet<CrosswordVacantEntry>());
 		}
-		_initialVacantEntries = new HashMap<CrosswordPosition, CrosswordVacantEntry>();
+		_initialVacantEntries =
+			new HashMap<CrosswordPosition, CrosswordVacantEntry>();
 		for (int y = 0; y < _oldData.size(); y++) {
 			initLineInDatabase(_oldData.get(y), HORIZONTAL, y);
 		}
 		for (int x = 0; x < _oldData.get(0).length() ; x++) {
 			StringBuilder currentColumn = new StringBuilder();
+			// Builds a string from every column.
 			for (int i=0; i < _oldData.size(); i++) {
 				currentColumn.append(_oldData.get(i).charAt(x));
 			}
@@ -133,80 +188,149 @@ public class MyCrosswordShape implements CrosswordShape, CrosswordVacantEntries,
 			_numOfEntries += size;
 			_totalEntryLengthsSum += i*size;
 		}
-		_minVacantEntryLength = findMinVacantEntryLength(_minVacantEntryLength);
+		_minVacantEntryLength =
+			findMinVacantEntryLength(_minVacantEntryLength);
 	}
 	
-	
-
-	private void initLineInDatabase(String currentLine, boolean isVertical, int otherCoordinate) {
+	/**
+	 * Receives a line or a column as a string and initializes it in the 
+	 * database.
+	 * @param currentLine the line or column as a string.
+	 * @param isVertical true if its a column or false if it is a line.
+	 * @param otherCoordinate the line or column number.
+	 */
+	private void initLineInDatabase(String currentLine, boolean isVertical,
+														int otherCoordinate) {
+		// runs on all chars in the string
 		for (int i = 0; i < currentLine.length(); i++) {
 			if (currentLine.charAt(i) == '_') {
-				int vacantEntryMaxLength = getVacantEntryMaxLength(currentLine, i);
-				//adds more treesets to the array list if the vacant entry
-				//is the longest so far
-				if (_data.size() < vacantEntryMaxLength + 1) {
-					for (int j = _data.size(); j <= vacantEntryMaxLength; j++) {
-						_data.add(new TreeSet<CrosswordVacantEntry>());
-					}
-				}
+				int vacantEntryMaxLength =
+					getVacantEntryMaxLength(currentLine, i);
+				// the next chars up until vacantEntryMaxLength - 1 are '_'
+				//because we know the length of the vacant entry.
 				for (int j = 0 ; j < vacantEntryMaxLength - 1; j++) {
-					MyCrosswordPosition position = new MyCrosswordPosition(isVertical ? otherCoordinate : i+j, isVertical ? i+j : otherCoordinate, isVertical);
+					MyCrosswordPosition position =
+						new MyCrosswordPosition(isVertical ? otherCoordinate:
+						 i+j, isVertical ? i+j : otherCoordinate, isVertical);
+					// For each char (position) there could be more than 
+					// one vacant entry (different lengths)
 					for (int k =1 ; k < vacantEntryMaxLength - j ; k++) {
-						
-						MyCrosswordVacantEntry entry = new MyCrosswordVacantEntry(position, k + 1);
-						_initialVacantEntries.put(position, new MyCrosswordVacantEntry(position, k+1));
+						MyCrosswordVacantEntry entry =
+							new MyCrosswordVacantEntry(position, k + 1);
+						//overwritten for each k that is different, and the
+						//last one is with the max capacity
+						_initialVacantEntries.put(position,
+								new MyCrosswordVacantEntry(position, k+1));
 						_data.get(entry.getMaxCapacity()).add(entry);
 					}
 				}
+				//all of these char have already been processed.
 				i = i + vacantEntryMaxLength + 1;
 			}
 		}
 	}
 
+	/**
+	 * Returns the maximal length of the vacant entry beginning at this point. 
+	 * @param currentLine The line we are currently scanning.
+	 * @param indexInLine The position in the line.
+	 * @return The maximal length of the vacant entry beginning at this point.
+	 */
 	private int getVacantEntryMaxLength(String currentLine, int indexInLine) {
 		int vacantEntryLength = 0;
-		while ((indexInLine < currentLine.length()) && (currentLine.charAt(indexInLine) == '_')) {
+		while ((indexInLine < currentLine.length()) &&
+				(currentLine.charAt(indexInLine) == '_')) {
 			indexInLine++;
 			vacantEntryLength++;
 		} 
 		return vacantEntryLength;
 	}
 	
+	/**
+	 * Returns the sum of all lengths of all entries.
+	 * @return The sum of all lengths of all entries.
+	 */
 	public int getTotalEntryLengthsSum() {
 		return _totalEntryLengthsSum;
 	}
 	
+	/**
+	 * returns the max capacity of the vacant entry at the given position.
+	 * @param pos A position in the crossword.
+	 * @return The max capacity of the vacant entry at the given position.
+	 */
 	public int getMaxCapacity(CrosswordPosition pos) {
 		return (_initialVacantEntries.get(pos)).getMaxCapacity();
 	}
 	
+	/**
+	 * Returns true if there are no more vacant entries left or false
+	 * otherwise.
+	 * @return True if there are no more vacant entries left or false
+	 * otherwise.
+	 */
 	public boolean isFullyOccupied() {
 		return (_numOfEntries == _usedEntries.size());
 	}
 	
+	/**
+	 * Returns the total number of entries in the crossword. 
+	 * @return The total number of entries in the crossword. 
+	 */
 	public int getNumberOfEntries() {
 		return _numOfEntries;
 	}
 	
+	/**
+	 * Returns the length of the longest vacant entry in the crossword.
+	 * @return The length of the longest vacant entry in the crossword.
+	 */
 	public int getMaxVacantEntryLength() {
 		return _maxVacantEntryLength;
 	}
 	
+	/**
+	 * Returns the length of the shortest vacant entry in the crossword.
+	 * @return The length of the shortest vacant entry in the crossword.
+	 */
+	public int getMinVacantEntryLength() {
+		return _minVacantEntryLength;
+	}
+	
+	/**
+	 * This method is called when a new entry is added to the crossword.
+	 * it updates the database accordingly.
+	 * @param entry The entry that is being added to the crossword.
+	 */
 	public void addEntry(CrosswordEntry entry) {
 		_usedEntries.add(entry.getPosition());
 		_dataLengths[entry.getLength()]++;
-		_maxVacantEntryLength = Math.max(_maxVacantEntryLength, entry.getLength());
+		_maxVacantEntryLength =
+			Math.max(_maxVacantEntryLength, entry.getLength());
 	}
 
+	/**
+	 * This method is called when a new entry is removed from the crossword.
+	 * it updates the database accordingly.
+	 * @param entry The entry that is being removed from the crossword.
+	 */
 	public void removeEntry(CrosswordEntry entry) {
 		assert(_dataLengths[entry.getLength()] > 0);
 		_usedEntries.remove(entry.getPosition());
 		int newSize = --_dataLengths[entry.getLength()];
 		if (0 == newSize) {
-			_maxVacantEntryLength = findMaxVacantEntryLength(_maxVacantEntryLength);
+			_maxVacantEntryLength =
+				findMaxVacantEntryLength(_maxVacantEntryLength);
 		}
 	}
 
+	/**
+	 * Returns the largest length of available vacant entry 
+	 * which is smaller than the upperBound given.
+	 * @param upperBound the upper bound.
+	 * @return The largest length of available vacant entry 
+	 * which is smaller than the upperBound given.
+	 */
 	private int findMaxVacantEntryLength(int upperBound) {
 		for (int i = upperBound; i >= 0; i--) {
 			if (_dataLengths[i] > 0) {
@@ -216,6 +340,13 @@ public class MyCrosswordShape implements CrosswordShape, CrosswordVacantEntries,
 		return 0;
 	}
 	
+	/**
+	 * Returns the shortest length of available vacant entry 
+	 * which is bigger than the lowerBound given.
+	 * @param lowerBound the lower bound.
+	 * @return The shortest length of available vacant entry 
+	 * which is bigger than the lowerBound given.
+	 */
 	private int findMinVacantEntryLength(int lowerBound) {
 		for (int i = lowerBound; i < _data.size(); i++) {
 			if (_data.get(i).size() > 0) {
@@ -225,6 +356,13 @@ public class MyCrosswordShape implements CrosswordShape, CrosswordVacantEntries,
 		return 0;
 	}
 	
+	/**
+	 * Returns true if the element is used in the crossword or false
+	 * otherwise.
+	 * @param entry An element from the partitioned collection.
+	 * @return  True if the element is used in the crossword or false
+	 * otherwise.
+	 */
 	public boolean isUsed(CrosswordVacantEntry entry) {
 		if (_usedEntries.contains(entry.getPosition())) {
 			return true;
@@ -233,19 +371,38 @@ public class MyCrosswordShape implements CrosswordShape, CrosswordVacantEntries,
 		}
 	}
 	
-	public Iterator<CrosswordVacantEntry> getIterator(int startLength, int endLength) {
-		return new MyContinuousIterator<MyCrosswordShape, CrosswordVacantEntry>(this, startLength, endLength);	}
+	/**
+	 * Returns an iterator which iterates on vacant entries that their
+	 * length is between startLength and endLength.
+	 * @param startLength the length of vacant entries the iterator will
+	 * start iterating from.
+	 * @param endLength the length of vacant entries the iterator will
+	 * iterate up until.
+	 * @return An iterator which iterates on vacant entries that their
+	 * length is between startLength and endLength.
+	 */
+	public Iterator<CrosswordVacantEntry> getIterator(int startLength,
+															int endLength) {
+		return new MyContinuousIterator<MyCrosswordShape, CrosswordVacantEntry>
+											(this, startLength, endLength);	}
 
+	/**
+	 * Returns the number of partitions in this collection.
+	 * @return The number of partitions in this collection.
+	 */
 	public int getNumOfPartitions() {
 		return _data.size();
 	}
 
-	public Iterator<CrosswordVacantEntry> getRawDataIterator(int partitionNumber) {
+	/**
+	 * Returns an iterator of a single segment.
+	 * @param partitionNumber The number of the partition we wish to iterate
+	 * on.
+	 * @return An iterator of a single segment.
+	 */
+	public Iterator<CrosswordVacantEntry> getRawDataIterator(
+			int partitionNumber) {
 		return _data.get(partitionNumber).iterator();
 	}
 
-	@Override
-	public int getMinVacantEntryLength() {
-		return _minVacantEntryLength;
-	}
 }
