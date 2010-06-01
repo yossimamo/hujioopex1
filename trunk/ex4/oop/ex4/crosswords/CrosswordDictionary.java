@@ -1,3 +1,12 @@
+//###############  
+// FILE : CrosswordDictionary.java  
+// WRITER : Uri Greenberg, urig03, 021986039  
+// WRITER : Yossi Mamo, ymamo29, 038073722
+// EXERCISE : oop ex4 2010  
+// DESCRIPTION: Represents a dictionary which keeps and handles all words and
+// their definitions.
+//###############
+
 package oop.ex4.crosswords;
 
 import java.io.IOException;
