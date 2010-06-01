@@ -11,7 +11,7 @@ package oop.ex4.crosswords;
 import java.util.Iterator;
 
 /**
- * 
+ * An interface for a strategy type.
  * @author Uri Greenberg and Yossi Mamo
  *
  */
