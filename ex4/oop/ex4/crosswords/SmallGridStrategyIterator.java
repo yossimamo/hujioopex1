@@ -11,7 +11,6 @@ public class SmallGridStrategyIterator extends CrosswordStrategyIterator {
 	private CrosswordOverlapManager _overlapManager;
 	private Iterator<CrosswordVacantEntry> _entryIt;
 	private Iterator<Term> _termIt;
-	private CrosswordEntry _next;
 	private CrosswordVacantEntry _currentVacantEntry;
 	
 	
@@ -25,34 +24,7 @@ public class SmallGridStrategyIterator extends CrosswordStrategyIterator {
 		_next = null;
 	}
 	
-	public boolean hasNext() {
-		if (null != _next) {
-			return true;
-		} else {
-			try {
-				_next = next();
-				return true;
-			} catch (NoSuchElementException e) {
-				return false;
-			}
-		}
-	}
-	
-	public CrosswordEntry next() {
-		if (null != _next) {
-			CrosswordEntry ret = _next;
-			_next = null;
-			return ret;
-		} else {
-			return findNextMove();
-		}
-	}
-	
-	public void remove() {
-		throw new UnsupportedOperationException();
-	}
-	
-	private CrosswordEntry findNextMove() {
+	protected CrosswordEntry findNextMove() {
 		if (null == _currentVacantEntry) {
 			_currentVacantEntry = _entryIt.next();
 			// TODO System.out.printf("Current vacant entry: %s\n", _currentVacantEntry);
