@@ -9,6 +9,7 @@
 package oop.ex4.crosswords;
 
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 
 /**
  * An interface for an iterator with a strategy type.
@@ -17,21 +18,46 @@ import java.util.Iterator;
  */
 public abstract class CrosswordStrategyIterator implements Iterator<CrosswordEntry> {
 
+	protected CrosswordEntry _next;
+	
 	/**
 	 * Returns true iff the iterator has another element.
 	 * @return true iff the iterator has another element.
 	 */
-	abstract public boolean hasNext();
+	public boolean hasNext() {
+		if (null != _next) {
+			return true;
+		} else {
+			try {
+				_next = next();
+				return true;
+			} catch (NoSuchElementException e) {
+				return false;
+			}
+		}
+	}
 	
 	/**
 	 * Returns the next element in the iteration.
 	 * @return The next element in the iteration.
 	 */
-	abstract public CrosswordEntry next();
+	public CrosswordEntry next() {
+		if (null != _next) {
+			CrosswordEntry ret = _next;
+			_next = null;
+			return ret;
+		} else {
+			return findNextMove();
+		}
+	}
 	
 	/**
 	 * not implemented.
 	 */
-	abstract public void remove();
+	public void remove() {
+		throw new UnsupportedOperationException();
+	}
+	
+	abstract protected CrosswordEntry findNextMove();
 
 }

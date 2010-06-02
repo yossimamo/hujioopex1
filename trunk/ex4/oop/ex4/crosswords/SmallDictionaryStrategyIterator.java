@@ -9,7 +9,6 @@
 package oop.ex4.crosswords;
 
 import java.util.Iterator;
-import java.util.NoSuchElementException;
 import java.util.TreeSet;
 
 /**
@@ -35,9 +34,6 @@ public class SmallDictionaryStrategyIterator extends CrosswordStrategyIterator {
 	// An Iterator on the terms that haven't been entered into the 
 	// crossword
 	private Iterator<Term> _termIt;
-	
-	// Holding the next crosswordEntry the iterator will return.
-	private CrosswordEntry _next;
 	
 	//Holding the last iterated term from the terms iterator.
 	private Term _currentTerm;
@@ -70,48 +66,10 @@ public class SmallDictionaryStrategyIterator extends CrosswordStrategyIterator {
 	}
 	
 	/**
-	 * Returns true iff the iterator has another element.
-	 * @return true iff the iterator has another element.
-	 */
-	public boolean hasNext() {
-		if (null != _next) {
-			return true;
-		} else {
-			try {
-				_next = next();
-				return true;
-			} catch (NoSuchElementException e) {
-				return false;
-			}
-		}
-	}
-
-	/**
-	 * Returns the next element in the iteration.
-	 * @return The next element in the iteration.
-	 */
-	public CrosswordEntry next() {
-		if (null != _next) {
-			CrosswordEntry ret = _next;
-			_next = null;
-			return ret;
-		} else {
-			return findNextMove();
-		}
-	}
-
-	/**
-	 * not implemented.
-	 */
-	public void remove() {
-		throw new UnsupportedOperationException();			
-	}
-	
-	/**
 	 * Returns the next element the iterator needs to return.
 	 * @return the next element the iterator needs to return.
 	 */
-	private CrosswordEntry findNextMove() {
+	protected CrosswordEntry findNextMove() {
 		if (null == _currentTerm) {
 			_currentTerm = _termIt.next();
 		}
