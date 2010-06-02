@@ -34,13 +34,13 @@ public class SmallDictionaryStrategyIterator extends CrosswordStrategyIterator {
 	
 	// An Iterator on the terms that haven't been entered into the 
 	// crossword
-	private Iterator<String> _termIt;
+	private Iterator<Term> _termIt;
 	
 	// Holding the next crosswordEntry the iterator will return.
 	private CrosswordEntry _next;
 	
 	//Holding the last iterated term from the terms iterator.
-	private String _currentTerm;
+	private Term _currentTerm;
 	
 	// TODO
 	private TreeSet<CrosswordMatchingVacantEntry> _currentMatchingEntries;
@@ -124,12 +124,12 @@ public class SmallDictionaryStrategyIterator extends CrosswordStrategyIterator {
 			_matchingEntriesIt = getMatchingEntriesIterator(_currentTerm);
 		}
 		CrosswordMatchingVacantEntry entry = _matchingEntriesIt.next();
-		CrosswordEntry ret = new MyCrosswordEntry(entry.getPosition().getX(),
-										 entry.getPosition().getY(),
-									     _currentTerm,
-										 _dict.getTermDefinition(_currentTerm),
-										 entry.getPosition().isVertical());
-		return ret;
+		CrosswordPosition pos = entry.getPosition();
+		return new MyCrosswordEntry(pos.getX(),
+									pos.getY(),
+									_currentTerm.getTerm(),
+									_currentTerm.getDefinition(),
+									entry.getPosition().isVertical());
 	}
 	
 	/**
@@ -138,7 +138,7 @@ public class SmallDictionaryStrategyIterator extends CrosswordStrategyIterator {
 	 * @return
 	 */
 	private Iterator<CrosswordMatchingVacantEntry>
-							getMatchingEntriesIterator(String term) {
+							getMatchingEntriesIterator(Term term) {
 		_currentMatchingEntries = new TreeSet<CrosswordMatchingVacantEntry>();
 		_entryIt = _shape.getIterator(term.length(), term.length());
 		while (_entryIt.hasNext()) {
@@ -162,9 +162,7 @@ public class SmallDictionaryStrategyIterator extends CrosswordStrategyIterator {
 							Comparable<CrosswordMatchingVacantEntry> {
 		//
 		private int _overlapCount;
-		
-		//
-		private String _term;
+		private Term _term;
 		
 		//
 		private CrosswordVacantEntry _entry;
@@ -176,11 +174,11 @@ public class SmallDictionaryStrategyIterator extends CrosswordStrategyIterator {
 		 * @throws TermMismatchException
 		 */
 		public CrosswordMatchingVacantEntry
-						(String term, CrosswordVacantEntry entry)
+						(Term term, CrosswordVacantEntry entry)
 			throws TermMismatchException {
 			_term = term;
 			_entry = entry;
-			_overlapCount = _overlapManager.getOverlapCount(_term, _entry);
+			_overlapCount = _overlapManager.getOverlapCount(_term.getTerm(), _entry);
 			if (MyCrosswordOverlapManager.MISMATCH == _overlapCount) {
 				throw new TermMismatchException();
 			}

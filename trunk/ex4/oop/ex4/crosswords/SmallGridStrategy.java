@@ -51,7 +51,6 @@ public class SmallGridStrategy implements CrosswordStrategy {
 	 * to the strategy.
 	 */
 	public int getUpperBoundQuality(int currentQuality) {
-		// long startTime = System.currentTimeMillis();
 		HashSet<MyCrosswordPosition> positionHashset =
 							new HashSet<MyCrosswordPosition>();
 		int sum = 0;
@@ -72,11 +71,11 @@ public class SmallGridStrategy implements CrosswordStrategy {
 			// Iterate only on terms that are exactly as long as the vacant 
 			// entry, since shorter terms were already iterated on for the 
 			// prefixes of the current entry
-			Iterator<String> termsIterator = 
+			Iterator<Term> termsIterator = 
 				_dict.getIterator(nextEntry.getMaxCapacity(),
 									nextEntry.getMaxCapacity());
 			while (termsIterator.hasNext()) {
-				if (_overlapManager.isMatch(termsIterator.next(), nextEntry)) {
+				if (_overlapManager.isMatch(termsIterator.next().getTerm(), nextEntry)) {
 					positionHashset.add
 						((MyCrosswordPosition)nextEntry.getPosition());
 					sum += nextEntry.getMaxCapacity();

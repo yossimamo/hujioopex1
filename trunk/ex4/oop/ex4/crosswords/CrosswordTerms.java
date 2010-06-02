@@ -79,5 +79,5 @@ public interface CrosswordTerms {
 	 * inserted into the crossword and that their
 	 * length is between startLength and endLength.
 	 */
-	public Iterator<String> getIterator(int startLength, int endLength);
+	public Iterator<Term> getIterator(int startLength, int endLength);
 }

@@ -91,6 +91,7 @@ public class MyDepthFirstSearch<B extends SearchBoard<M>, M extends SearchMove>
 		int upperBoundQuality = board.getQualityBound();
 		if ((maxDepth < _lastMoves.size()) ||
 				(upperBoundQuality <= _bestQuality)) {
+			// TODO System.out.printf("This board's upper bound quality is: %d, less than the best: %d, going back\n" , upperBoundQuality, _bestQuality);
 			// This direction is either too deep, or of a lower quality
 			if (!_lastMoves.empty()) {
 				board.undoMove(_lastMoves.pop());
@@ -103,7 +104,9 @@ public class MyDepthFirstSearch<B extends SearchBoard<M>, M extends SearchMove>
 			}
 		}
 		int currentBoardQuality = board.getQuality();
+		// TODO System.out.printf("Current board quality: %d\n", currentBoardQuality);
 		if (currentBoardQuality > _bestQuality) {
+			// TODO System.out.printf("This board is the best so far with %d\n", currentBoardQuality);
 			// Found a better board
 			_bestQuality = currentBoardQuality;
 			_bestMoves = (Stack<M>)_lastMoves.clone();
@@ -117,6 +120,7 @@ public class MyDepthFirstSearch<B extends SearchBoard<M>, M extends SearchMove>
 		Iterator<M> it = board.getMoveIterator();
 		while (it.hasNext()) {
 			M move = it.next();
+			// TODO System.out.printf("Depth: %d, Move: %s\n", _lastMoves.size(), move);
 			_lastMoves.push(move);
 			board.doMove(move);
 			searchHelper(board, maxDepth, timeOut);
