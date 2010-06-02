@@ -14,22 +14,20 @@ import java.io.IOException;
 import java.util.*;
 
 
-public class MyCrosswordDictionary implements CrosswordDictionary,
-						CrosswordTerms, PartitionedDataCollection<String> {
+public class MyCrosswordDictionary implements CrosswordDictionary, CrosswordTerms, PartitionedDataCollection<Term> {
+
 	// The minimal length allowed for a term.
 	private static final int MINIMUM_TERM_LENGTH = 2;
 	
-	// Holds in each cell of the array a treeMap of terms in the same length
-	// as the number of the cell in the array and its corresponding definition.
-	private ArrayList<TreeMap<String, String>> _data;
+	// Holds all the terms in an orderly fashion, partitioned by their lengths
+	private ArrayList<TreeSet<Term>> _data;
+	// Allows direct access to a certain Term object by its term string
+	private HashMap<String, Term> _dictionary;
+	private HashSet<String> _usedEntries = new HashSet<String>();
 	
 	// An array holding in each cell the number of unused terms left in the
 	// dictionary in the current cells number. 
 	private int _dataLengths[];
-	
-	// A hashSet holding all entries which have been inserted into the
-	// crossword
-	private HashSet<String> _usedEntries = new HashSet<String>();
 	
 	// The longest term which hasn't been inserted into the crossword.
 	private int _maxAvailableTermLength = 0;
@@ -53,7 +51,10 @@ public class MyCrosswordDictionary implements CrosswordDictionary,
 	 */
 	public MyCrosswordDictionary(MyCrosswordDictionary other) {
 		if (null != other._data) {
-			_data = (ArrayList<TreeMap<String, String>>)other._data.clone();
+			_data = (ArrayList<TreeSet<Term>>)other._data.clone();
+		}
+		if (null != other._dictionary){
+			_dictionary = (HashMap<String, Term>)other._dictionary.clone();
 		}
 		if (null != other._usedEntries) {
 			_usedEntries = (HashSet<String>)other._usedEntries.clone();
@@ -72,7 +73,7 @@ public class MyCrosswordDictionary implements CrosswordDictionary,
 	 * (java.lang.String)
 	 */
 	public String getTermDefinition(String term) {
-		return _data.get(term.length()).get(term);
+		return _dictionary.get(term).getDefinition();
 	}
 
 	/*
@@ -80,11 +81,7 @@ public class MyCrosswordDictionary implements CrosswordDictionary,
 	 * @see oop.ex4.crosswords.CrosswordDictionary#getTerms()
 	 */
 	public Set<String> getTerms() {
-		Set<String> terms = new TreeSet<String>();
-		for (int i = 0 ; i < _data.size(); i++) {
-			terms.addAll(_data.get(i).keySet());
-		}
-		return terms;
+		return _dictionary.keySet();
 	}
 
 	/*
@@ -92,8 +89,9 @@ public class MyCrosswordDictionary implements CrosswordDictionary,
 	 * @see oop.ex4.crosswords.CrosswordDictionary#load(java.lang.String)
 	 */
 	public void load(String dictionaryFileName) throws IOException {
-		_data = new ArrayList<TreeMap<String, String>>();
-		HashSet<String> glosCheck=new HashSet<String>();
+		_data = new ArrayList<TreeSet<Term>>();
+		_dictionary = new HashMap<String, Term>();
+		HashSet<String> glosCheck = new HashSet<String>();
 		int counter = 1;
 		String word, glos;
 		Scanner sc = null;
@@ -119,10 +117,12 @@ public class MyCrosswordDictionary implements CrosswordDictionary,
 				//Ignoring repetitive terms
 				if (_data.size() <= word.length()) {
 					for (int i = _data.size(); i <= word.length(); i++) {
-						_data.add(new TreeMap<String, String>());
+						_data.add(new TreeSet<Term>());
 					}
 				}
-				_data.get(word.length()).put(word.toLowerCase(), glos);
+				Term term = new Term(word, glos);
+				_dictionary.put(word, term);
+				_data.get(word.length()).add(term);
 				counter++;
 			}
 		} finally {
@@ -141,6 +141,8 @@ public class MyCrosswordDictionary implements CrosswordDictionary,
 		}
 		_minAvailableTermLength = 
 				findMinAvailableTermLength(_minAvailableTermLength);
+		
+		buildSubTermsCache();
 	}
 	
 	/**
@@ -166,11 +168,12 @@ public class MyCrosswordDictionary implements CrosswordDictionary,
 	 */
 	public void addEntry(CrosswordEntry entry) {
 		_usedEntries.add(entry.getTerm());
-		_dataLengths[entry.getLength()]++;
-		_maxAvailableTermLength = 
-				Math.max(_maxAvailableTermLength, entry.getLength());
-		_minAvailableTermLength = 
-				Math.min(_minAvailableTermLength, entry.getLength());
+		// As an entry is added we have one less term of this size
+		int newSize = --_dataLengths[entry.getLength()];
+		if (0 == newSize) {
+			_maxAvailableTermLength = findMaxAvailableTermLength(_maxAvailableTermLength);
+			_minAvailableTermLength = findMinAvailableTermLength(_minAvailableTermLength);
+		}		
 	}
 
 	/**
@@ -181,13 +184,11 @@ public class MyCrosswordDictionary implements CrosswordDictionary,
 	public void removeEntry(CrosswordEntry entry) {
 		assert (_dataLengths[entry.getLength()] > 0);
 		_usedEntries.remove(entry.getTerm());
-		int newSize = --_dataLengths[entry.getLength()];
-		if (0 == newSize) {
-			_maxAvailableTermLength = 
-					findMaxAvailableTermLength(_maxAvailableTermLength);
-			_minAvailableTermLength = 
-					findMinAvailableTermLength(_minAvailableTermLength);
-		}
+		// As an entry is removed we have one more term of this size
+		_dataLengths[entry.getLength()]++;
+		_maxAvailableTermLength = Math.max(_maxAvailableTermLength, entry.getLength());
+		_minAvailableTermLength = Math.min(_minAvailableTermLength, entry.getLength());
+		
 	}
 	
 	/**
@@ -243,15 +244,34 @@ public class MyCrosswordDictionary implements CrosswordDictionary,
 		return 0;
 	}
 	
-	/**
-	 * Returns true if the element is used in the crossword or false
-	 * otherwise.
-	 * @param term A term from the partitioned collection.
-	 * @return  True if the element is used in the crossword or false
-	 * otherwise.
-	 */
-	public boolean isUsed(String term) {
-		if (_usedEntries.contains(term)) {
+	private void buildSubTermsCache() {
+		ArrayList<TreeSet<Term>> newData = new ArrayList<TreeSet<Term>>(_data.size());
+		for (int i = 0; i < _data.size(); i++) {
+			newData.add(new TreeSet<Term>());
+		}
+		// For every term in the dictionary (ascending order)
+		for (int i = MINIMUM_TERM_LENGTH; i < _data.size(); i++) {
+			for (Term term : _data.get(i)) {
+				for (int j = 1; j < term.length(); j++) {
+					for (int k = term.length(); k >= j + MINIMUM_TERM_LENGTH; k--) {
+						String subTerm = term.getTerm().substring(j, k);
+						Term subTermObj = _dictionary.get(subTerm);
+						if (null != subTermObj) {
+							term.addSubTerm(subTermObj, j);
+							break; 
+						} 
+					}
+				}
+				// Finally, add the term into the new data structure which will
+				// now order the terms also by their amount of subterms
+				newData.get(i).add(term);
+			}
+		}
+		_data = newData;
+	}
+	
+	public boolean isUsed(Term term) {
+		if (_usedEntries.contains(term.getTerm())) {
 			return true;
 		} else {
 			return false;
@@ -272,8 +292,8 @@ public class MyCrosswordDictionary implements CrosswordDictionary,
 	 * on.
 	 * @return An iterator of a single segment.
 	 */
-	public Iterator<String> getRawDataIterator(int partitionNumber) {
-		return _data.get(partitionNumber).keySet().iterator();
+	public Iterator<Term> getRawDataIterator(int partitionNumber) {
+		return _data.get(partitionNumber).iterator();
 	}
 	
 	/**
@@ -288,8 +308,8 @@ public class MyCrosswordDictionary implements CrosswordDictionary,
 	 * inserted into the crossword and that their
 	 * length is between startLength and endLength.
 	 */
-	public Iterator<String> getIterator(int startLength, int endLength) {
-		return new MyContinuousIterator<MyCrosswordDictionary, String>
+	public Iterator<Term> getIterator(int startLength, int endLength) {
+		return new MyContinuousIterator<MyCrosswordDictionary, Term>
 											(this, startLength, endLength);
 	}
 	

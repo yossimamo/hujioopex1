@@ -10,7 +10,7 @@ public class SmallGridStrategyIterator extends CrosswordStrategyIterator {
 	private CrosswordTerms _dict;
 	private CrosswordOverlapManager _overlapManager;
 	private Iterator<CrosswordVacantEntry> _entryIt;
-	private Iterator<String> _termIt;
+	private Iterator<Term> _termIt;
 	private CrosswordEntry _next;
 	private CrosswordVacantEntry _currentVacantEntry;
 	
@@ -18,7 +18,10 @@ public class SmallGridStrategyIterator extends CrosswordStrategyIterator {
 	public SmallGridStrategyIterator(CrosswordVacantEntries shape, CrosswordTerms dict, CrosswordOverlapManager overlapManager) {
 		_dict = dict;
 		_overlapManager = overlapManager;
-		_entryIt = shape.getIterator(shape.getMaxVacantEntryLength(), shape.getMinVacantEntryLength());
+		// No point in iterating over vacant entries that are longer than the
+		// longest available term or shorter than the shortest available term
+		// TODO System.out.printf("Getting entry iterator from min(%d, %d) to %d\n", shape.getMaxVacantEntryLength(), dict.getMaxAvailableTermLength(), shape.getMinVacantEntryLength());
+		_entryIt = shape.getIterator(Math.min(shape.getMaxVacantEntryLength(), dict.getMaxAvailableTermLength()), shape.getMinVacantEntryLength());
 		_next = null;
 	}
 	
@@ -52,23 +55,25 @@ public class SmallGridStrategyIterator extends CrosswordStrategyIterator {
 	private CrosswordEntry findNextMove() {
 		if (null == _currentVacantEntry) {
 			_currentVacantEntry = _entryIt.next();
-			//System.out.printf("Current vacant entry: %s\n", _currentVacantEntry);
+			// TODO System.out.printf("Current vacant entry: %s\n", _currentVacantEntry);
 		}
 		if (null == _termIt) {
+			// Iterate on terms that are at most at long as the entry, starting with the
+			// longest ones first
 			_termIt = _dict.getIterator(_currentVacantEntry.getMaxCapacity(), _dict.getMinAvailableTermLength());
 		}
 		CrosswordEntry ret = matchCurrentVacantEntry();
 		if (null != ret) {
-			//System.out.printf("Current match: %s\n", ret);
+			// TODO System.out.printf("Current match: %s\n", ret);
 			return ret;
 		}
 		while (_entryIt.hasNext()) {
 			_currentVacantEntry = _entryIt.next();
 			_termIt = _dict.getIterator(_currentVacantEntry.getMaxCapacity(), _dict.getMinAvailableTermLength());
-			//System.out.printf("Current vacant entry: %s\n", _currentVacantEntry);
+			// TODO System.out.printf("Current vacant entry: %s\n", _currentVacantEntry);
 			ret = matchCurrentVacantEntry();
 			if (null != ret) {
-				//System.out.printf("Current match: %s\n", ret);
+				// TODO System.out.printf("Current match: %s\n", ret);
 				return ret;
 			}
 		}
@@ -77,12 +82,13 @@ public class SmallGridStrategyIterator extends CrosswordStrategyIterator {
 	
 	private CrosswordEntry matchCurrentVacantEntry() {
 		while (_termIt.hasNext()) {
-			String term = _termIt.next();
-			if (_overlapManager.isMatch(term, _currentVacantEntry)) {
+			Term term = _termIt.next();
+			if (_overlapManager.isMatch(term.getTerm(), _currentVacantEntry)) {
 				CrosswordPosition pos = _currentVacantEntry.getPosition();
 				return new MyCrosswordEntry(pos.getX(),
 											pos.getY(),
-											term, _dict.getTermDefinition(term),
+											term.getTerm(),
+											term.getDefinition(),
 											pos.isVertical());
 			}
 		}

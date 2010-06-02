@@ -20,8 +20,6 @@ import java.util.List;
 import java.util.Scanner;
 import java.util.TreeSet;
 
-import oop.ex4.crosswords.CrosswordShape.SlotType;
-
 /**
  * A class handling the shape of the crossword and the vacant 
  * entries in it.
@@ -41,7 +39,7 @@ public class MyCrosswordShape implements CrosswordShape,
 	
 	// An arrayList of strings, when each string is a line in the
 	// crossword shape.txt file
-	protected List<String> _oldData = new ArrayList<String>();
+	protected List<String> _originalData = new ArrayList<String>();
 	
 	// Holds in each cell of the array a treeSet of vacant entries with the 
 	// same maximal capacity as the number of the cell in the array it is being
@@ -84,6 +82,9 @@ public class MyCrosswordShape implements CrosswordShape,
 	 * @param other another MyCrosswordShape object.
 	 */
 	public MyCrosswordShape(MyCrosswordShape other) {
+		if (null != other._originalData) {
+			_originalData = new ArrayList<String>(other._originalData);
+		}
 		if (null != other._data) {
 			_data = 
 				(ArrayList<TreeSet<CrosswordVacantEntry>>)other._data.clone();
@@ -102,6 +103,8 @@ public class MyCrosswordShape implements CrosswordShape,
 				other._dataLengths.length);
 		_maxVacantEntryLength = other._maxVacantEntryLength;
 		_minVacantEntryLength = other._minVacantEntryLength;
+		_totalEntryLengthsSum = other._totalEntryLengthsSum;
+		_numOfEntries = other._numOfEntries;
 	}
 
 	/*
@@ -110,7 +113,7 @@ public class MyCrosswordShape implements CrosswordShape,
 	 * @see CrosswordGrid#getHeight()
 	 */
 	public Integer getHeight() {
-		return _oldData.size();
+		return _originalData.size();
 	}
 
 	/*
@@ -119,7 +122,7 @@ public class MyCrosswordShape implements CrosswordShape,
 	 * @see CrosswordGrid#getWidth()
 	 */
 	public Integer getWidth() {
-		return _oldData.get(0).length();
+		return _originalData.get(0).length();
 	}
 
 	/*
@@ -132,7 +135,7 @@ public class MyCrosswordShape implements CrosswordShape,
 		if (pos.getX() >= getWidth() || pos.getX() < 0 || 
 				pos.getY() >= getHeight() || pos.getY() < 0)
 			return SlotType.FRAME_SLOT;
-		switch (_oldData.get(pos.getY()).charAt(pos.getX())) {
+		switch (_originalData.get(pos.getY()).charAt(pos.getX())) {
 		case '_':
 			return SlotType.UNUSED_SLOT;
 		default:
@@ -148,13 +151,13 @@ public class MyCrosswordShape implements CrosswordShape,
 	public void load(String textFileName) throws IOException {
 		Scanner sc=null;
 		try {
-			_oldData = new ArrayList<String>();
+			_originalData = new ArrayList<String>();
 			sc = new Scanner(new FileReader(textFileName));
 			while (sc.hasNextLine()) {
-				_oldData.add(sc.nextLine());
+				_originalData.add(sc.nextLine());
 			}
 		} finally {
-			if (sc!=null) sc.close();
+			if (sc != null) sc.close();
 		}
 		int maxCapacity = Math.max(getHeight(), getWidth());
 		assert(0 < maxCapacity);
@@ -166,14 +169,14 @@ public class MyCrosswordShape implements CrosswordShape,
 		}
 		_initialVacantEntries =
 			new HashMap<CrosswordPosition, CrosswordVacantEntry>();
-		for (int y = 0; y < _oldData.size(); y++) {
-			initLineInDatabase(_oldData.get(y), HORIZONTAL, y);
+		for (int y = 0; y < _originalData.size(); y++) {
+			initLineInDatabase(_originalData.get(y), HORIZONTAL, y);
 		}
-		for (int x = 0; x < _oldData.get(0).length() ; x++) {
+		for (int x = 0; x < _originalData.get(0).length() ; x++) {
 			StringBuilder currentColumn = new StringBuilder();
 			// Builds a string from every column.
-			for (int i=0; i < _oldData.size(); i++) {
-				currentColumn.append(_oldData.get(i).charAt(x));
+			for (int i=0; i < _originalData.size(); i++) {
+				currentColumn.append(_originalData.get(i).charAt(x));
 			}
 			initLineInDatabase(currentColumn.toString(), VERTICAL, x);
 		}
@@ -186,10 +189,12 @@ public class MyCrosswordShape implements CrosswordShape,
 				_maxVacantEntryLength = i;
 			}
 			_numOfEntries += size;
-			_totalEntryLengthsSum += i*size;
 		}
 		_minVacantEntryLength =
 			findMinVacantEntryLength(_minVacantEntryLength);
+		for (CrosswordPosition pos : _initialVacantEntries.keySet()) {
+			_totalEntryLengthsSum += _initialVacantEntries.get(pos).getMaxCapacity();
+		}
 	}
 	
 	/**
@@ -304,9 +309,13 @@ public class MyCrosswordShape implements CrosswordShape,
 	 */
 	public void addEntry(CrosswordEntry entry) {
 		_usedEntries.add(entry.getPosition());
-		_dataLengths[entry.getLength()]++;
-		_maxVacantEntryLength =
-			Math.max(_maxVacantEntryLength, entry.getLength());
+		// As an entry is added we have one less vacant space of this size
+		int newSize = --_dataLengths[entry.getLength()];
+		if (0 == newSize) {
+			_maxVacantEntryLength = findMaxVacantEntryLength(_maxVacantEntryLength);
+			_minVacantEntryLength = findMinVacantEntryLength(_minVacantEntryLength);
+		}
+		
 	}
 
 	/**
@@ -317,11 +326,10 @@ public class MyCrosswordShape implements CrosswordShape,
 	public void removeEntry(CrosswordEntry entry) {
 		assert(_dataLengths[entry.getLength()] > 0);
 		_usedEntries.remove(entry.getPosition());
-		int newSize = --_dataLengths[entry.getLength()];
-		if (0 == newSize) {
-			_maxVacantEntryLength =
-				findMaxVacantEntryLength(_maxVacantEntryLength);
-		}
+		// As an entry is removed we have one more vacant space of this size
+		_dataLengths[entry.getLength()]++;
+		_maxVacantEntryLength = Math.max(_maxVacantEntryLength, entry.getLength());
+		_minVacantEntryLength = Math.min(_minVacantEntryLength, entry.getLength());
 	}
 
 	/**

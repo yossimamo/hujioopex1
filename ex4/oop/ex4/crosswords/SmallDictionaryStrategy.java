@@ -48,16 +48,15 @@ public class SmallDictionaryStrategy implements CrosswordStrategy {
 	 * to the strategy.
 	 */
 	public int getUpperBoundQuality(int currentQuality) {
-		//long startTime = System.currentTimeMillis();
 		int sum = 0;
 		// No point in iterating on terms that are longer than the longest 
 		// vacant entry, since they cannot fit into any vacant entry.
-		Iterator<String> termsIterator = _dict.getIterator(Math.min(
+		Iterator<Term> termsIterator = _dict.getIterator(Math.min(
 				_dict.getMaxAvailableTermLength(),
 				_shape.getMaxVacantEntryLength()),
 				_dict.getMinAvailableTermLength());
 		while (termsIterator.hasNext()) {
-			String nextTerm =  termsIterator.next();
+			Term nextTerm =  termsIterator.next();
 			// Iterate on vacant entries that are at least as long as the term
 			Iterator<CrosswordVacantEntry> vacantEntriesIterator =
 						_shape.getIterator(nextTerm.length(),
@@ -65,7 +64,7 @@ public class SmallDictionaryStrategy implements CrosswordStrategy {
 			while (vacantEntriesIterator.hasNext()) {
 				CrosswordVacantEntry vacantEntry =
 								vacantEntriesIterator.next();
-				if (_overlapManager.isMatch(nextTerm, vacantEntry)) {
+				if (_overlapManager.isMatch(nextTerm.getTerm(), vacantEntry)) {
 					sum += nextTerm.length();
 					break;
 				}
