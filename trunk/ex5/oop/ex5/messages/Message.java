@@ -1,34 +1,27 @@
 package oop.ex5.messages;
 
 import java.io.DataInputStream;
-import java.util.StringTokenizer;
-
+import java.io.IOException;
 
 public abstract class Message {
 	
-	protected static final String MSG_TOKEN_DELIMITERS = " ";
-	protected static final String MSG_END = "END";
-	protected final String STR;
-	protected String _name;
+	protected static final String MESSAGE_END = "END";
 	
-	public Message(DataInputStream str)
-		throws InvalidMessageFormatException,
-			   InvalidMessageNameException,
-			   InvalidMessageParamsException {
+	public Message(DataInputStream in) throws InvalidMessageFormatException {
+		readFromStream(in);
+		validateEnd(in);
 	}
 	
-	public abstract String toString();
+	protected abstract void readFromStream(DataInputStream in)
+		throws InvalidMessageFormatException;
 	
-	protected String extractName() {
-		StringTokenizer tok = new StringTokenizer(STR, MSG_TOKEN_DELIMITERS);
-		return tok.nextToken();
-	}
-	
-	protected abstract void verifyName(StringTokenizer tok) throws InvalidMessageNameException;
-	protected abstract void loadParams(StringTokenizer tok) throws InvalidMessageParamsException;
-	protected void verifyEnd(StringTokenizer tok) throws InvalidMessageFormatException {
-		String str = tok.nextToken();
-		if (!str.equals(MSG_END)) {
+	protected void validateEnd(DataInputStream in)
+		throws InvalidMessageFormatException {
+		try {
+			if (!MESSAGE_END.equals(in.readUTF())) {
+				throw new InvalidMessageFormatException();
+			}
+		} catch (IOException e) {
 			throw new InvalidMessageFormatException();
 		}
 	}
