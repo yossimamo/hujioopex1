@@ -4,16 +4,28 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
+import oop.ex5.messages.Message.MessageType;
+
 public class FileAddressMessage extends Message {
 	
 	protected static final String NAME = "FILEADDRESS";
+	protected static final MessageType TYPE = MessageType.FILEADDRESS;
 	
 	private String _fileManagerIP;
 	private int _fileManagerPort;
 
+	public FileAddressMessage(String fileManagerIP, int fileManagerPort) {
+		_fileManagerIP = fileManagerIP;
+		_fileManagerPort = fileManagerPort;
+	}
+	
 	public FileAddressMessage(DataInputStream in)
 			throws InvalidMessageFormatException, IOException {
 		super(in);
+	}
+	
+	public MessageType getType() {
+		return TYPE;
 	}
 
 	@Override

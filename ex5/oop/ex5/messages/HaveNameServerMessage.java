@@ -4,16 +4,28 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
+import oop.ex5.messages.Message.MessageType;
+
 public class HaveNameServerMessage extends Message {
 	
 	protected static final String NAME = "HAVENAMESERVER";
+	protected static final MessageType TYPE = MessageType.HAVENAMESERVER;
 	
 	private String _nameServerIP;
 	private int _nameServerPort;
 
+	public HaveNameServerMessage(String nameServerIP, int nameServerPort) {
+		_nameServerIP = nameServerIP;
+		_nameServerPort = nameServerPort;
+	}
+	
 	public HaveNameServerMessage(DataInputStream in)
 			throws InvalidMessageFormatException, IOException {
 		super(in);
+	}
+	
+	public MessageType getType() {
+		return TYPE;
 	}
 
 	@Override

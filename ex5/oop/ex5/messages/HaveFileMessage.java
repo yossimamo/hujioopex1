@@ -4,15 +4,26 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
+import oop.ex5.messages.Message.MessageType;
+
 public class HaveFileMessage extends Message {
 	
 	protected static final String NAME = "HAVEFILE";
+	protected static final MessageType TYPE = MessageType.HAVEFILE;
 	
 	private String _fileName;
+	
+	public HaveFileMessage(String fileName) {
+		_fileName = fileName;
+	}
 
 	public HaveFileMessage(DataInputStream in)
 			throws InvalidMessageFormatException, IOException {
 		super(in);
+	}
+	
+	public MessageType getType() {
+		return TYPE;
 	}
 
 	@Override

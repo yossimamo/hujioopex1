@@ -7,10 +7,19 @@ import java.io.IOException;
 public class ErrorMessage extends Message {
 	
 	protected static final String NAME = "ERROR";
+	protected static final MessageType TYPE = MessageType.ERROR;
+	
+	public ErrorMessage() {
+		// Intentionally left blank
+	}
 
 	public ErrorMessage(DataInputStream in)
 			throws InvalidMessageFormatException, IOException {
 		super(in);
+	}
+	
+	public MessageType getType() {
+		return TYPE;
 	}
 
 	@Override
