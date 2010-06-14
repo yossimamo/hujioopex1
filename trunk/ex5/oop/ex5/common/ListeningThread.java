@@ -6,25 +6,27 @@ import java.net.Socket;
 import java.util.Iterator;
 import java.util.LinkedList;
 
+import oop.ex5.nameserver.NameServerData;
+
 public class ListeningThread extends Thread {
 	
 	private ServerSocket _listenSock;
-	private IHandlesReceivedMassages _serverLogicHandler;
-	private LinkedList<ProcessThread> _processThreads;
+	private LinkedList<ClientThread> _clientThreads;
+	private ClientThreadFactory _factory;
 	
-	public ListeningThread(int port, IHandlesReceivedMassages serverLogicHandler) throws IOException {
+	public ListeningThread(int port, ClientThreadFactory factory) throws IOException {
 		_listenSock = new ServerSocket(port);
-		_serverLogicHandler = serverLogicHandler;
-		_processThreads = new LinkedList<ProcessThread>();
+		_clientThreads = new LinkedList<ClientThread>();
 	}
 	
+	@Override
 	public void run() {
 		Socket socket;
 		try {
 			while (true) {
 				socket = _listenSock.accept();
 				//TODO check if cleaning up the list is needed.
-				_processThreads.add(new ProcessThread(socket,_serverLogicHandler));
+				_clientThreads.add(_factory.createClientThread(socket));
 			}
 			
 		} catch (IOException e) {
