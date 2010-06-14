@@ -20,7 +20,6 @@ public class HaveFileMessage extends Message {
 		} catch (IOException e) {
 			throw new InvalidMessageFormatException();
 		}
-		
 	}
 
 }

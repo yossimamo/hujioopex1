@@ -1,5 +1,18 @@
 package oop.ex5.messages;
 
-public class SessionEndMessage {
+import java.io.DataInputStream;
+
+public class SessionEndMessage extends Message {
+
+	public SessionEndMessage(DataInputStream in)
+			throws InvalidMessageFormatException {
+		super(in);
+	}
+
+	@Override
+	protected void readFromStream(DataInputStream in)
+			throws InvalidMessageFormatException {
+		// Intentionally left blank
+	}
 
 }
