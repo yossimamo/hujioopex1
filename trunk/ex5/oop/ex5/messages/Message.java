@@ -8,7 +8,30 @@ import java.io.UTFDataFormatException;
 
 public abstract class Message {
 	
+	public enum MessageType {
+		ANNOUNCE,
+		BYE,
+		DONTHAVEFILE,
+		ERROR,
+		FILEADDRESS,
+		FILE,
+		FILENOTFOUND,
+		HAVEFILE,
+		HAVENAMESERVER,
+		INTRODUCE,
+		KILL,
+		LISTEND,
+		NEEDFILE,
+		NEEDSERVERS,
+		OK,
+		SESSIONEND		
+	};
+	
 	protected static final String END = "END";
+	
+	protected Message() {
+		// Intentionally left blank
+	}
 	
 	protected Message(DataInputStream in)
 		throws InvalidMessageFormatException, IOException {

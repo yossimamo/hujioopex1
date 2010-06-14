@@ -7,10 +7,19 @@ import java.io.IOException;
 public class AnnounceMessage extends Message {
 	
 	protected static final String NAME = "ANNOUNCE";
+	protected static final MessageType TYPE = MessageType.ANNOUNCE;
+	
+	public AnnounceMessage() {
+		// Intentionally left blank
+	}
 	
 	protected AnnounceMessage(DataInputStream in)
 			throws InvalidMessageFormatException, IOException {
 		super(in);
+	}
+	
+	public MessageType getType() {
+		return TYPE;
 	}
 
 	@Override

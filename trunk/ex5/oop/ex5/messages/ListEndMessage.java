@@ -7,10 +7,19 @@ import java.io.IOException;
 public class ListEndMessage extends Message {
 	
 	protected static final String NAME = "LISTEND";
+	protected static final MessageType TYPE = MessageType.LISTEND;
+	
+	public ListEndMessage() {
+		// Intentionally left blank
+	}
 
 	public ListEndMessage(DataInputStream in)
 			throws InvalidMessageFormatException, IOException {
 		super(in);
+	}
+	
+	public MessageType getType() {
+		return TYPE;
 	}
 
 	@Override

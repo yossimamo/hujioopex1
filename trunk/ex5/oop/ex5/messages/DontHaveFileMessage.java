@@ -9,8 +9,17 @@ import java.io.UTFDataFormatException;
 public class DontHaveFileMessage extends Message {
 	
 	protected static final String NAME = "DONTHAVEFILE";
+	protected static final MessageType TYPE = MessageType.DONTHAVEFILE;
 	
 	private String _fileName;
+	
+	public DontHaveFileMessage(String fileName) {
+		_fileName = fileName;
+	}
+	
+	public MessageType getType() {
+		return TYPE;
+	}
 
 	public DontHaveFileMessage(DataInputStream in)
 			throws InvalidMessageFormatException, IOException {

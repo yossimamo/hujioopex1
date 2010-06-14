@@ -4,13 +4,24 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
+import oop.ex5.messages.Message.MessageType;
+
 public class FileMessage extends Message {
 	
 	protected static final String NAME = "FILE";
+	protected static final MessageType TYPE = MessageType.FILE;
+	
+	public FileMessage() {
+		// TODO
+	}
 
 	public FileMessage(DataInputStream in)
 		throws InvalidMessageFormatException, IOException {
 		super(in);
+	}
+	
+	public MessageType getType() {
+		return TYPE;
 	}
 
 	// TODO store the file temporarily on disk or in memory? large files may be

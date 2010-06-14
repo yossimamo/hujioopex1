@@ -7,10 +7,19 @@ import java.io.IOException;
 public class ByeMessage extends Message {
 	
 	protected static final String NAME = "BYE";
+	protected static final MessageType TYPE = MessageType.BYE;
+	
+	public ByeMessage() {
+		// Intentionally left blank
+	}
 
 	public ByeMessage(DataInputStream in)
 		throws InvalidMessageFormatException, IOException {
 		super(in);
+	}
+	
+	public MessageType getType() {
+		return TYPE;
 	}
 
 	@Override
