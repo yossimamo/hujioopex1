@@ -25,6 +25,14 @@ public class IntroduceMessage extends Message {
 	public MessageType getType() {
 		return TYPE;
 	}
+	
+	public String getFileManagerIP() {
+		return _fileManagerIP;
+	}
+	
+	public int getFileManagerPort() {
+		return _fileManagerPort;
+	}
 
 	@Override
 	protected void readImp(DataInputStream in)

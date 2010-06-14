@@ -12,7 +12,7 @@ public class DontHaveFileMessage extends Message {
 	protected static final MessageType TYPE = MessageType.DONTHAVEFILE;
 	
 	private String _fileName;
-	
+
 	public DontHaveFileMessage(String fileName) {
 		_fileName = fileName;
 	}
@@ -24,6 +24,10 @@ public class DontHaveFileMessage extends Message {
 	public DontHaveFileMessage(DataInputStream in)
 			throws InvalidMessageFormatException, IOException {
 		super(in);
+	}
+	
+	public String getFileName() {
+		return _fileName;
 	}
 
 	@Override

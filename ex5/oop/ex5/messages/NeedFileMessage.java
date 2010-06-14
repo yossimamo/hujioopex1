@@ -23,6 +23,10 @@ public class NeedFileMessage extends Message {
 	public MessageType getType() {
 		return TYPE;
 	}
+	
+	public String getFileName() {
+		return _fileName;
+	}
 
 	@Override
 	protected void readImp(DataInputStream in)

@@ -25,6 +25,14 @@ public class HaveNameServerMessage extends Message {
 	public MessageType getType() {
 		return TYPE;
 	}
+	
+	public String getNameServerIP() {
+		return _nameServerIP;
+	}
+	
+	public int getNameServerPort() {
+		return _nameServerPort;
+	}
 
 	@Override
 	protected void readImp(DataInputStream in)

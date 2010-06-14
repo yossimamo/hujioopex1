@@ -10,7 +10,7 @@ public class HaveFileMessage extends Message {
 	protected static final MessageType TYPE = MessageType.HAVEFILE;
 	
 	private String _fileName;
-	
+
 	public HaveFileMessage(String fileName) {
 		_fileName = fileName;
 	}
@@ -22,6 +22,10 @@ public class HaveFileMessage extends Message {
 	
 	public MessageType getType() {
 		return TYPE;
+	}
+	
+	public String getFileName() {
+		return _fileName;
 	}
 
 	@Override
