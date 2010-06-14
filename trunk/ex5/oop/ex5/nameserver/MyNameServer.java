@@ -19,14 +19,20 @@ public class MyNameServer implements NameServerData {
 	}
 	
 	public static void main(String[] args) {
-		// TODO listen for clients and create a ClientThread for each incoming connection
 		if (NUM_OF_ARGS != args.length) {
+			// TODO print error
 			return;
 		}
-		int port = Integer.parseInt(args[PORT_ARG_INDEX]);
-		MyNameServer server = new MyNameServer();
-		Thread listeningThread = new ListeningThread(port, new NameServerClientThreadFactory(data));
-		listeningThread.run();
+		try {
+			int port = Integer.parseInt(args[PORT_ARG_INDEX]);
+			MyNameServer server = new MyNameServer();
+			Thread listeningThread = new ListeningThread(port, new NameServerClientThreadFactory(server._data));
+			listeningThread.run();
+		} catch (NumberFormatException e) {
+			// TODO print error
+			return;
+		}
+		// TODO other exceptions?
 	}
 
 }
