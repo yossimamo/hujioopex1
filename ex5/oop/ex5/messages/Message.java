@@ -106,6 +106,8 @@ public abstract class Message {
 		out.writeUTF(END);
 	}
 	
+	public abstract MessageType getType();
+	
 	protected abstract void readImp(DataInputStream in)
 		throws InvalidMessageFormatException, IOException;
 	
