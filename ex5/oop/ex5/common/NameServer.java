@@ -17,5 +17,12 @@ public class NameServer {
 	public int getPort() {
 		return _port;
 	}
+	
+	public boolean equals(NameServer other) {
+		if (_port == other._port &&  _ip.equals(other._ip)) {
+			return true;
+		}
+		return false;
+	}
 
 }
