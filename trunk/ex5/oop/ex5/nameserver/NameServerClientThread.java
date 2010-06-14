@@ -52,10 +52,13 @@ public class NameServerClientThread extends ClientThread {
 				break;
 			case BYE:
 				handleBye();
-				break;
+				return;
 			case KILL:
 				handleKill();
-				break;
+				return;
+			case SESSIONEND:
+				handleSessionEnd();
+				return;
 			default:
 				throw new SessionErrorException();			
 			}
@@ -170,11 +173,17 @@ public class NameServerClientThread extends ClientThread {
 	private void handleBye() {
 		_data.clearFileManager(_fm);
 		_comm.sendMessage(OK_MSG);
+		_comm.close();
 	}
 	
 	private void handleKill() {
 		_comm.sendMessage(OK_MSG);
-		// TODO kill
+		_comm.close();
+		// TODO kill server - signal server to go down
+	}
+	
+	private void handleSessionEnd() {
+		_comm.close();	
 	}
 	
 }
