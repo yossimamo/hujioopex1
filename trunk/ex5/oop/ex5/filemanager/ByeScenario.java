@@ -1,8 +1,8 @@
 package oop.ex5.filemanager;
 
-public class GetScenario extends Scenario {
+public class ByeScenario extends Scenario {
 
-	public GetScenario(FileManagerDataBase dataBase) {
+	public ByeScenario(FileManagerDataBase dataBase) {
 		// TODO Auto-generated constructor stub
 	}
 

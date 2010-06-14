@@ -2,7 +2,7 @@ package oop.ex5.filemanager;
 
 public class KillScenario extends Scenario {
 
-	public KillScenario() {
+	public KillScenario(FileManagerDataBase dataBase) {
 		// TODO Auto-generated constructor stub
 	}
 

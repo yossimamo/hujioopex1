@@ -9,11 +9,13 @@ import oop.ex5.messages.Message;
 
 public class FileManagerServerHandler implements IHandlesReceivedMassages {
 	
-	private DataBase _dataBase;
+	private FileManagerDataBase _dataBase;
+	private ListeningThread _listeningThread;
 
-	public FileManagerServerHandler(DataBase dataBase, int port) throws IOException {
+	public FileManagerServerHandler(FileManagerDataBase dataBase, int port) throws IOException {
 		_dataBase = dataBase;
-		new ListeningThread(port, this).start();
+		_listeningThread =  new ListeningThread(port, this);
+		_listeningThread.start();
 	}
 
 	public void HandleReceivedMessage(ProcessThread processThread,
@@ -30,7 +32,16 @@ public class FileManagerServerHandler implements IHandlesReceivedMassages {
 				processThread.sendMessage(new FileNotFoundMessage());
 			}
 		}
-
+	}
+	
+	public void shutDown() {
+		_listeningThread.shutDown();
+		try {
+			_listeningThread.join();
+		} catch (InterruptedException e) {
+			//shouldn't happen
+			e.printStackTrace();
+		}
 	}
 
 }
