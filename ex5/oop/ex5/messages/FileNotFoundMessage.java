@@ -4,8 +4,6 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
-import oop.ex5.messages.Message.MessageType;
-
 public class FileNotFoundMessage extends Message {
 	
 	protected static final String NAME = "FILENOTFOUND";
