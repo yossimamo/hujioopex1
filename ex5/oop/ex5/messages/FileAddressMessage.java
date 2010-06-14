@@ -3,19 +3,19 @@ package oop.ex5.messages;
 import java.io.DataInputStream;
 import java.io.IOException;
 
-public class IntroduceMessage extends Message {
+public class FileAddressMessage extends Message {
 	
 	private String _fileManagerIP;
 	private int _fileManagerPort;
-	
-	public IntroduceMessage(DataInputStream in)
-		throws InvalidMessageFormatException {
+
+	public FileAddressMessage(DataInputStream in)
+			throws InvalidMessageFormatException {
 		super(in);
 	}
 
 	@Override
 	protected void readFromStream(DataInputStream in)
-		throws InvalidMessageFormatException {
+			throws InvalidMessageFormatException {
 		try {
 			_fileManagerIP = in.readUTF();
 			_fileManagerPort = in.readInt();
@@ -23,5 +23,5 @@ public class IntroduceMessage extends Message {
 			throw new InvalidMessageFormatException();
 		}		
 	}
-	
+
 }
