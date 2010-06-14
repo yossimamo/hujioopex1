@@ -1,17 +1,32 @@
 package oop.ex5.messages;
 
 import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
 
 public class KillMessage extends Message {
+	
+	protected static final String NAME = "KILL";
 
-	public KillMessage(DataInputStream in) throws InvalidMessageFormatException {
+	public KillMessage(DataInputStream in)
+		throws InvalidMessageFormatException, IOException {
 		super(in);
 	}
 
 	@Override
-	protected void readFromStream(DataInputStream in)
+	protected void readImp(DataInputStream in)
 			throws InvalidMessageFormatException {
 		// Intentionally left blank
+	}
+
+	@Override
+	protected void writeImp(DataOutputStream out) throws IOException {
+		// Intentionally left blank		
+	}
+	
+	@Override
+	protected String getName() {
+		return NAME;
 	}
 
 }
