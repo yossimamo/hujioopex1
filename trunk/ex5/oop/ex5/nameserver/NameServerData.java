@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
-import java.util.Set;
 
 import oop.ex5.common.NameServer;
 
@@ -62,16 +61,20 @@ public class NameServerData {
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	public synchronized Iterator<FileManager> getFileManagers(String fileName) {
 		if (_filesMapping.containsKey(fileName)) {
-			return _filesMapping.get(fileName).iterator();
+			HashSet<FileManager> set = (HashSet<FileManager>)_filesMapping.get(fileName).clone();
+			return set.iterator();
 		} else {
 			return null;
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	public synchronized Iterator<NameServer> getNameServers() {
-		return _nameServers.iterator();
+		LinkedList<NameServer> list = (LinkedList<NameServer>)_nameServers.clone();
+		return list.iterator();
 	}
 
 	public synchronized void clearFileManager(FileManager fm) {

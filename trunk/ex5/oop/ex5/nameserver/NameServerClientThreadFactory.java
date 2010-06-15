@@ -1,5 +1,6 @@
 package oop.ex5.nameserver;
 
+import java.io.IOException;
 import java.net.Socket;
 
 import oop.ex5.common.ClientThread;
@@ -14,7 +15,7 @@ public class NameServerClientThreadFactory implements ClientThreadFactory {
 	}
 
 	@Override
-	public ClientThread createClientThread(Socket socket) {
+	public ClientThread createClientThread(Socket socket) throws IOException {
 		return new NameServerClientThread(socket, _data);
 	}
 
