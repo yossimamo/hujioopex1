@@ -30,4 +30,6 @@ public abstract class AbstractDataBase {
 	
 	public abstract String getIP();
 	
+	public abstract boolean containsNameServer(NameServer nameServer);
+	
 }
