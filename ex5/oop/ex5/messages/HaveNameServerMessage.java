@@ -4,6 +4,8 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
+import oop.ex5.common.NameServer;
+
 public class HaveNameServerMessage extends Message {
 	
 	protected static final String NAME = "HAVENAMESERVER";
@@ -12,9 +14,9 @@ public class HaveNameServerMessage extends Message {
 	private String _nameServerIP;
 	private int _nameServerPort;
 
-	public HaveNameServerMessage(String nameServerIP, int nameServerPort) {
-		_nameServerIP = nameServerIP;
-		_nameServerPort = nameServerPort;
+	public HaveNameServerMessage(NameServer nameServer) {
+		_nameServerIP = nameServer.getIP();
+		_nameServerPort = nameServer.getPort();
 	}
 	
 	public HaveNameServerMessage(DataInputStream in)

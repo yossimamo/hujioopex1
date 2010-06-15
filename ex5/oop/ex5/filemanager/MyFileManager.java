@@ -11,10 +11,8 @@ import oop.ex5.common.NameServer;
 
 public class MyFileManager {
 	
-	private static FileManagerDataBase _dataBase;
-	private ListeningThread _listeningThread;
-	private Socket _clientSock;
-	private static Integer _port;
+	private AbstractDataBase _dataBase;
+	private FileManagerServerHandler _serverHandler;
 	
 	enum Command {
 		LIST,
@@ -26,16 +24,15 @@ public class MyFileManager {
 		OTHER
 	};
 	
-	public MyFileManager() {
-		
+	public MyFileManager(String serverList, String myDirectory, int port) {
+		_dataBase = new FileManagerDataBase(serverList, myDirectory, port);
+		Scenario init = new InitFileManagerScenario(_dataBase);
+		init.executeScenario();
+		//_serverHandler = new FileManagerServerHandler(_dataBase, _port);
 	}
 	
 	public static void main(String[] args) {
-		_dataBase = new FileManagerDataBase(args[0], args[1]);
-		_port.valueOf(args[2]);
-		Scenario init = new InitFileManagerScenario();
-		init.executeScenario();
-		FileManagerServerHandler serverHandler = new FileManagerServerHandler(_dataBase, _port);
+		MyFileManager myFileManager = new MyFileManager(args[0], args[1], Integer.valueOf(args[2]));
 		Command nextCommand;
 		do {
 			// assumes all commands are valid
@@ -49,26 +46,39 @@ public class MyFileManager {
 			}
 			switch (nextCommand) {
 			case LIST :
-				printFiles();
+				printFiles(myFileManager);
 				break;
 			case LISTSERVERS :
-				printServers();
+				printServers(myFileManager);
 				break;
 			case GET :
-				Scenario getScenario = new GetScenario(_dataBase);
-				getScenario.executeScenario();
+				String fileName = commandLineScanner.next();
+				if (myFileManager.getDataBase().containsFile(fileName)) {
+					System.out.println("File is already in the database");
+				}
+				else {
+					Scenario getScenario = new GetScenario(myFileManager.getDataBase(), fileName);
+					getScenario.executeScenario();
+				}
 				break;
 			case DEL :
-				Scenario delScenario = new DelScenario(_dataBase);
-				delScenario.executeScenario();
+				String fileName = commandLineScanner.next();
+				if (!myFileManager.getDataBase().containsFile(fileName)) {
+					System.out.println("File is not in the database");
+				}
+				else {
+					Scenario delScenario = new DelScenario(myFileManager.getDataBase(), fileName);
+					delScenario.executeScenario();
+					System.out.println("Deletion OK");
+				}
 				break;
 			case KILL :
-				Scenario killScenario = new KillScenario(_dataBase);
+				Scenario killScenario = new KillScenario(myFileManager.getDataBase());
 				killScenario.executeScenario();
 				break;
 			case BYE :
-				serverHandler.shutDown();
-				Scenario byeScenario = new ByeScenario(_dataBase);
+				myFileManager.getServerHandler().shutDown();
+				Scenario byeScenario = new ByeScenario(myFileManager.getDataBase());
 				byeScenario.executeScenario();
 				System.out.println("Good Bye!");
 				break;
@@ -78,20 +88,30 @@ public class MyFileManager {
 		}while (nextCommand != Command.BYE);
 	}
 
-	private static void printServers() {
-		Iterator<NameServer> it = _dataBase.nameServersIterator();
+	private static void printServers(MyFileManager myFileManager) {
+		Iterator<NameServer> it = myFileManager.getDataBase().nameServersIterator();
 		while (it.hasNext()) {
 			NameServer nameServer = it.next();
 			System.out.println("ip: " + nameServer.getIP() + " port: " + nameServer.getPort());
 		}
 	}
 
-	private static void printFiles() {
-		Set<String> files = _dataBase.getFiles();
-		Iterator<String> it = files.iterator();
-		while (it.hasNext()) {
-			System.out.println(it.next());
+	private static void printFiles(MyFileManager myFileManager) {
+		String[] files = myFileManager.getDataBase().getFiles();
+		if (files != null) {
+			for (int i=0 ; i<files.length ; i++) {
+				System.out.println(files[i]);
+			}
 		}
+		
+	}
+	
+	public AbstractDataBase getDataBase() {
+		return _dataBase;
+	}
+	
+	public FileManagerServerHandler getServerHandler() {
+		return _serverHandler;
 	}
 
 }

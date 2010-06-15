@@ -1,15 +1,18 @@
 package oop.ex5.filemanager;
 
+import java.util.Iterator;
+
+import oop.ex5.common.CommLayer;
+import oop.ex5.common.NameServer;
+
 public class InitFileManagerScenario extends Scenario {
 
-	public InitFileManagerScenario() {
-		// TODO Auto-generated constructor stub
+	public InitFileManagerScenario(AbstractDataBase dataBase) {
+		super(dataBase);
 	}
 
-	@Override
 	public void executeScenario() {
-		// TODO Auto-generated method stub
-
+		sendMsgToAllNameServers(NO_MESSAGE);
 	}
 
 }

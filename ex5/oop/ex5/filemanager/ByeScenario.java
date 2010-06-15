@@ -1,15 +1,16 @@
 package oop.ex5.filemanager;
 
+import oop.ex5.messages.ByeMessage;
+
 public class ByeScenario extends Scenario {
 
-	public ByeScenario(FileManagerDataBase dataBase) {
-		// TODO Auto-generated constructor stub
+	public ByeScenario(AbstractDataBase dataBase) {
+		super(dataBase);
 	}
 
-	@Override
+	
 	public void executeScenario() {
-		// TODO Auto-generated method stub
-
+		sendMsgToAllNameServers(new ByeMessage());
 	}
 
 }
