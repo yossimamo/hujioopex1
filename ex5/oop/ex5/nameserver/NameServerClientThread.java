@@ -1,5 +1,6 @@
 package oop.ex5.nameserver;
 
+import java.io.IOException;
 import java.net.Socket;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -22,50 +23,63 @@ public class NameServerClientThread extends ClientThread {
 	private NameServerData _data;
 	private FileManager _fm;
 
-	public NameServerClientThread(Socket socket, NameServerData data) {
+	public NameServerClientThread(Socket socket, NameServerData data)
+		throws IOException {
 		_comm = new CommLayer(socket);
 		_data = data;
 	}
 	
 	@Override
 	public void run() {
-		_fm = initSession();
-		// TODO condition
-		while (!_shouldStop) {
-			Message rcvdMsg = _comm.receiveMessage();
-			MessageType msgType = rcvdMsg.getType(); 
-			switch(msgType) {
-			case DONTHAVEFILE:
-				handleDontHaveFile(rcvdMsg);
-				break;
-			case HAVEFILE:
-				handleHaveFile(rcvdMsg);
-				break;
-			case HAVENAMESERVER:
-				handleHaveNameServer(rcvdMsg);
-				break;
-			case NEEDFILE:
-				handleNeedFile(rcvdMsg);
-				break;
-			case NEEDSERVERS:
-				handleNeedServers();
-				break;
-			case BYE:
-				handleBye();
-				return;
-			case KILL:
-				handleKill();
-				return;
-			case SESSIONEND:
-				handleSessionEnd();
-				return;
-			default:
-				throw new SessionErrorException();			
+		try {
+			_fm = initSession();
+			// TODO condition
+			while (!_shouldStop) {
+				Message rcvdMsg = _comm.receiveMessage();
+				MessageType msgType = rcvdMsg.getType(); 
+				switch(msgType) {
+				case DONTHAVEFILE:
+					handleDontHaveFile(rcvdMsg);
+					break;
+				case HAVEFILE:
+					handleHaveFile(rcvdMsg);
+					break;
+				case HAVENAMESERVER:
+					handleHaveNameServer(rcvdMsg);
+					break;
+				case NEEDFILE:
+					handleNeedFile(rcvdMsg);
+					break;
+				case NEEDSERVERS:
+					handleNeedServers();
+					break;
+				case BYE:
+					handleBye();
+					return;
+				case KILL:
+					handleKill();
+					return;
+				case SESSIONEND:
+					handleSessionEnd();
+					return;
+				default:
+					throw new SessionErrorException();			
+				}
 			}
+		} catch (InvalidMessageFormatException e) {
+			_comm.sendMessage(ERROR_MSG);
+		} catch (InvalidMessageNameException e) {
+			_comm.sendMessage(ERROR_MSG);
+		} catch (SessionErrorException e) {
+			_comm.sendMessage(ERROR_MSG);
+		} finally {
+			_comm.close();
+			return;
 		}
 	}
 
-	private FileManager initSession() {
+	private FileManager initSession()
+		throws InvalidMessageFormatException, InvalidMessageNameException, IOException, SessionErrorException {
 		Message rcvdMsg = _comm.receiveMessage();
 		if (MessageType.INTRODUCE != rcvdMsg.getType()) {
 			throw new SessionErrorException();
@@ -86,7 +100,8 @@ public class NameServerClientThread extends ClientThread {
 		return _data.hasFileManager(ip, port);
 	}
 	
-	private FileManager handleAnnounceReply(String ip, int port) {
+	private FileManager handleAnnounceReply(String ip, int port)
+		throws InvalidMessageFormatException, InvalidMessageNameException, IOException, SessionErrorException {
 		FileManager fm = _data.addFileManager(ip, port);
 		boolean listEnd = false;
 		while(!listEnd) {
@@ -101,8 +116,7 @@ public class NameServerClientThread extends ClientThread {
 				listEnd = true;
 				break;
 			default:
-				// TODO error
-				break;
+				throw new SessionErrorException();
 			}
 			_comm.sendMessage(OK_MSG);
 		}
@@ -119,33 +133,32 @@ public class NameServerClientThread extends ClientThread {
 				listEnd = true;
 				break;
 			default:
-				// TODO error
-				break;
+				throw new SessionErrorException();
 			}
 			_comm.sendMessage(OK_MSG);
 		}
 		return fm;
 	}
 
-	private void handleDontHaveFile(Message rcvdMsg) {
+	private void handleDontHaveFile(Message rcvdMsg) throws IOException {
 		DontHaveFileMessage msg = (DontHaveFileMessage)rcvdMsg;
 		_data.removeFile(_fm, msg.getFileName());
 		_comm.sendMessage(OK_MSG);
 	}
 	
-	private void handleHaveFile(Message rcvdMsg) {
+	private void handleHaveFile(Message rcvdMsg) throws IOException {
 		HaveFileMessage msg = (HaveFileMessage)rcvdMsg;
 		_data.addFile(_fm, msg.getFileName());
 		_comm.sendMessage(OK_MSG);
 	}
 	
-	private void handleHaveNameServer(Message rcvdMsg) {
+	private void handleHaveNameServer(Message rcvdMsg) throws IOException {
 		HaveNameServerMessage msg = (HaveNameServerMessage)rcvdMsg;
 		_data.addNameServer(msg.getNameServerIP(), msg.getNameServerPort());
 		_comm.sendMessage(OK_MSG);
 	}
 	
-	private void handleNeedFile(Message rcvdMsg) {
+	private void handleNeedFile(Message rcvdMsg) throws IOException {
 		NeedFileMessage msg = (NeedFileMessage)rcvdMsg;
 		Iterator<FileManager> it = _data.getFileManagers(msg.getFileName());
 		if (null != it) {
@@ -158,7 +171,7 @@ public class NameServerClientThread extends ClientThread {
 		_comm.sendMessage(LISTEND_MSG);
 	}
 	
-	private void handleNeedServers() {
+	private void handleNeedServers() throws IOException {
 		Iterator<NameServer> it = _data.getNameServers();
 		if (null != it) {
 			while (it.hasNext()) {
@@ -170,19 +183,20 @@ public class NameServerClientThread extends ClientThread {
 		_comm.sendMessage(LISTEND_MSG);
 	}
 	
-	private void handleBye() {
+	private void handleBye() throws IOException {
 		_data.clearFileManager(_fm);
 		_comm.sendMessage(OK_MSG);
 		_comm.close();
 	}
 	
-	private void handleKill() {
+	private void handleKill() throws IOException {
 		_comm.sendMessage(OK_MSG);
 		_comm.close();
 		// TODO kill server - signal server to go down
 	}
 	
-	private void handleSessionEnd() {
+	private void handleSessionEnd() throws IOException {
+		_comm.sendMessage(OK_MSG);
 		_comm.close();	
 	}
 	

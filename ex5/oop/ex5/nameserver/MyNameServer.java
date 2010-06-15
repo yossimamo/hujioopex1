@@ -1,17 +1,13 @@
 package oop.ex5.nameserver;
 
-import java.net.ServerSocket;
-import java.util.HashMap;
-import java.util.LinkedList;
+import java.io.IOException;
 
 import oop.ex5.common.ListeningThread;
-import oop.ex5.common.NameServer;
 
-public class MyNameServer implements NameServerData {
+public class MyNameServer {
 	
 	private static final int NUM_OF_ARGS = 1;
 	private static final int PORT_ARG_INDEX = 1;
-	
 	private NameServerData _data;
 	
 	public MyNameServer() {
@@ -31,6 +27,10 @@ public class MyNameServer implements NameServerData {
 		} catch (NumberFormatException e) {
 			// TODO print error
 			return;
+		}
+		catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 		// TODO other exceptions?
 	}
