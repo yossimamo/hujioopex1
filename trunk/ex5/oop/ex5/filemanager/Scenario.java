@@ -34,7 +34,7 @@ public abstract class Scenario {
 	}
 	
 	protected void introduce(CommLayer comm) {
-		comm.sendMessage(new IntroduceMessage(_data.getIP(), _data.getPort()));
+		comm.sendMessage(new IntroduceMessage(_data.getSelfFileManager()));
 		switch (comm.receiveMessage().getType()) {
 		case ANNOUNCE :
 			announce(comm);
