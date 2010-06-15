@@ -6,12 +6,14 @@ import java.util.Iterator;
 import java.util.LinkedList;
 
 import oop.ex5.common.NameServer;
+import oop.ex5.common.ShutdownSignal;
 
-public class NameServerData {
+public class NameServerData implements ShutdownSignal {
 	
 	private LinkedList<NameServer> _nameServers = new LinkedList<NameServer>();
 	private HashMap<String, HashSet<FileManager>> _filesMapping = new HashMap<String, HashSet<FileManager>>();
 	private HashMap<FileManager, HashSet<String>> _fileManagersMapping = new HashMap<FileManager, HashSet<String>>();
+	private boolean _shutdownSignal = false;
 
 	public NameServerData() {
 		
@@ -86,5 +88,16 @@ public class NameServerData {
 			}
 			_fileManagersMapping.remove(fm);
 		}
+	}
+
+	// TODO Not sure this synchronization is good enough
+	@Override
+	public synchronized boolean getShutdownSignal() {
+		return _shutdownSignal;
+	}
+
+	@Override
+	public synchronized void setShutdownSignal(boolean shouldShutdown) {
+		_shutdownSignal = shouldShutdown;		
 	}
 }

@@ -3,8 +3,6 @@ package oop.ex5.nameserver;
 import java.io.IOException;
 import java.net.Socket;
 import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.Set;
 
 import oop.ex5.common.ClientThread;
 import oop.ex5.common.CommLayer;
@@ -34,7 +32,7 @@ public class NameServerClientThread extends ClientThread {
 		try {
 			_fm = initSession();
 			// TODO condition
-			while (!_shouldStop) {
+			while (!_data.getShutdownSignal()) {
 				Message rcvdMsg = _comm.receiveMessage();
 				MessageType msgType = rcvdMsg.getType(); 
 				switch(msgType) {
@@ -67,14 +65,26 @@ public class NameServerClientThread extends ClientThread {
 				}
 			}
 		} catch (InvalidMessageFormatException e) {
-			_comm.sendMessage(ERROR_MSG);
+			sendErrorMessage();
 		} catch (InvalidMessageNameException e) {
-			_comm.sendMessage(ERROR_MSG);
+			sendErrorMessage();
 		} catch (SessionErrorException e) {
-			_comm.sendMessage(ERROR_MSG);
+			sendErrorMessage();
+		} catch (IOException e) {
+			// TODO ?
+			sendErrorMessage();
 		} finally {
 			_comm.close();
-			return;
+		}
+	}
+
+	private void sendErrorMessage() {
+		// Try to send error message and ignore IO exceptions
+		// which can't be handled anyway
+		try {
+			_comm.sendMessage(ERROR_MSG);
+		} catch (IOException e) {
+			// Fail silently
 		}
 	}
 
