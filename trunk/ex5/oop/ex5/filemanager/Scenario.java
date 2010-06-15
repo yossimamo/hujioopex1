@@ -42,7 +42,7 @@ public abstract class Scenario {
 		case OK :
 			break;
 		default :
-			throw new //TODO
+			//TODO
 			
 		}
 	}
@@ -65,7 +65,7 @@ public abstract class Scenario {
 	
 	private void receiveOKMessage(CommLayer comm) {
 		if (comm.receiveMessage().getType() != MessageType.OK) {
-			throw new //TODO
+			//TODO
 		}
 	}
 

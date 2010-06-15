@@ -14,7 +14,7 @@ import java.net.UnknownHostException;
 public class FileManagerData implements ShutdownSignal {
 	
 	private LinkedList<NameServer> _servers = new LinkedList<NameServer>();
-	private TreeMap<String, File> _files = new TreeMap<String, File>();
+	private TreeMap<String, SynchronizedFile> _files = new TreeMap<String, SynchronizedFile>();
 	private String _directoryPath;
 	private int _port;
 	private String _IP;
@@ -34,7 +34,7 @@ public class FileManagerData implements ShutdownSignal {
 	}
 	
 	private void initFiles(String directory) {
-		_files = new TreeMap<String, File>();
+		_files = new TreeMap<String, SynchronizedFile>();
 		java.io.File dir = new java.io.File(directory);
 		String[] files = dir.list();
 		for (int i = 0 ; i < files.length ; i++) {
@@ -91,7 +91,7 @@ public class FileManagerData implements ShutdownSignal {
 		return  _files.keySet().toArray(new String[0]);
 	}
 	
-	public synchronized File getFileObject(String filesName) {
+	public synchronized SynchronizedFile getFileObject(String filesName) {
 		return _files.get(filesName);
 	}
 	
@@ -99,12 +99,12 @@ public class FileManagerData implements ShutdownSignal {
 		return _files.containsKey(fileName);
 	}
 	
-	public synchronized File removeFile(String fileName) {
+	public synchronized SynchronizedFile removeFile(String fileName) {
 		return _files.remove(fileName);
 	}
 	
 	public synchronized void addFile(String fileName) {
-		_files.put(fileName, new File(_directoryPath + java.io.File.pathSeparator + fileName));
+		_files.put(fileName, new SynchronizedFile(_directoryPath + java.io.File.pathSeparator + fileName));
 	}
 	
 	public String getIP() {

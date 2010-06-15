@@ -12,11 +12,11 @@ public class DelScenario extends Scenario {
 	}
 
 	public void executeScenario() {
-		File file = _data.getFileObject(_fileName);
+		SynchronizedFile file = _data.getFileObject(_fileName);
 		file.prepareFileForDeletion();
 		java.io.File realFile = new java.io.File(file.getLocalPath());
 		if (!realFile.delete()) {
-			throw new //TODO
+			//TODO
 		}
 		_data.removeFile(_fileName);
 		sendMsgToAllNameServers(new DontHaveFileMessage(_fileName));

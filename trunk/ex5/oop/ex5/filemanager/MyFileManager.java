@@ -91,7 +91,7 @@ public class MyFileManager {
 	}
 
 	private static void printServers(MyFileManager myFileManager) {
-		Iterator<NameServer> it = myFileManager.getDataBase().nameServersIterator();
+		Iterator<NameServer> it = myFileManager._data.nameServersIterator();
 		while (it.hasNext()) {
 			NameServer nameServer = it.next();
 			System.out.println("ip: " + nameServer.getIP() + " port: " + nameServer.getPort());
@@ -99,7 +99,7 @@ public class MyFileManager {
 	}
 
 	private static void printFiles(MyFileManager myFileManager) {
-		String[] files = myFileManager.getDataBase().getFiles();
+		String[] files = myFileManager._data.getFiles();
 		if (files != null) {
 			for (int i=0 ; i<files.length ; i++) {
 				System.out.println(files[i]);
