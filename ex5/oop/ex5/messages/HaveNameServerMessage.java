@@ -11,12 +11,10 @@ public class HaveNameServerMessage extends Message {
 	protected static final String NAME = "HAVENAMESERVER";
 	protected static final MessageType TYPE = MessageType.HAVENAMESERVER;
 	
-	private String _nameServerIP;
-	private int _nameServerPort;
+	private NameServer _nameServer;
 
 	public HaveNameServerMessage(NameServer nameServer) {
-		_nameServerIP = nameServer.getIP();
-		_nameServerPort = nameServer.getPort();
+		_nameServer = nameServer;
 	}
 	
 	public HaveNameServerMessage(DataInputStream in)
@@ -28,20 +26,17 @@ public class HaveNameServerMessage extends Message {
 		return TYPE;
 	}
 	
-	public String getNameServerIP() {
-		return _nameServerIP;
+	public NameServer getNameServer() {
+		return _nameServer;
 	}
 	
-	public int getNameServerPort() {
-		return _nameServerPort;
-	}
-
 	@Override
 	protected void readImp(DataInputStream in)
 			throws InvalidMessageFormatException {
 		try {
-			_nameServerIP = in.readUTF();
-			_nameServerPort = in.readInt();
+			String ip = in.readUTF();
+			int port = in.readInt();
+			_nameServer = new NameServer(ip, port);
 		} catch (IOException e) {
 			throw new InvalidMessageFormatException();
 		}		
@@ -49,8 +44,8 @@ public class HaveNameServerMessage extends Message {
 
 	@Override
 	protected void writeImp(DataOutputStream out) throws IOException {
-		out.writeUTF(_nameServerIP);
-		out.writeInt(_nameServerPort);
+		out.writeUTF(_nameServer.getIP());
+		out.writeInt(_nameServer.getPort());
 	}
 	
 	@Override

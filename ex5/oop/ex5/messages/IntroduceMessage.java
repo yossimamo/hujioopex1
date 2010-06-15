@@ -4,17 +4,17 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
+import oop.ex5.nameserver.FileManager;
+
 public class IntroduceMessage extends Message {
 	
 	protected static final String NAME = "INTRODUCE";
 	protected static final MessageType TYPE = MessageType.INTRODUCE;
 
-	private String _fileManagerIP;
-	private int _fileManagerPort;
+	private FileManager _fileManager;
 	
-	public IntroduceMessage(String fileManagerIP, int fileManagerPort) {
-		_fileManagerIP = fileManagerIP;
-		_fileManagerPort = fileManagerPort;
+	public IntroduceMessage(FileManager fileManager) {
+		_fileManager = fileManager;
 	}
 	
 	public IntroduceMessage(DataInputStream in)
@@ -26,20 +26,17 @@ public class IntroduceMessage extends Message {
 		return TYPE;
 	}
 	
-	public String getFileManagerIP() {
-		return _fileManagerIP;
-	}
-	
-	public int getFileManagerPort() {
-		return _fileManagerPort;
+	public FileManager getFileManager() {
+		return _fileManager;
 	}
 
 	@Override
 	protected void readImp(DataInputStream in)
 		throws InvalidMessageFormatException {
 		try {
-			_fileManagerIP = in.readUTF();
-			_fileManagerPort = in.readInt();
+			String ip = in.readUTF();
+			int port = in.readInt();
+			_fileManager = new FileManager(ip, port);
 		} catch (IOException e) {
 			throw new InvalidMessageFormatException();
 		}		
@@ -47,8 +44,8 @@ public class IntroduceMessage extends Message {
 
 	@Override
 	protected void writeImp(DataOutputStream out) throws IOException {
-		out.writeUTF(_fileManagerIP);
-		out.writeInt(_fileManagerPort);
+		out.writeUTF(_fileManager.getIP());
+		out.writeInt(_fileManager.getPort());
 	}
 	
 	@Override
