@@ -203,6 +203,7 @@ public class NameServerClientThread extends ClientThread {
 		_comm.sendMessage(OK_MSG);
 		_comm.close();
 		// TODO kill server - signal server to go down
+		_data.setShutdownSignal(true);
 	}
 	
 	private void handleSessionEnd() throws IOException {
