@@ -4,6 +4,8 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Scanner;
 import java.util.TreeMap;
+
+import oop.ex5.common.FileManager;
 import oop.ex5.common.NameServer;
 import oop.ex5.common.ShutdownSignal;
 
@@ -16,21 +18,15 @@ public class FileManagerData implements ShutdownSignal {
 	private LinkedList<NameServer> _servers = new LinkedList<NameServer>();
 	private TreeMap<String, SynchronizedFile> _files = new TreeMap<String, SynchronizedFile>();
 	private String _directoryPath;
-	private int _port;
-	private String _IP;
+	private FileManager _self;
 	
 
-	public FileManagerData(String serverListFile, String directory, int port) {
+	public FileManagerData(String serverListFile, String directory, int port)
+		throws UnknownHostException {
 		_directoryPath = directory;
 		initServers(serverListFile);
-		initFiles(directory);
-		_port = port;
-		try {
-			_IP = InetAddress.getLocalHost().getHostAddress();
-		} catch (UnknownHostException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		initFiles(directory);		
+		_self = new FileManager(InetAddress.getLocalHost().getHostAddress(), port);
 	}
 	
 	private void initFiles(String directory) {
@@ -106,14 +102,6 @@ public class FileManagerData implements ShutdownSignal {
 	public synchronized void addFile(String fileName) {
 		_files.put(fileName, new SynchronizedFile(_directoryPath + java.io.File.pathSeparator + fileName));
 	}
-	
-	public String getIP() {
-		return _IP;
-	}
-	
-	public int getPort() {
-		return _port;
-	}
 
 	@Override
 	public boolean getShutdownSignal() {
@@ -125,6 +113,10 @@ public class FileManagerData implements ShutdownSignal {
 	public void setShutdownSignal(boolean shouldShutdown) {
 		// TODO Auto-generated method stub
 		
+	}
+
+	public FileManager getSelfFileManager() {
+		return _self;
 	}
 	
 }

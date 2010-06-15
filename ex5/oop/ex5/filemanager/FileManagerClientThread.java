@@ -1,5 +1,7 @@
 package oop.ex5.filemanager;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.Socket;
 
@@ -43,9 +45,19 @@ public class FileManagerClientThread extends ClientThread {
 		}
 	}
 
-	private void handleFileRequest(String fileName) {
-		if (_data.hasFile(fileName)) {
-			_comm.sendMessage(new FileMessage(_data.getFileObject(fileName)));
+	private void handleFileRequest(String fileName) throws IOException {
+		if (_data.containsFile(fileName)) {
+			SynchronizedFile syncFile = _data.getFileObject(fileName);
+			File file = new File(syncFile.getLocalPath());
+			byte[] fileContents = new byte[(int)file.length()];
+			try {
+				FileInputStream in = new FileInputStream(file);
+				in.read(fileContents);
+				in.close();
+			} catch (IOException e) {
+				_comm.sendMessage(Message.ERROR_MSG);
+			}
+			_comm.sendMessage(new FileMessage(fileContents));
 		} else {
 			_comm.sendMessage(Message.ERROR_MSG);
 		}	

@@ -2,8 +2,6 @@ package oop.ex5.messages;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 
 public class FileMessage extends Message {
@@ -13,11 +11,9 @@ public class FileMessage extends Message {
 	
 	byte[] _fileContents;
 	
-	public FileMessage(File file) throws IOException {
-		FileInputStream in = new FileInputStream(file);
-		_fileContents = new byte[(int)file.length()];
-		in.read(_fileContents);
-		in.close();
+	public FileMessage(byte[] fileContents) throws IOException {
+		_fileContents = new byte[fileContents.length];
+		System.arraycopy(fileContents, 0, _fileContents, 0, fileContents.length);
 	}
 
 	public FileMessage(DataInputStream in)
