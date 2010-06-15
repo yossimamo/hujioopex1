@@ -39,7 +39,7 @@ public class FileManagerServerHandler implements IHandlesReceivedMassages {
 		try {
 			_listeningThread.join();
 		} catch (InterruptedException e) {
-			//shouldn't happen
+			//TODO shouldn't happen
 			e.printStackTrace();
 		}
 	}

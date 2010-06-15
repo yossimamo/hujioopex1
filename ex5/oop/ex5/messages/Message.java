@@ -8,6 +8,11 @@ import java.io.UTFDataFormatException;
 
 public abstract class Message {
 	
+	public static final Message OK_MSG = new OkMessage();
+	public static final Message ANNOUNCE_MSG = new AnnounceMessage();
+	public static final Message ERROR_MSG = new ErrorMessage();
+	public static final Message LISTEND_MSG = new ListEndMessage();
+	
 	public enum MessageType {
 		ANNOUNCE,
 		BYE,
