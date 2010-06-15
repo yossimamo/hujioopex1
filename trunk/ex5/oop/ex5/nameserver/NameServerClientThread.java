@@ -11,12 +11,7 @@ import oop.ex5.messages.*;
 import oop.ex5.messages.Message.MessageType;
 
 public class NameServerClientThread extends ClientThread {
-	
-	private static final Message OK_MSG = new OkMessage();
-	private static final Message ANNOUNCE_MSG = new AnnounceMessage();
-	private static final Message ERROR_MSG = new ErrorMessage();
-	private static final Message LISTEND_MSG = new ListEndMessage();
-	
+		
 	private CommLayer _comm;
 	private NameServerData _data;
 	private FileManager _fm;
@@ -82,7 +77,7 @@ public class NameServerClientThread extends ClientThread {
 		// Try to send error message and ignore IO exceptions
 		// which can't be handled anyway
 		try {
-			_comm.sendMessage(ERROR_MSG);
+			_comm.sendMessage(Message.ERROR_MSG);
 		} catch (IOException e) {
 			// Fail silently
 		}
@@ -98,10 +93,10 @@ public class NameServerClientThread extends ClientThread {
 		String ip = introduce.getFileManagerIP();
 		int port = introduce.getFileManagerPort();
 		if (!isKnownFileManager(ip, port)) {
-			_comm.sendMessage(ANNOUNCE_MSG);
+			_comm.sendMessage(Message.ANNOUNCE_MSG);
 			return handleAnnounceReply(ip, port);
 		} else {
-			_comm.sendMessage(OK_MSG);
+			_comm.sendMessage(Message.OK_MSG);
 			return new FileManager(ip, port);
 		}
 	}
@@ -128,7 +123,7 @@ public class NameServerClientThread extends ClientThread {
 			default:
 				throw new SessionErrorException();
 			}
-			_comm.sendMessage(OK_MSG);
+			_comm.sendMessage(Message.OK_MSG);
 		}
 		listEnd = false;
 		while(!listEnd) {
@@ -145,7 +140,7 @@ public class NameServerClientThread extends ClientThread {
 			default:
 				throw new SessionErrorException();
 			}
-			_comm.sendMessage(OK_MSG);
+			_comm.sendMessage(Message.OK_MSG);
 		}
 		return fm;
 	}
@@ -153,19 +148,19 @@ public class NameServerClientThread extends ClientThread {
 	private void handleDontHaveFile(Message rcvdMsg) throws IOException {
 		DontHaveFileMessage msg = (DontHaveFileMessage)rcvdMsg;
 		_data.removeFile(_fm, msg.getFileName());
-		_comm.sendMessage(OK_MSG);
+		_comm.sendMessage(Message.OK_MSG);
 	}
 	
 	private void handleHaveFile(Message rcvdMsg) throws IOException {
 		HaveFileMessage msg = (HaveFileMessage)rcvdMsg;
 		_data.addFile(_fm, msg.getFileName());
-		_comm.sendMessage(OK_MSG);
+		_comm.sendMessage(Message.OK_MSG);
 	}
 	
 	private void handleHaveNameServer(Message rcvdMsg) throws IOException {
 		HaveNameServerMessage msg = (HaveNameServerMessage)rcvdMsg;
 		_data.addNameServer(msg.getNameServerIP(), msg.getNameServerPort());
-		_comm.sendMessage(OK_MSG);
+		_comm.sendMessage(Message.OK_MSG);
 	}
 	
 	private void handleNeedFile(Message rcvdMsg) throws IOException {
@@ -178,7 +173,7 @@ public class NameServerClientThread extends ClientThread {
 				_comm.sendMessage(fileAddressMsg);
 			}
 		}
-		_comm.sendMessage(LISTEND_MSG);
+		_comm.sendMessage(Message.LISTEND_MSG);
 	}
 	
 	private void handleNeedServers() throws IOException {
@@ -190,24 +185,24 @@ public class NameServerClientThread extends ClientThread {
 				_comm.sendMessage(haveNSMsg);
 			}
 		}
-		_comm.sendMessage(LISTEND_MSG);
+		_comm.sendMessage(Message.LISTEND_MSG);
 	}
 	
 	private void handleBye() throws IOException {
 		_data.clearFileManager(_fm);
-		_comm.sendMessage(OK_MSG);
+		_comm.sendMessage(Message.OK_MSG);
 		_comm.close();
 	}
 	
 	private void handleKill() throws IOException {
-		_comm.sendMessage(OK_MSG);
+		_comm.sendMessage(Message.OK_MSG);
 		_comm.close();
 		// TODO kill server - signal server to go down
 		_data.setShutdownSignal(true);
 	}
 	
 	private void handleSessionEnd() throws IOException {
-		_comm.sendMessage(OK_MSG);
+		_comm.sendMessage(Message.OK_MSG);
 		_comm.close();	
 	}
 	
