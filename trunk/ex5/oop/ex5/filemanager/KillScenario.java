@@ -1,15 +1,15 @@
 package oop.ex5.filemanager;
 
+import oop.ex5.messages.KillMessage;
+
 public class KillScenario extends Scenario {
 
-	public KillScenario(FileManagerDataBase dataBase) {
-		// TODO Auto-generated constructor stub
+	public KillScenario(AbstractDataBase dataBase) {
+		super(dataBase);
 	}
 
-	@Override
 	public void executeScenario() {
-		// TODO Auto-generated method stub
-
+		sendMsgToAllNameServers(new KillMessage());
 	}
 
 }

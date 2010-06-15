@@ -9,10 +9,10 @@ import oop.ex5.messages.Message;
 
 public class FileManagerServerHandler implements IHandlesReceivedMassages {
 	
-	private FileManagerDataBase _dataBase;
+	private AbstractDataBase _dataBase;
 	private ListeningThread _listeningThread;
 
-	public FileManagerServerHandler(FileManagerDataBase dataBase, int port) throws IOException {
+	public FileManagerServerHandler(AbstractDataBase dataBase, int port) throws IOException {
 		_dataBase = dataBase;
 		_listeningThread =  new ListeningThread(port, this);
 		_listeningThread.start();

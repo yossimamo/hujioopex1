@@ -1,15 +1,28 @@
 package oop.ex5.filemanager;
 
-public class GetScenario extends Scenario {
+import java.util.Iterator;
+import java.util.LinkedList;
 
-	public GetScenario(FileManagerDataBase dataBase) {
-		// TODO Auto-generated constructor stub
+import oop.ex5.common.CommLayer;
+import oop.ex5.common.NameServer;
+
+public class GetScenario extends Scenario {
+	
+	private String _fileName;
+
+	public GetScenario(AbstractDataBase dataBase, String fileName) {
+		super(dataBase);
+		_fileName = fileName;
 	}
 
-	@Override
 	public void executeScenario() {
-		// TODO Auto-generated method stub
-
+		Iterator<NameServer> serversIterator = _dataBase.nameServersIterator();
+		while (serversIterator.hasNext()) {
+			NameServer nameServer = serversIterator.next();
+			CommLayer comm = new CommLayer(nameServer.getIP(), nameServer.getPort());
+			LinkedList fileManagers = getFileManagersHoldingFile();
+			Iterator<NameServer> serversIterator = _dataBase.nameServersIterator();
+		}
 	}
 
 }
