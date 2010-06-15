@@ -26,10 +26,6 @@ public class SynchronizedFile {
 			}
 		}
 	}
-	//TODO delete if not needed.
-	public void unlock() {
-		_lock = UNLOCKED;
-	}
 	
 	public synchronized boolean isLocked() {
 		return _lock == LOCKED;

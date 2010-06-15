@@ -46,6 +46,7 @@ public class FileManagerClientThread extends ClientThread {
 	}
 
 	private void handleFileRequest(String fileName) throws IOException {
+		//TODO use the synchronized File 
 		if (_data.containsFile(fileName)) {
 			SynchronizedFile syncFile = _data.getFileObject(fileName);
 			File file = new File(syncFile.getLocalPath());

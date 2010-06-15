@@ -2,10 +2,8 @@ package oop.ex5.filemanager;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
-
 import oop.ex5.common.CommLayer;
 import oop.ex5.common.NameServer;
 import oop.ex5.messages.*;
@@ -14,7 +12,6 @@ import oop.ex5.common.FileManager;
 public class GetScenario extends Scenario {
 	
 	private String _fileName;
-	private CommLayer _comm;
 
 	public GetScenario(FileManagerData data, String fileName) {
 		super(data);
@@ -23,25 +20,43 @@ public class GetScenario extends Scenario {
 
 	public void executeScenario() {
 		Iterator<NameServer> serversIterator = _data.nameServersIterator();
-		if (findAndDownloadFile(serversIterator)) {
+		if (getFileLocationAndDownloadFile(serversIterator)) {
 			return;
 		}
 		LinkedList<NameServer> newServers = new LinkedList<NameServer>();
 		while (serversIterator.hasNext()) {
 			NameServer nameServer = serversIterator.next();
-			_comm = new CommLayer(nameServer.getIP(), nameServer.getPort());
-			newServers.addAll(getNameServers());
+			try {
+				_comm = new CommLayer(nameServer.getIP(), nameServer.getPort());
+			} catch (IOException e) {
+				continue;
+			}
+			try {
+				newServers.addAll(getNameServers());
+			} catch (InvalidMessageFormatException e) {
+				_comm.close();
+				continue;
+			} catch (InvalidMessageNameException e) {
+				_comm.close();
+				continue;
+			} catch (IOException e) {
+				_comm.close();
+				continue;
+			} catch (InvalidMessageContextException e) {
+				_comm.close();
+				continue;
+			}
 			_comm.close();
 		}
-		_data.addAllServers(newServers);
-		if (findAndDownloadFile(newServers.iterator())) {
+		_data.addAllNameServers(newServers);
+		if (getFileLocationAndDownloadFile(newServers.iterator())) {
 			return;
 		}
-		//TODO throw
+		System.out.println("Downloading failed");
 	}
 
 	private LinkedList<NameServer> getNameServers()
-		throws InvalidMessageFormatException, InvalidMessageNameException, IOException {
+		throws InvalidMessageFormatException, InvalidMessageNameException, IOException, InvalidMessageContextException {
 		LinkedList<NameServer> newNameServers = new LinkedList<NameServer>();
 		_comm.sendMessage(new NeedServersMessage());
 		Message incomingMessage;
@@ -57,13 +72,13 @@ public class GetScenario extends Scenario {
 			case LISTEND :
 				break;
 			default :
-				//TODO
+				throw new InvalidMessageContextException();
 			}
 		} while (incomingMessage.getType() != Message.MessageType.LISTEND);
 		return newNameServers;
 	}
 
-	private boolean findAndDownloadFile(Iterator<NameServer> serversIterator) {
+	private boolean getFileLocationAndDownloadFile(Iterator<NameServer> serversIterator) {
 		while (serversIterator.hasNext()) {
 			NameServer nameServer = serversIterator.next();
 			try {
@@ -72,12 +87,8 @@ public class GetScenario extends Scenario {
 				continue;
 			}
 			try {
-				LinkedList<FileManager> fileManagers = getFileManagersHoldingFile();
-				Iterator<FileManager> fileManagersIterator = fileManagers.iterator();
-				while (fileManagersIterator.hasNext()) {
-					if (downloadFile(fileManagersIterator.next())) {
-						return true;
-					}
+				if (tryDownloadingFileUsingAServer()) {
+					return true;
 				}
 			} catch (IOException e) {
 				continue;
@@ -85,6 +96,22 @@ public class GetScenario extends Scenario {
 				continue;
 			} catch (InvalidMessageNameException e) {
 				continue;
+			}
+		}
+		return false;
+	}
+
+	private boolean tryDownloadingFileUsingAServer() throws IOException, InvalidMessageFormatException, InvalidMessageNameException {
+		LinkedList<FileManager> fileManagers;
+		try {
+			fileManagers = getFileManagersHoldingFile();
+		} catch (InvalidMessageContextException e) {
+			return false;
+		}
+		Iterator<FileManager> fileManagersIterator = fileManagers.iterator();
+		while (fileManagersIterator.hasNext()) {
+			if (downloadFile(fileManagersIterator.next())) {
+				return true;
 			}
 		}
 		return false;
@@ -125,7 +152,7 @@ public class GetScenario extends Scenario {
 	}
 
 	private LinkedList<FileManager> getFileManagersHoldingFile()
-		throws IOException, InvalidMessageFormatException, InvalidMessageNameException {
+		throws IOException, InvalidMessageFormatException, InvalidMessageNameException, InvalidMessageContextException {
 		LinkedList<FileManager> fileManagers = new LinkedList<FileManager>();
 		_comm.sendMessage(new NeedFileMessage(_fileName));
 		Message incomingMessage;
@@ -139,7 +166,7 @@ public class GetScenario extends Scenario {
 			case LISTEND :
 				break;
 			default :
-				//TODO
+				throw new InvalidMessageContextException();
 			}
 		} while (incomingMessage.getType() != Message.MessageType.LISTEND);
 		return fileManagers;
