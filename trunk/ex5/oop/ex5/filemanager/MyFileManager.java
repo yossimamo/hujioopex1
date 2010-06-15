@@ -11,8 +11,7 @@ import oop.ex5.common.NameServer;
 
 public class MyFileManager {
 	
-	private AbstractDataBase _dataBase;
-	private FileManagerServerHandler _serverHandler;
+	private FileManagerData _data;
 	
 	enum Command {
 		LIST,
@@ -25,8 +24,8 @@ public class MyFileManager {
 	};
 	
 	public MyFileManager(String serverList, String myDirectory, int port) {
-		_dataBase = new FileManagerDataBase(serverList, myDirectory, port);
-		Scenario init = new InitFileManagerScenario(_dataBase);
+		_data = new FileManagerData(serverList, myDirectory, port);
+		Scenario init = new InitFileManagerScenario(_data);
 		init.executeScenario();
 		//_serverHandler = new FileManagerServerHandler(_dataBase, _port);
 	}
@@ -34,9 +33,9 @@ public class MyFileManager {
 	public static void main(String[] args) {
 		MyFileManager myFileManager = new MyFileManager(args[0], args[1], Integer.valueOf(args[2]));
 		Command nextCommand;
+		Scanner sc = new Scanner(System.in);
 		do {
 			// assumes all commands are valid
-			Scanner sc = new Scanner(System.in);
 			String nextCommandLine = sc.next();
 			Scanner commandLineScanner = new Scanner(nextCommandLine);
 			try {
@@ -44,6 +43,7 @@ public class MyFileManager {
 			} catch (IllegalArgumentException e) {
 				nextCommand = Command.OTHER;
 			}
+			String fileName;
 			switch (nextCommand) {
 			case LIST :
 				printFiles(myFileManager);
@@ -52,40 +52,42 @@ public class MyFileManager {
 				printServers(myFileManager);
 				break;
 			case GET :
-				String fileName = commandLineScanner.next();
-				if (myFileManager.getDataBase().containsFile(fileName)) {
+				fileName = commandLineScanner.next();
+				if (myFileManager._data.containsFile(fileName)) {
 					System.out.println("File is already in the database");
 				}
 				else {
-					Scenario getScenario = new GetScenario(myFileManager.getDataBase(), fileName);
+					Scenario getScenario = new GetScenario(myFileManager._data, fileName);
 					getScenario.executeScenario();
 				}
 				break;
 			case DEL :
-				String fileName = commandLineScanner.next();
-				if (!myFileManager.getDataBase().containsFile(fileName)) {
+				fileName = commandLineScanner.next();
+				if (!myFileManager._data.containsFile(fileName)) {
 					System.out.println("File is not in the database");
 				}
 				else {
-					Scenario delScenario = new DelScenario(myFileManager.getDataBase(), fileName);
+					Scenario delScenario = new DelScenario(myFileManager._data, fileName);
 					delScenario.executeScenario();
 					System.out.println("Deletion OK");
 				}
 				break;
 			case KILL :
-				Scenario killScenario = new KillScenario(myFileManager.getDataBase());
+				Scenario killScenario = new KillScenario(myFileManager._data);
 				killScenario.executeScenario();
 				break;
 			case BYE :
-				myFileManager.getServerHandler().shutDown();
-				Scenario byeScenario = new ByeScenario(myFileManager.getDataBase());
+				myFileManager._data.setShutdownSignal(true);
+				Scenario byeScenario = new ByeScenario(myFileManager._data);
 				byeScenario.executeScenario();
 				System.out.println("Good Bye!");
 				break;
 			case OTHER :
 				System.out.println("unknown command please try again!");
 			}
-		}while (nextCommand != Command.BYE);
+			commandLineScanner.close();
+		} while (nextCommand != Command.BYE);
+		sc.close();
 	}
 
 	private static void printServers(MyFileManager myFileManager) {
@@ -104,14 +106,6 @@ public class MyFileManager {
 			}
 		}
 		
-	}
-	
-	public AbstractDataBase getDataBase() {
-		return _dataBase;
-	}
-	
-	public FileManagerServerHandler getServerHandler() {
-		return _serverHandler;
 	}
 
 }

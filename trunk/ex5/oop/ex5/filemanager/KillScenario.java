@@ -4,7 +4,7 @@ import oop.ex5.messages.KillMessage;
 
 public class KillScenario extends Scenario {
 
-	public KillScenario(AbstractDataBase dataBase) {
+	public KillScenario(FileManagerData dataBase) {
 		super(dataBase);
 	}
 

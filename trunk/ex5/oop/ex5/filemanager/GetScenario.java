@@ -8,19 +8,19 @@ import java.util.LinkedList;
 import oop.ex5.common.CommLayer;
 import oop.ex5.common.NameServer;
 import oop.ex5.messages.*;
-import oop.ex5.nameserver.FileManager;
+import oop.ex5.common.FileManager;
 
 public class GetScenario extends Scenario {
 	
 	private String _fileName;
 
-	public GetScenario(AbstractDataBase dataBase, String fileName) {
-		super(dataBase);
+	public GetScenario(FileManagerData data, String fileName) {
+		super(data);
 		_fileName = fileName;
 	}
 
 	public void executeScenario() {
-		Iterator<NameServer> serversIterator = _dataBase.nameServersIterator();
+		Iterator<NameServer> serversIterator = _data.nameServersIterator();
 		if (findAndDownloadFile(serversIterator)) {
 			return;
 		}
@@ -31,6 +31,7 @@ public class GetScenario extends Scenario {
 			newServers.addAll(getNameServers(comm));
 			comm.close();
 		}
+		_data.addAllServers(newServers);
 		if (findAndDownloadFile(newServers.iterator())) {
 			return;
 		}
@@ -46,7 +47,7 @@ public class GetScenario extends Scenario {
 			switch (incomingMessage.getType()) {
 			case HAVENAMESERVER:
 				HaveNameServerMessage incomingMsg = (HaveNameServerMessage) incomingMessage;
-				if (!_dataBase.containsNameServer(incomingMsg.getNameServer())) {
+				if (!_data.containsNameServer(incomingMsg.getNameServer())) {
 					newNameServers.add(incomingMsg.getNameServer());
 				}
 				break;
@@ -83,10 +84,10 @@ public class GetScenario extends Scenario {
 		switch (incomingMessage.getType()) {
 		case FILE :
 			FileMessage msg = (FileMessage) incomingMessage;
-			FileOutputStream out = new FileOutputStream(new java.io.File(_dataBase.getFileObject(_fileName).getLocalPath()));
+			FileOutputStream out = new FileOutputStream(new java.io.File(_data.getFileObject(_fileName).getLocalPath()));
 			out.write(msg.getFileContents());
 			out.close();
-			_dataBase.addFile(_fileName);
+			_data.addFile(_fileName);
 			return true;
 		default :
 			return false;

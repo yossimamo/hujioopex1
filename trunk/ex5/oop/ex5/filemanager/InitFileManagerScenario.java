@@ -7,7 +7,7 @@ import oop.ex5.common.NameServer;
 
 public class InitFileManagerScenario extends Scenario {
 
-	public InitFileManagerScenario(AbstractDataBase dataBase) {
+	public InitFileManagerScenario(FileManagerData dataBase) {
 		super(dataBase);
 	}
 
