@@ -15,7 +15,8 @@ public class ListeningThread extends Thread {
 	private ClientThreadFactory _factory;
 	private ShutdownSignal _signal;
 	
-	public ListeningThread(int port, ClientThreadFactory factory, ShutdownSignal signal) throws IOException {
+	public ListeningThread(int port, ClientThreadFactory factory, ShutdownSignal signal)
+		throws IOException {
 		_port = port;
 		_clientThreads = new LinkedList<ClientThread>();
 		_signal = signal;

@@ -19,15 +19,14 @@ public class NameServerData implements ShutdownSignal {
 		
 	}
 	
-	public boolean hasFileManager(String ip, int port) {
-		FileManager fm = new FileManager(ip, port);
+	public boolean hasFileManager(FileManager fm) {
 		return _fileManagersMapping.containsKey(fm);
 	}
 	
-	public synchronized FileManager addFileManager(String ip, int port) {
-		FileManager fm = new FileManager(ip, port);
-		_fileManagersMapping.put(fm, new HashSet<String>());
-		return fm;
+	public synchronized void addFileManager(FileManager fm) {
+		if (!_fileManagersMapping.containsKey(fm)) {
+			_fileManagersMapping.put(fm, new HashSet<String>());
+		}
 	}
 	
 	public synchronized void addFile(FileManager fm, String fileName) {
@@ -47,8 +46,7 @@ public class NameServerData implements ShutdownSignal {
 		}
 	}
 	
-	public synchronized void addNameServer(String ip, int port) {
-		NameServer ns = new NameServer(ip, port);
+	public synchronized void addNameServer(NameServer ns) {
 		if (!_nameServers.contains(ns)) {
 			_nameServers.addLast(ns);
 		}

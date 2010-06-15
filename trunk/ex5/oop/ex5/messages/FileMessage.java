@@ -2,6 +2,8 @@ package oop.ex5.messages;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 
 public class FileMessage extends Message {
@@ -9,8 +11,13 @@ public class FileMessage extends Message {
 	protected static final String NAME = "FILE";
 	protected static final MessageType TYPE = MessageType.FILE;
 	
-	public FileMessage() {
-		// TODO
+	byte[] _fileContents;
+	
+	public FileMessage(File file) throws IOException {
+		FileInputStream in = new FileInputStream(file);
+		_fileContents = new byte[(int)file.length()];
+		in.read(_fileContents);
+		in.close();
 	}
 
 	public FileMessage(DataInputStream in)
@@ -21,16 +28,18 @@ public class FileMessage extends Message {
 	public MessageType getType() {
 		return TYPE;
 	}
+	
+	public byte[] getFileContents() {
+		return _fileContents;
+	}
 
-	// TODO store the file temporarily on disk or in memory? large files may be
-	// problematic
 	@Override
 	protected void readImp(DataInputStream in)
 			throws InvalidMessageFormatException {
 		try {
 			long length = in.readLong();
-			byte[] fileContents = new byte[(int)length];
-			if (length != in.read(fileContents, 0, (int)length)) {
+			_fileContents = new byte[(int)length];
+			if (length != in.read(_fileContents, 0, (int)length)) {
 				throw new InvalidMessageFormatException();
 			}
 		} catch (IOException e) {
