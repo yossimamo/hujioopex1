@@ -22,7 +22,7 @@ public class MyNameServer {
 		try {
 			int port = Integer.parseInt(args[PORT_ARG_INDEX]);
 			MyNameServer server = new MyNameServer();
-			Thread listeningThread = new ListeningThread(port, new NameServerClientThreadFactory(server._data));
+			Thread listeningThread = new ListeningThread(port, new NameServerClientThreadFactory(server._data), server._data);
 			listeningThread.run();
 		} catch (NumberFormatException e) {
 			// TODO print error

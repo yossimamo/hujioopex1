@@ -5,7 +5,6 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.Socket;
-import java.net.SocketException;
 
 import oop.ex5.messages.InvalidMessageFormatException;
 import oop.ex5.messages.InvalidMessageNameException;
