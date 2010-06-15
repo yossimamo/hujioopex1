@@ -1,5 +1,6 @@
 package oop.ex5.filemanager;
 
+import java.io.FileOutputStream;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -78,13 +79,18 @@ public class GetScenario extends Scenario {
 		CommLayer comm = new CommLayer(fileManager.getIP(), fileManager.getPort());
 		comm.sendMessage(new NeedFileMessage(_fileName));
 		Message incomingMessage = comm.receiveMessage();
+		comm.close();
 		switch (incomingMessage.getType()) {
 		case FILE :
-			
-		}
+			FileMessage msg = (FileMessage) incomingMessage;
+			FileOutputStream out = new FileOutputStream(new java.io.File(_dataBase.getFileObject(_fileName).getLocalPath()));
+			out.write(msg.getFileContents());
+			out.close();
+			_dataBase.addFile(_fileName);
+			return true;
 		default :
-			comm.close();
 			return false;
+		}
 	}
 
 	private LinkedList<FileManager> getFileManagersHoldingFile(CommLayer comm) {
