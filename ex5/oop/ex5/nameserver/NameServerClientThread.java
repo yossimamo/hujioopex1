@@ -6,6 +6,7 @@ import java.util.Iterator;
 
 import oop.ex5.common.ClientThread;
 import oop.ex5.common.CommLayer;
+import oop.ex5.common.FileManager;
 import oop.ex5.common.NameServer;
 import oop.ex5.messages.*;
 import oop.ex5.messages.Message.MessageType;

@@ -4,7 +4,7 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
-import oop.ex5.nameserver.FileManager;
+import oop.ex5.common.FileManager;
 
 public class IntroduceMessage extends Message {
 	

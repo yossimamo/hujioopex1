@@ -1,4 +1,4 @@
-package oop.ex5.nameserver;
+package oop.ex5.common;
 
 public class FileManager {
 
