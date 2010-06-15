@@ -35,7 +35,7 @@ public class GetScenario extends Scenario {
 		if (findAndDownloadFile(newServers.iterator())) {
 			return;
 		}
-		throw new //TODO
+		//TODO throw
 	}
 
 	private LinkedList<NameServer> getNameServers(CommLayer comm) {
@@ -54,7 +54,7 @@ public class GetScenario extends Scenario {
 			case LISTEND :
 				break;
 			default :
-				throw new //TODO
+				//TODO
 			}
 		} while (incomingMessage.getType() != Message.MessageType.LISTEND);
 		return newNameServers;
@@ -108,7 +108,7 @@ public class GetScenario extends Scenario {
 			case LISTEND :
 				break;
 			default :
-				throw new //TODO
+				//TODO
 			}
 		} while (incomingMessage.getType() != Message.MessageType.LISTEND);
 		return fileManagers;
