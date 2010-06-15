@@ -1,5 +1,6 @@
 package oop.ex5.filemanager;
 
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Scanner;
@@ -23,7 +24,7 @@ public class FileManagerData implements ShutdownSignal {
 	
 
 	public FileManagerData(String serverListFile, String directory, int port)
-		throws UnknownHostException {
+		throws UnknownHostException, FileNotFoundException {
 		_directoryPath = directory;
 		initServers(serverListFile);
 		initFiles(directory);		
@@ -39,16 +40,10 @@ public class FileManagerData implements ShutdownSignal {
 		}	
 	}
 
-	private void initServers(String serverListFile) {
+	private void initServers(String serverListFile) throws FileNotFoundException {
 		_servers = new LinkedList<NameServer>();
 		java.io.File serversFile = new java.io.File(serverListFile);
-		//TODO
-		Scanner sc = null;
-		try {
-			sc = new Scanner (serversFile);
-		} catch (FileNotFoundException e) {
-			//TODO we assume input is legal so shouldn't happen.
-		}
+		Scanner sc = new Scanner (serversFile);
 		while (sc.hasNextLine()) {
 			processLine(sc.nextLine());
 		}
@@ -60,17 +55,11 @@ public class FileManagerData implements ShutdownSignal {
 		String IP = sc.next();
 		int port = sc.nextInt();
 		_servers.add(new NameServer(IP, port));
+		sc.close();
 	}
 
-	public boolean addNameServer(NameServer nameServer) {
-		Iterator<NameServer> it = _servers.iterator();
-		while (it.hasNext()) {
-			if (it.next().equals(nameServer)) {
-				return false;
-			}
-		}
-		_servers.add(nameServer);
-		return true;
+	public boolean addAllNameServers(Collection<NameServer> nameServers) {
+		return _servers.addAll(nameServers);
 	}
 	
 	public boolean containsNameServer(NameServer nameServer) {
@@ -82,10 +71,11 @@ public class FileManagerData implements ShutdownSignal {
 	}
 	
 	public synchronized String[] getFiles() {
-		if (_files.isEmpty()) {
-			return null;
+		String[] files = new String[0];
+		if (!_files.isEmpty()) {
+			_files.keySet().toArray(files);
 		} 
-		return  _files.keySet().toArray(new String[0]);
+		return  files;
 	}
 	
 	public synchronized SynchronizedFile getFileObject(String filesName) {
@@ -104,12 +94,10 @@ public class FileManagerData implements ShutdownSignal {
 		_files.put(fileName, new SynchronizedFile(_directoryPath + java.io.File.pathSeparator + fileName));
 	}
 
-	@Override
 	public synchronized boolean getShutdownSignal() {
 		return _shutdownSignal;
 	}
 
-	@Override
 	public synchronized void setShutdownSignal(boolean shouldShutdown) {
 		_shutdownSignal = shouldShutdown;		
 	}

@@ -1,5 +1,7 @@
 package oop.ex5.filemanager;
 
+import java.io.File;
+
 import oop.ex5.messages.DontHaveFileMessage;
 
 public class DelScenario extends Scenario {
@@ -14,10 +16,8 @@ public class DelScenario extends Scenario {
 	public void executeScenario() {
 		SynchronizedFile file = _data.getFileObject(_fileName);
 		file.prepareFileForDeletion();
-		java.io.File realFile = new java.io.File(file.getLocalPath());
-		if (!realFile.delete()) {
-			//TODO
-		}
+		File realFile = new File(file.getLocalPath());
+		realFile.delete();
 		_data.removeFile(_fileName);
 		sendMsgToAllNameServers(new DontHaveFileMessage(_fileName));
 	}
