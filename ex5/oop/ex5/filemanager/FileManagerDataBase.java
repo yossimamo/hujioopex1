@@ -75,6 +75,10 @@ public class FileManagerDataBase extends AbstractDataBase {
 		return true;
 	}
 	
+	public boolean containsNameServer(NameServer nameServer) {
+		return _servers.contains(nameServer);
+	}
+	
 	public Iterator<NameServer> nameServersIterator() {
 		return _servers.iterator();
 	}
