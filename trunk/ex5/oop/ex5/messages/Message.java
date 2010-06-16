@@ -13,6 +13,10 @@ public abstract class Message {
 	public static final Message ERROR_MSG = new ErrorMessage();
 	public static final Message LISTEND_MSG = new ListEndMessage();
 	public static final Message FILENOTFOUND_MSG = new FileNotFoundMessage();
+	public static final Message BYE_MSG = new ByeMessage();
+	public static final Message KILL_MSG = new KillMessage();
+	public static final Message NEED_SERVERS_MSG = new NeedServersMessage();
+	public static final Message SESSION_END_MSG = new SessionEndMessage();
 	
 	public enum MessageType {
 		ANNOUNCE,

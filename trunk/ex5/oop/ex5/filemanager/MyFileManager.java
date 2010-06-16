@@ -1,5 +1,6 @@
 package oop.ex5.filemanager;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.UnknownHostException;
 import java.util.Iterator;
@@ -17,7 +18,9 @@ public class MyFileManager {
 		KILL,
 		BYE,
 		OTHER
-	};
+	}
+
+	private static final int NUM_OF_ARGS = 3;
 	
 	private FileManagerData _data;
 	private ListeningThread _listeningThread;
@@ -32,6 +35,10 @@ public class MyFileManager {
 	}
 	
 	public static void main(String[] args) {
+		if (NUM_OF_ARGS != args.length) {
+			System.err.println("ERROR: incorrect arguments");
+			return;
+		}
 		try {
 			MyFileManager myFileManager = new MyFileManager(args[0], args[1], Integer.valueOf(args[2]));
 			myFileManager.StartClientUserInteraction();
@@ -45,7 +52,7 @@ public class MyFileManager {
 			return;
 		}
 	}
-	
+
 	public void StartClientUserInteraction() {
 		Command nextCommand;
 		Scanner sc = new Scanner(System.in);
@@ -84,6 +91,10 @@ public class MyFileManager {
 					System.out.println("File is not in the database");
 				}
 				else {
+					SynchronizedFile syncFile = _data.getFileObject(fileName);
+					syncFile.prepareFileForDeletion();
+					File file = new File(syncFile.getLocalPath());
+					file.delete();
 					Scenario delScenario = new DelScenario(_data, fileName);
 					delScenario.executeScenario();
 					System.out.println("Deletion OK");
