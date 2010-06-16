@@ -73,9 +73,9 @@ public class FileManagerData implements ShutdownSignal {
 	public synchronized String[] getFiles() {
 		String[] files = new String[0];
 		if (!_files.isEmpty()) {
-			_files.keySet().toArray(files);
+			files = _files.keySet().toArray(files);
 		} 
-		return  files;
+		return files;
 	}
 	
 	public synchronized SynchronizedFile getFileObject(String filesName) {

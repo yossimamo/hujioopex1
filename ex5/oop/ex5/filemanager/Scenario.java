@@ -34,12 +34,16 @@ public abstract class Scenario {
 					receiveOKMessage();
 				}
 			} catch (IOException e) {
+				e.printStackTrace(); //TODO remove
 				continue;
 			} catch (InvalidMessageFormatException e) {
+				e.printStackTrace(); //TODO remove
 				continue;
 			} catch (InvalidMessageNameException e) {
+				e.printStackTrace(); //TODO remove
 				continue;
 			} catch (InvalidMessageContextException e) {
+				e.printStackTrace(); //TODO remove
 				continue;
 			}
 			_comm.close();

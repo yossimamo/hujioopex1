@@ -70,6 +70,8 @@ public class NameServerClientThread extends ClientThread {
 			sendErrorMessage();
 			// Let the finally block close the connection
 		} catch (IOException e) {
+			System.err.println("IOException during initSession\n");
+			e.printStackTrace();
 			sendErrorMessage();
 			// Let the finally block close the connection
 		} finally {
@@ -112,16 +114,15 @@ public class NameServerClientThread extends ClientThread {
 			MessageType msgType = rcvdMsg.getType(); 
 			switch(msgType) {
 			case HAVEFILE:
-				HaveFileMessage haveFileMsg = (HaveFileMessage)rcvdMsg;
-				_data.addFile(fm, haveFileMsg.getFileName());
+				handleHaveFile(rcvdMsg);
 				break;
 			case LISTEND:
 				listEnd = true;
+				_comm.sendMessage(Message.OK_MSG);
 				break;
 			default:
 				throw new EndSessionException();
 			}
-			_comm.sendMessage(Message.OK_MSG);
 		}
 		listEnd = false;
 		while(!listEnd) {
@@ -133,11 +134,12 @@ public class NameServerClientThread extends ClientThread {
 				break;
 			case LISTEND:
 				listEnd = true;
+				_comm.sendMessage(Message.OK_MSG);
 				break;
 			default:
 				throw new EndSessionException();
 			}
-			_comm.sendMessage(Message.OK_MSG);
+			
 		}
 	}
 
