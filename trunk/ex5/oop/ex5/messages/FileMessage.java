@@ -46,8 +46,8 @@ public class FileMessage extends Message {
 
 	@Override
 	protected void writeImp(DataOutputStream out) throws IOException {
-		// TODO Auto-generated method stub
-		
+		out.writeLong(_fileContents.length);
+		out.write(_fileContents);
 	}
 	
 	@Override

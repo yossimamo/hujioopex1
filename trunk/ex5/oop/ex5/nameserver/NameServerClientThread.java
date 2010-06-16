@@ -27,7 +27,7 @@ public class NameServerClientThread extends ClientThread {
 	public void run() {
 		try {
 			initSession();
-			// TODO condition?
+			boolean shouldCloseSession = false;
 			while (!_data.getShutdownSignal()) {
 				Message rcvdMsg = _comm.receiveMessage();
 				MessageType msgType = rcvdMsg.getType(); 
@@ -49,15 +49,21 @@ public class NameServerClientThread extends ClientThread {
 					break;
 				case BYE:
 					handleBye();
-					throw new EndSessionException();
+					shouldCloseSession = true;
+					break;
 				case KILL:
 					handleKill();
-					throw new EndSessionException();
+					shouldCloseSession = true;
+					break;
 				case SESSIONEND:
-					handleSessionEnd();
-					throw new EndSessionException();
+					// No need to reply with OK
+					shouldCloseSession = true;
+					break;
 				default:
 					throw new EndSessionException();			
+				}
+				if (shouldCloseSession) {
+					break;
 				}
 			}
 		} catch (InvalidMessageFormatException e) {
@@ -195,10 +201,6 @@ public class NameServerClientThread extends ClientThread {
 	private void handleKill() throws IOException {
 		_comm.sendMessage(Message.OK_MSG);
 		_data.setShutdownSignal(true);
-	}
-	
-	private void handleSessionEnd() throws IOException {
-		_comm.sendMessage(Message.OK_MSG);
 	}
 	
 }

@@ -1,5 +1,6 @@
 package oop.ex5.filemanager;
 
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Iterator;
@@ -113,6 +114,7 @@ public class GetScenario extends Scenario {
 	private boolean tryDownloadingFileUsingAServer() throws IOException, InvalidMessageFormatException, InvalidMessageNameException {
 		LinkedList<FileManager> fileManagers;
 		try {
+			introduce();
 			fileManagers = getFileManagersHoldingFile();
 			endSession();
 		} catch (InvalidMessageContextException e) {
@@ -153,10 +155,11 @@ public class GetScenario extends Scenario {
 			switch (incomingMessage.getType()) {
 			case FILE:
 				FileMessage msg = (FileMessage) incomingMessage;
-				FileOutputStream out = new FileOutputStream(new java.io.File(_data.getFileObject(_fileName).getLocalPath()));
+				FileOutputStream out = new FileOutputStream(new File(_data.generateLocalPath(_fileName)));
 				out.write(msg.getFileContents());
 				out.close();
 				_data.addFile(_fileName);
+				System.out.printf("File Downloaded Successfully from %s:%d\n", fileManager.getIP(), fileManager.getPort());
 				return true;
 			default:
 				return false;
@@ -179,7 +182,7 @@ public class GetScenario extends Scenario {
 				FileAddressMessage incomingMsg = (FileAddressMessage) incomingMessage;
 				fileManagers.add(incomingMsg.getFileManager());
 				break;
-			case LISTEND :
+			case LISTEND:
 				break;
 			default :
 				throw new InvalidMessageContextException();

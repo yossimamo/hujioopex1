@@ -1,7 +1,5 @@
 package oop.ex5.filemanager;
 
-import java.io.File;
-
 import oop.ex5.messages.DontHaveFileMessage;
 
 public class DelScenario extends Scenario {

@@ -50,7 +50,7 @@ public abstract class Scenario {
 		}
 	}
 	
-	private void introduce() throws IOException, InvalidMessageFormatException,
+	protected void introduce() throws IOException, InvalidMessageFormatException,
 							InvalidMessageNameException, InvalidMessageContextException {
 		_comm.sendMessage(new IntroduceMessage(_data.getSelfFileManager()));
 		switch (_comm.receiveMessage().getType()) {

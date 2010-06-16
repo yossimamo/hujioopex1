@@ -10,6 +10,7 @@ import oop.ex5.common.FileManager;
 import oop.ex5.common.NameServer;
 import oop.ex5.common.ShutdownSignal;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -33,7 +34,7 @@ public class FileManagerData implements ShutdownSignal {
 	
 	private void initFiles(String directory) {
 		_files = new TreeMap<String, SynchronizedFile>();
-		java.io.File dir = new java.io.File(directory);
+		File dir = new File(directory);
 		String[] files = dir.list();
 		for (int i = 0 ; i < files.length ; i++) {
 			addFile(files[i]);
@@ -42,7 +43,7 @@ public class FileManagerData implements ShutdownSignal {
 
 	private void initServers(String serverListFile) throws FileNotFoundException, UnknownHostException {
 		_servers = new LinkedList<NameServer>();
-		java.io.File serversFile = new java.io.File(serverListFile);
+		File serversFile = new File(serverListFile);
 		Scanner sc = new Scanner (serversFile);
 		while (sc.hasNextLine()) {
 			processLine(sc.nextLine());
@@ -94,7 +95,7 @@ public class FileManagerData implements ShutdownSignal {
 	}
 	
 	public synchronized void addFile(String fileName) {
-		_files.put(fileName, new SynchronizedFile(_directoryPath + java.io.File.pathSeparator + fileName));
+		_files.put(fileName, new SynchronizedFile(generateLocalPath(fileName)));
 	}
 
 	public synchronized boolean getShutdownSignal() {
@@ -107,6 +108,10 @@ public class FileManagerData implements ShutdownSignal {
 
 	public FileManager getSelfFileManager() {
 		return _self;
+	}
+
+	public String generateLocalPath(String fileName) {
+		return _directoryPath + File.separatorChar + fileName;
 	}
 	
 }

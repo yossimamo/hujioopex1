@@ -58,7 +58,7 @@ public class MyFileManager {
 		Scanner sc = new Scanner(System.in);
 		do {
 			// assumes all commands are valid
-			String nextCommandLine = sc.next();
+			String nextCommandLine = sc.nextLine();
 			Scanner commandLineScanner = new Scanner(nextCommandLine);
 			try {
 				nextCommand = Command.valueOf(commandLineScanner.next());
@@ -85,7 +85,8 @@ public class MyFileManager {
 					getScenario.executeScenario();
 				}
 				break;
-			case DEL :
+			case DEL:
+				// TODO put everything in the scenarios + packages to the Scenarios
 				fileName = commandLineScanner.next();
 				if (!_data.containsFile(fileName)) {
 					System.out.println("File is not in the database");
@@ -94,7 +95,8 @@ public class MyFileManager {
 					SynchronizedFile syncFile = _data.getFileObject(fileName);
 					syncFile.prepareFileForDeletion();
 					File file = new File(syncFile.getLocalPath());
-					file.delete();
+					System.out.println(syncFile.getLocalPath());
+					file.delete(); // TODO check that file was successfully deleted
 					Scenario delScenario = new DelScenario(_data, fileName);
 					delScenario.executeScenario();
 					System.out.println("Deletion OK");
