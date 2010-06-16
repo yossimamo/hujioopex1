@@ -34,6 +34,7 @@ public class GetScenario extends Scenario {
 			}
 			try {
 				newServers.addAll(getNameServers());
+				endSession();
 			} catch (InvalidMessageFormatException e) {
 				e.printStackTrace(); //TODO remove
 				_comm.close();
@@ -51,7 +52,6 @@ public class GetScenario extends Scenario {
 				_comm.close();
 				continue;
 			}
-			_comm.close();
 		}
 		_data.addAllNameServers(newServers);
 		if (getFileLocationAndDownloadFile(newServers.iterator())) {
@@ -135,8 +135,8 @@ public class GetScenario extends Scenario {
 			Message incomingMessage;
 			try {
 				_comm.sendMessage(new NeedFileMessage(_fileName));
-				incomingMessage = _comm.receiveMessage();
-				endSession();				
+				incomingMessage = _comm.receiveMessage();	
+				_comm.close();
 			} catch (IOException e) {
 				e.printStackTrace(); //TODO remove
 				_comm.close();
