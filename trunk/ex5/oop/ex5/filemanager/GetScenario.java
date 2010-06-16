@@ -29,20 +29,25 @@ public class GetScenario extends Scenario {
 			try {
 				_comm = new CommLayer(nameServer.getIP(), nameServer.getPort());
 			} catch (IOException e) {
+				e.printStackTrace(); //TODO remove
 				continue;
 			}
 			try {
 				newServers.addAll(getNameServers());
 			} catch (InvalidMessageFormatException e) {
+				e.printStackTrace(); //TODO remove
 				_comm.close();
 				continue;
 			} catch (InvalidMessageNameException e) {
+				e.printStackTrace(); //TODO remove
 				_comm.close();
 				continue;
 			} catch (IOException e) {
+				e.printStackTrace(); //TODO remove
 				_comm.close();
 				continue;
 			} catch (InvalidMessageContextException e) {
+				e.printStackTrace(); //TODO remove
 				_comm.close();
 				continue;
 			}
@@ -84,6 +89,7 @@ public class GetScenario extends Scenario {
 			try {
 				_comm = new CommLayer(nameServer.getIP(), nameServer.getPort());
 			} catch (IOException e) {
+				e.printStackTrace(); //TODO remove
 				continue;
 			}
 			try {
@@ -91,10 +97,13 @@ public class GetScenario extends Scenario {
 					return true;
 				}
 			} catch (IOException e) {
+				e.printStackTrace(); //TODO remove
 				continue;
 			} catch (InvalidMessageFormatException e) {
+				e.printStackTrace(); //TODO remove
 				continue;
 			} catch (InvalidMessageNameException e) {
+				e.printStackTrace(); //TODO remove
 				continue;
 			}
 		}
@@ -106,6 +115,7 @@ public class GetScenario extends Scenario {
 		try {
 			fileManagers = getFileManagersHoldingFile();
 		} catch (InvalidMessageContextException e) {
+			e.printStackTrace(); //TODO remove
 			return false;
 		}
 		Iterator<FileManager> fileManagersIterator = fileManagers.iterator();
@@ -126,12 +136,15 @@ public class GetScenario extends Scenario {
 				incomingMessage = _comm.receiveMessage();
 				_comm.close();				
 			} catch (IOException e) {
+				e.printStackTrace(); //TODO remove
 				_comm.close();
 				return false;
 			} catch (InvalidMessageFormatException e) {
+				e.printStackTrace(); //TODO remove
 				_comm.close();
 				return false;
 			} catch (InvalidMessageNameException e) {
+				e.printStackTrace(); //TODO remove
 				_comm.close();
 				return false;
 			}
@@ -147,6 +160,7 @@ public class GetScenario extends Scenario {
 				return false;
 			}	
 		} catch (IOException e) {
+			e.printStackTrace(); //TODO remove
 			return false;
 		}				
 	}

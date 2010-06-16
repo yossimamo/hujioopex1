@@ -83,6 +83,9 @@ public class NameServerData implements ShutdownSignal {
 			for (String fileName : _fileManagersMapping.get(fm)) {
 				if (_filesMapping.containsKey(fileName)) {
 					_filesMapping.get(fileName).remove(fm);
+					if (_filesMapping.get(fileName).isEmpty()) {
+						_filesMapping.remove(fileName);
+					}
 				}
 			}
 			_fileManagersMapping.remove(fm);

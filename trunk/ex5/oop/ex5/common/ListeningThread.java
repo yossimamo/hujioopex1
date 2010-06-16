@@ -9,6 +9,8 @@ import java.util.LinkedList;
 
 public class ListeningThread extends Thread {
 	
+	private static final int LISTEN_TIMEOUT = 5000;
+	
 	private int _port;
 	private ServerSocket _listenSock;
 	private LinkedList<ClientThread> _clientThreads;
@@ -18,6 +20,7 @@ public class ListeningThread extends Thread {
 	public ListeningThread(int port, ClientThreadFactory factory, ShutdownSignal signal)
 		throws IOException {
 		_port = port;
+		_factory = factory;
 		_clientThreads = new LinkedList<ClientThread>();
 		_signal = signal;
 	}
@@ -29,23 +32,28 @@ public class ListeningThread extends Thread {
 		while (true) {
 			try {
 				_listenSock = new ServerSocket(_port);
+				_listenSock.setSoTimeout(LISTEN_TIMEOUT);
 				listen(clientSock);
 			} catch (IOException e) {
+				e.printStackTrace(); //TODO remove
 				// Restart server
 				try {
 					clientSock.close();
 					_listenSock.close();
 				} catch (IOException ee) {
+					ee.printStackTrace(); //TODO remove
 					// Fail silently, nothing to do
 				}
 				continue;
 			} catch (ServerShutdownException e) {
+				e.printStackTrace(); //TODO remove
 				// Join all current client threads and break from loop
 				Iterator<ClientThread> it = _clientThreads.iterator();
 				while (it.hasNext()) {
 					try {
 						it.next().join();
 					} catch (InterruptedException ee) {
+						ee.printStackTrace(); //TODO remove
 						// Fail silently, nothing to do
 					}
 				}
@@ -55,6 +63,7 @@ public class ListeningThread extends Thread {
 		try {
 			_listenSock.close();
 		} catch (IOException e) {
+			e.printStackTrace(); //TODO remove
 			// Fail silently, nothing to do
 		}
 		
@@ -67,7 +76,7 @@ public class ListeningThread extends Thread {
 				//TODO List cleanup is needed!
 				ClientThread ct = _factory.createClientThread(socket);
 				_clientThreads.add(ct);
-				ct.run();
+				ct.start();
 			} catch (SocketTimeoutException e) {
 				if (_signal.getShutdownSignal()) {
 					throw new ServerShutdownException();

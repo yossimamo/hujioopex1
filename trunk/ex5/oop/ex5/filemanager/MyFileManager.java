@@ -1,6 +1,5 @@
 package oop.ex5.filemanager;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.UnknownHostException;
 import java.util.Iterator;
@@ -9,8 +8,6 @@ import oop.ex5.common.ListeningThread;
 import oop.ex5.common.NameServer;
 
 public class MyFileManager {
-	
-	private FileManagerData _data;
 	
 	enum Command {
 		LIST,
@@ -22,30 +19,31 @@ public class MyFileManager {
 		OTHER
 	};
 	
+	private FileManagerData _data;
+	private ListeningThread _listeningThread;
+	
 	public MyFileManager(String serverList, String myDirectory, int port)
-		throws UnknownHostException, FileNotFoundException {
+		throws IOException {
 		_data = new FileManagerData(serverList, myDirectory, port);
 		Scenario init = new InitFileManagerScenario(_data);
 		init.executeScenario();
+		_listeningThread = new ListeningThread(_data.getSelfFileManager().getPort(), new FileManagerClientThreadFactory(_data), _data);
+		_listeningThread.start();
 	}
 	
 	public static void main(String[] args) {
 		try {
 			MyFileManager myFileManager = new MyFileManager(args[0], args[1], Integer.valueOf(args[2]));
-			//myFileManager.createListeningThread();
 			myFileManager.StartClientUserInteraction();
 		} catch (UnknownHostException e) {
+			e.printStackTrace(); //TODO remove
 			System.err.println("Error: failed to retrieve self hostname");
 			return;
 		} catch (IOException e) {
+			e.printStackTrace(); //TODO remove
 			System.err.println("Error: IO exception");
 			return;
 		}
-	}
-	
-	public void createListeningThread() throws IOException {
-		Thread listeningThread = new ListeningThread(_data.getSelfFileManager().getPort(), new FileManagerClientThreadFactory(_data), _data);
-		listeningThread.run();
 	}
 	
 	public void StartClientUserInteraction() {
@@ -58,6 +56,7 @@ public class MyFileManager {
 			try {
 				nextCommand = Command.valueOf(commandLineScanner.next());
 			} catch (IllegalArgumentException e) {
+				e.printStackTrace(); //TODO remove
 				nextCommand = Command.OTHER;
 			}
 			String fileName;
@@ -96,6 +95,15 @@ public class MyFileManager {
 				break;
 			case BYE :
 				_data.setShutdownSignal(true);
+				while (_listeningThread.isAlive()) {
+					try {
+						_listeningThread.join();
+					} catch (InterruptedException e) {
+						e.printStackTrace(); //TODO remove
+						// TODO
+					}
+				}
+				
 				Scenario byeScenario = new ByeScenario(_data);
 				byeScenario.executeScenario();
 				System.out.println("Good Bye!");
@@ -112,7 +120,7 @@ public class MyFileManager {
 		Iterator<NameServer> it = _data.nameServersIterator();
 		while (it.hasNext()) {
 			NameServer nameServer = it.next();
-			System.out.println("ip: " + nameServer.getIP() + " port: " + nameServer.getPort());
+			System.out.println(nameServer.getIP() + " " + nameServer.getPort());
 		}
 	}
 

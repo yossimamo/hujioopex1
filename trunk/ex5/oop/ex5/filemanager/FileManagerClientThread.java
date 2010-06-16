@@ -35,10 +35,13 @@ public class FileManagerClientThread extends ClientThread {
 				sendErrorMessage();
 			}
 		} catch (InvalidMessageFormatException e) {
+			e.printStackTrace(); //TODO remove
 			sendErrorMessage();
 		} catch (InvalidMessageNameException e) {
+			e.printStackTrace(); //TODO remove
 			sendErrorMessage();
 		} catch (IOException e) {
+			e.printStackTrace(); //TODO remove
 			sendErrorMessage();
 		} finally {
 			_comm.close();
@@ -46,28 +49,40 @@ public class FileManagerClientThread extends ClientThread {
 	}
 
 	private void handleFileRequest(String fileName) throws IOException {
-		//TODO use the synchronized File 
-		if (_data.containsFile(fileName)) {
-			SynchronizedFile syncFile = _data.getFileObject(fileName);
-			File file = new File(syncFile.getLocalPath());
-			byte[] fileContents = new byte[(int)file.length()];
-			try {
-				FileInputStream in = new FileInputStream(file);
-				in.read(fileContents);
-				in.close();
-			} catch (IOException e) {
-				_comm.sendMessage(Message.ERROR_MSG);
-			}
-			_comm.sendMessage(new FileMessage(fileContents));
+		//TODO use the synchronized File
+		if (!_data.containsFile(fileName)) {
+			_comm.sendMessage(Message.FILENOTFOUND_MSG);
+			return;
 		} else {
-			_comm.sendMessage(Message.ERROR_MSG);
-		}	
+			SynchronizedFile syncFile = _data.getFileObject(fileName);
+			if (syncFile.isLocked()) {
+				_comm.sendMessage(Message.FILENOTFOUND_MSG);
+				return;
+			}
+			syncFile.addUpload();
+			try {
+				File file = new File(syncFile.getLocalPath());
+				byte[] fileContents = new byte[(int)file.length()];
+				try {
+					FileInputStream in = new FileInputStream(file);
+					in.read(fileContents);
+					in.close();
+				} catch (IOException e) {
+					e.printStackTrace(); //TODO remove
+					_comm.sendMessage(Message.ERROR_MSG);
+				}
+				_comm.sendMessage(new FileMessage(fileContents));
+			} finally {
+				syncFile.finishedUpload();
+			}
+		} 	
 	}
 	
 	private void sendErrorMessage() {
 		try {
 			_comm.sendMessage(Message.ERROR_MSG);
 		} catch (IOException e) {
+			e.printStackTrace(); //TODO remove
 			// Fail silently, nothing to do
 		}		
 	}
