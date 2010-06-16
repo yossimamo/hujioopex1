@@ -33,6 +33,7 @@ public abstract class Scenario {
 					_comm.sendMessage(msg);
 					receiveOKMessage();
 				}
+				endSession();
 			} catch (IOException e) {
 				e.printStackTrace(); //TODO remove
 				continue;
@@ -46,7 +47,6 @@ public abstract class Scenario {
 				e.printStackTrace(); //TODO remove
 				continue;
 			}
-			_comm.close();
 		}
 	}
 	
@@ -70,14 +70,14 @@ public abstract class Scenario {
 			_comm.sendMessage(new HaveFileMessage(files[i]));
 			receiveOKMessage();
 		}
-		_comm.sendMessage(new ListEndMessage());
+		_comm.sendMessage(Message.LISTEND_MSG);
 		receiveOKMessage();
 		Iterator<NameServer> it = _data.nameServersIterator();
 		while (it.hasNext()) {
 			_comm.sendMessage(new HaveNameServerMessage(it.next()));
 			receiveOKMessage();
 		}
-		_comm.sendMessage(new ListEndMessage());
+		_comm.sendMessage(Message.LISTEND_MSG);
 		receiveOKMessage();
 	}
 	
@@ -85,6 +85,11 @@ public abstract class Scenario {
 		if (_comm.receiveMessage().getType() != MessageType.OK) {
 			throw new InvalidMessageContextException();
 		}
+	}
+	
+	protected void endSession() throws IOException {
+		_comm.sendMessage(Message.SESSION_END_MSG);
+		_comm.close();
 	}
 
 }

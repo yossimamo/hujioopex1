@@ -63,7 +63,7 @@ public class GetScenario extends Scenario {
 	private LinkedList<NameServer> getNameServers()
 		throws InvalidMessageFormatException, InvalidMessageNameException, IOException, InvalidMessageContextException {
 		LinkedList<NameServer> newNameServers = new LinkedList<NameServer>();
-		_comm.sendMessage(new NeedServersMessage());
+		_comm.sendMessage(Message.NEED_SERVERS_MSG);
 		Message incomingMessage;
 		do {
 			incomingMessage = _comm.receiveMessage();
@@ -114,8 +114,10 @@ public class GetScenario extends Scenario {
 		LinkedList<FileManager> fileManagers;
 		try {
 			fileManagers = getFileManagersHoldingFile();
+			endSession();
 		} catch (InvalidMessageContextException e) {
 			e.printStackTrace(); //TODO remove
+			_comm.close();
 			return false;
 		}
 		Iterator<FileManager> fileManagersIterator = fileManagers.iterator();
@@ -134,7 +136,7 @@ public class GetScenario extends Scenario {
 			try {
 				_comm.sendMessage(new NeedFileMessage(_fileName));
 				incomingMessage = _comm.receiveMessage();
-				_comm.close();				
+				endSession();				
 			} catch (IOException e) {
 				e.printStackTrace(); //TODO remove
 				_comm.close();

@@ -14,10 +14,6 @@ public class DelScenario extends Scenario {
 	}
 
 	public void executeScenario() {
-		SynchronizedFile file = _data.getFileObject(_fileName);
-		file.prepareFileForDeletion();
-		File realFile = new File(file.getLocalPath());
-		realFile.delete();
 		_data.removeFile(_fileName);
 		sendMsgToAllNameServers(new DontHaveFileMessage(_fileName));
 	}

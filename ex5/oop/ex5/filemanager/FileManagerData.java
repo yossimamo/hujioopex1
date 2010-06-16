@@ -40,7 +40,7 @@ public class FileManagerData implements ShutdownSignal {
 		}	
 	}
 
-	private void initServers(String serverListFile) throws FileNotFoundException {
+	private void initServers(String serverListFile) throws FileNotFoundException, UnknownHostException {
 		_servers = new LinkedList<NameServer>();
 		java.io.File serversFile = new java.io.File(serverListFile);
 		Scanner sc = new Scanner (serversFile);
@@ -50,10 +50,13 @@ public class FileManagerData implements ShutdownSignal {
 		sc.close();
 	}
 
-	private void processLine(String nextLine) {
+	private void processLine(String nextLine) throws UnknownHostException {
 		Scanner sc = new Scanner(nextLine);
 		String IP = sc.next();
 		int port = sc.nextInt();
+		if (IP.equals("localhost")) {
+			IP = InetAddress.getLocalHost().getHostAddress();
+		}
 		_servers.add(new NameServer(IP, port));
 		sc.close();
 	}

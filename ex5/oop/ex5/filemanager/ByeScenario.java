@@ -1,6 +1,6 @@
 package oop.ex5.filemanager;
 
-import oop.ex5.messages.ByeMessage;
+import oop.ex5.messages.Message;
 
 public class ByeScenario extends Scenario {
 
@@ -9,7 +9,7 @@ public class ByeScenario extends Scenario {
 	}
 
 	public void executeScenario() {
-		sendMsgToAllNameServers(new ByeMessage());
+		sendMsgToAllNameServers(Message.BYE_MSG);
 	}
 
 }

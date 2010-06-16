@@ -1,6 +1,6 @@
 package oop.ex5.filemanager;
 
-import oop.ex5.messages.KillMessage;
+import oop.ex5.messages.Message;
 
 public class KillScenario extends Scenario {
 
@@ -9,7 +9,7 @@ public class KillScenario extends Scenario {
 	}
 
 	public void executeScenario() {
-		sendMsgToAllNameServers(new KillMessage());
+		sendMsgToAllNameServers(Message.KILL_MSG);
 	}
 
 }
