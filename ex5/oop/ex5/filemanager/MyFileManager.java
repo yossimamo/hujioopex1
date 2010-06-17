@@ -9,6 +9,7 @@ import oop.ex5.common.NameServer;
 import oop.ex5.filemanager.scenarios.ByeScenario;
 import oop.ex5.filemanager.scenarios.DelScenario;
 import oop.ex5.filemanager.scenarios.GetScenario;
+import oop.ex5.filemanager.scenarios.InitFileManagerScenario;
 import oop.ex5.filemanager.scenarios.KillScenario;
 import oop.ex5.filemanager.scenarios.Scenario;
 
@@ -47,11 +48,9 @@ public class MyFileManager {
 			MyFileManager myFileManager = new MyFileManager(args[0], args[1], Integer.valueOf(args[2]));
 			myFileManager.StartClientUserInteraction();
 		} catch (UnknownHostException e) {
-			e.printStackTrace(); //TODO remove
 			System.err.println("Error: failed to retrieve self hostname");
 			return;
 		} catch (IOException e) {
-			e.printStackTrace(); //TODO remove
 			System.err.println("Error: IO exception");
 			return;
 		}
@@ -67,7 +66,6 @@ public class MyFileManager {
 			try {
 				nextCommand = Command.valueOf(commandLineScanner.next());
 			} catch (IllegalArgumentException e) {
-				e.printStackTrace(); //TODO remove
 				nextCommand = Command.OTHER;
 			}
 			switch (nextCommand) {
@@ -94,7 +92,7 @@ public class MyFileManager {
 				byeScenario.executeScenario();
 				break;
 			case OTHER :
-				System.out.println("unknown command please try again!");
+				System.out.println("Unknown command");
 			}
 			commandLineScanner.close();
 		} while (nextCommand != Command.BYE);

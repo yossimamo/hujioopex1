@@ -37,16 +37,12 @@ public abstract class Scenario {
 				}
 				endSession();
 			} catch (IOException e) {
-				e.printStackTrace(); //TODO remove
 				continue;
 			} catch (InvalidMessageFormatException e) {
-				e.printStackTrace(); //TODO remove
 				continue;
 			} catch (InvalidMessageNameException e) {
-				e.printStackTrace(); //TODO remove
 				continue;
 			} catch (InvalidMessageContextException e) {
-				e.printStackTrace(); //TODO remove
 				continue;
 			}
 		}
@@ -89,8 +85,9 @@ public abstract class Scenario {
 		}
 	}
 	
-	protected void endSession() throws IOException {
+	protected void endSession() throws IOException, InvalidMessageFormatException, InvalidMessageNameException, InvalidMessageContextException {
 		_comm.sendMessage(Message.SESSION_END_MSG);
+		receiveOKMessage();
 		_comm.close();
 	}
 

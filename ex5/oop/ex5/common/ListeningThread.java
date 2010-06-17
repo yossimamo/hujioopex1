@@ -9,7 +9,7 @@ import java.util.LinkedList;
 
 public class ListeningThread extends Thread {
 	
-	private static final int LISTEN_TIMEOUT = 5000;
+	private static final int LISTEN_TIMEOUT_MS = 5000;
 	
 	private int _port;
 	private ServerSocket _listenSock;
@@ -27,33 +27,28 @@ public class ListeningThread extends Thread {
 	
 	@Override
 	public void run() {
-		// TODO U-G-L-Y
 		Socket clientSock = new Socket();
 		while (true) {
 			try {
 				_listenSock = new ServerSocket(_port);
-				_listenSock.setSoTimeout(LISTEN_TIMEOUT);
+				_listenSock.setSoTimeout(LISTEN_TIMEOUT_MS);
 				listen(clientSock);
 			} catch (IOException e) {
-				e.printStackTrace(); //TODO remove
 				// Restart server
 				try {
 					clientSock.close();
 					_listenSock.close();
 				} catch (IOException ee) {
-					ee.printStackTrace(); //TODO remove
 					// Fail silently, nothing to do
 				}
 				continue;
 			} catch (ServerShutdownException e) {
-				e.printStackTrace(); //TODO remove
 				// Join all current client threads and break from loop
 				Iterator<ClientThread> it = _clientThreads.iterator();
 				while (it.hasNext()) {
 					try {
 						it.next().join();
 					} catch (InterruptedException ee) {
-						ee.printStackTrace(); //TODO remove
 						// Fail silently, nothing to do
 					}
 				}
@@ -63,7 +58,6 @@ public class ListeningThread extends Thread {
 		try {
 			_listenSock.close();
 		} catch (IOException e) {
-			e.printStackTrace(); //TODO remove
 			// Fail silently, nothing to do
 		}
 		
@@ -73,7 +67,6 @@ public class ListeningThread extends Thread {
 		while (true) {
 			try {
 				socket = _listenSock.accept();
-				//TODO List cleanup is needed!
 				ClientThread ct = _factory.createClientThread(socket);
 				_clientThreads.add(ct);
 				ct.start();
@@ -81,7 +74,14 @@ public class ListeningThread extends Thread {
 				if (_signal.getShutdownSignal()) {
 					throw new ServerShutdownException();
 				} else {
-					// TODO now would be a good time to clean up the thread list?
+					// Clean up dead threads from the list
+					Iterator<ClientThread> it = _clientThreads.listIterator();
+					while (it.hasNext()) {
+						ClientThread thread = it.next();
+						if (!thread.isAlive()) {
+							it.remove();
+						}
+					}
 					continue;
 				}
 			}

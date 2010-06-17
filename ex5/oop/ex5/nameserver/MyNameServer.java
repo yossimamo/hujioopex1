@@ -25,14 +25,13 @@ public class MyNameServer {
 			Thread listeningThread = new ListeningThread(port, new NameServerClientThreadFactory(server._data), server._data);
 			listeningThread.start();
 		} catch (NumberFormatException e) {
-			// TODO print error
+			System.err.println("Error: Illegal parameter");
 			return;
 		}
 		catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			System.err.println("Error: Failed to set up server");
+			return;
 		}
-		// TODO other exceptions?
 	}
 
 }

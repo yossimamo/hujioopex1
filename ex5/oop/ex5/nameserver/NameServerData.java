@@ -14,7 +14,7 @@ public class NameServerData implements ShutdownSignal {
 	private LinkedList<NameServer> _nameServers = new LinkedList<NameServer>();
 	private HashMap<String, HashSet<FileManager>> _filesMapping = new HashMap<String, HashSet<FileManager>>();
 	private HashMap<FileManager, HashSet<String>> _fileManagersMapping = new HashMap<FileManager, HashSet<String>>();
-	private boolean _shutdownSignal = false;
+	private volatile boolean  _shutdownSignal = false;
 
 	public NameServerData() {
 		
@@ -92,14 +92,13 @@ public class NameServerData implements ShutdownSignal {
 		}
 	}
 
-	// TODO Not sure this synchronization is good enough
 	@Override
 	public synchronized boolean getShutdownSignal() {
 		return _shutdownSignal;
 	}
 
 	@Override
-	public synchronized void setShutdownSignal(boolean shouldShutdown) {
-		_shutdownSignal = shouldShutdown;		
+	public synchronized void setShutdownSignal() {
+		_shutdownSignal = true;		
 	}
 }

@@ -21,7 +21,7 @@ public class FileManagerData implements ShutdownSignal {
 	private TreeMap<String, SynchronizedFile> _files = new TreeMap<String, SynchronizedFile>();
 	private String _directoryPath;
 	private FileManager _self;
-	private boolean _shutdownSignal;
+	private volatile boolean _shutdownSignal;
 	
 
 	public FileManagerData(String serverListFile, String directory, int port)
@@ -102,8 +102,8 @@ public class FileManagerData implements ShutdownSignal {
 		return _shutdownSignal;
 	}
 
-	public synchronized void setShutdownSignal(boolean shouldShutdown) {
-		_shutdownSignal = shouldShutdown;		
+	public synchronized void setShutdownSignal() {
+		_shutdownSignal = true;		
 	}
 
 	public FileManager getSelfFileManager() {

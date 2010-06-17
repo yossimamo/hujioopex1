@@ -29,7 +29,7 @@ public class DelScenario extends Scenario {
 				sendMsgToAllNameServers(new DontHaveFileMessage(_fileName));
 			}
 			else {
-				System.out.println("Error : unable to delete file");
+				System.out.println("Error: unable to delete file");
 			}
 		}
 	}

@@ -1,6 +1,6 @@
-package oop.ex5.filemanager;
+package oop.ex5.filemanager.scenarios;
 
-import oop.ex5.filemanager.scenarios.Scenario;
+import oop.ex5.filemanager.FileManagerData;
 
 
 public class InitFileManagerScenario extends Scenario {

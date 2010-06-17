@@ -8,6 +8,7 @@ import java.util.LinkedList;
 import oop.ex5.common.CommLayer;
 import oop.ex5.common.NameServer;
 import oop.ex5.messages.*;
+import oop.ex5.messages.Message.MessageType;
 import oop.ex5.common.FileManager;
 import oop.ex5.filemanager.FileManagerData;
 import oop.ex5.filemanager.InvalidMessageContextException;
@@ -23,7 +24,6 @@ public class GetScenario extends Scenario {
 
 	public void executeScenario() {
 		if (_data.containsFile(_fileName)) {
-			//TODO write in STDIN
 			System.out.println("File is already in the database");
 			return;
 		}
@@ -33,38 +33,35 @@ public class GetScenario extends Scenario {
 		}
 	}
 		
-
 	private void getFile() {
 		Iterator<NameServer> serversIterator = _data.nameServersIterator();
 		if (getFileLocationAndDownloadFile(serversIterator)) {
 			return;
 		}
 		LinkedList<NameServer> newServers = new LinkedList<NameServer>();
+		serversIterator = _data.nameServersIterator();
 		while (serversIterator.hasNext()) {
 			NameServer nameServer = serversIterator.next();
 			try {
 				_comm = new CommLayer(nameServer.getIP(), nameServer.getPort());
 			} catch (IOException e) {
-				e.printStackTrace(); //TODO remove
+				// Move on to next server
 				continue;
 			}
 			try {
+				introduce();
 				newServers.addAll(getNameServers());
 				endSession();
 			} catch (InvalidMessageFormatException e) {
-				e.printStackTrace(); //TODO remove
 				_comm.close();
 				continue;
 			} catch (InvalidMessageNameException e) {
-				e.printStackTrace(); //TODO remove
 				_comm.close();
 				continue;
 			} catch (IOException e) {
-				e.printStackTrace(); //TODO remove
 				_comm.close();
 				continue;
 			} catch (InvalidMessageContextException e) {
-				e.printStackTrace(); //TODO remove
 				_comm.close();
 				continue;
 			}
@@ -105,7 +102,7 @@ public class GetScenario extends Scenario {
 			try {
 				_comm = new CommLayer(nameServer.getIP(), nameServer.getPort());
 			} catch (IOException e) {
-				e.printStackTrace(); //TODO remove
+				// Move on to next server
 				continue;
 			}
 			try {
@@ -113,13 +110,13 @@ public class GetScenario extends Scenario {
 					return true;
 				}
 			} catch (IOException e) {
-				e.printStackTrace(); //TODO remove
+				// Move on to next server
 				continue;
 			} catch (InvalidMessageFormatException e) {
-				e.printStackTrace(); //TODO remove
+				// Move on to next server
 				continue;
 			} catch (InvalidMessageNameException e) {
-				e.printStackTrace(); //TODO remove
+				// Move on to next server
 				continue;
 			}
 		}
@@ -133,7 +130,6 @@ public class GetScenario extends Scenario {
 			fileManagers = getFileManagersHoldingFile();
 			endSession();
 		} catch (InvalidMessageContextException e) {
-			e.printStackTrace(); //TODO remove
 			_comm.close();
 			return false;
 		}
@@ -174,6 +170,7 @@ public class GetScenario extends Scenario {
 				out.write(msg.getFileContents());
 				out.close();
 				_data.addFile(_fileName);
+				sendMsgToAllNameServers(new HaveFileMessage(_fileName));
 				System.out.printf("File Downloaded Successfully from %s:%d\n", fileManager.getIP(), fileManager.getPort());
 				return true;
 			default:
@@ -189,20 +186,22 @@ public class GetScenario extends Scenario {
 		throws IOException, InvalidMessageFormatException, InvalidMessageNameException, InvalidMessageContextException {
 		LinkedList<FileManager> fileManagers = new LinkedList<FileManager>();
 		_comm.sendMessage(new NeedFileMessage(_fileName));
-		Message incomingMessage;
-		do {
-			incomingMessage = _comm.receiveMessage();
-			switch (incomingMessage.getType()) {
-			case FILEADDRESS:
-				FileAddressMessage incomingMsg = (FileAddressMessage) incomingMessage;
-				fileManagers.add(incomingMsg.getFileManager());
-				break;
-			case LISTEND:
-				break;
-			default :
-				throw new InvalidMessageContextException();
+		Message incomingMessage = _comm.receiveMessage();
+		if (MessageType.FILENOTFOUND != incomingMessage.getType()) {
+			while (incomingMessage.getType() != Message.MessageType.LISTEND) {
+				switch (incomingMessage.getType()) {
+				case FILEADDRESS:
+					FileAddressMessage incomingMsg = (FileAddressMessage) incomingMessage;
+					fileManagers.add(incomingMsg.getFileManager());
+					break;
+				case LISTEND:
+					break;
+				default :
+					throw new InvalidMessageContextException();
+				}
+				incomingMessage = _comm.receiveMessage();
 			}
-		} while (incomingMessage.getType() != Message.MessageType.LISTEND);
+		}		
 		return fileManagers;
 	}
 

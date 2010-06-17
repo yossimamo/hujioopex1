@@ -12,14 +12,12 @@ import oop.ex5.messages.Message;
 
 public class CommLayer {
 	
-	private static final int TIMEOUT_MS = 3600000;
+	private static final int TIMEOUT_MS = 500000; // TODO fix
 	
 	private Socket _socket;
 	private DataInputStream _in;
 	private DataOutputStream _out;
-	
-	// TODO can one constructor be called by the other?
-	
+		
 	public CommLayer(String hostname, int port) throws IOException {
 		_socket = new Socket();
 		_socket.connect(new InetSocketAddress(hostname, port), TIMEOUT_MS);
@@ -47,7 +45,6 @@ public class CommLayer {
 			_out.close();
 			_socket.close();
 		} catch (IOException e) {
-			e.printStackTrace(); //TODO remove
 			// Fail silently, there is nothing to do
 		}
 	}

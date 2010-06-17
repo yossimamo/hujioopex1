@@ -56,7 +56,7 @@ public class NameServerClientThread extends ClientThread {
 					shouldCloseSession = true;
 					break;
 				case SESSIONEND:
-					// No need to reply with OK
+					handleSessionEnd();
 					shouldCloseSession = true;
 					break;
 				default:
@@ -193,14 +193,26 @@ public class NameServerClientThread extends ClientThread {
 		_comm.sendMessage(Message.LISTEND_MSG);
 	}
 	
-	private void handleBye() throws IOException {
+	private void handleBye()
+		throws IOException, InvalidMessageFormatException, InvalidMessageNameException, EndSessionException {
 		_data.clearFileManager(_fm);
 		_comm.sendMessage(Message.OK_MSG);
+		Message rcvdMsg = _comm.receiveMessage();
+		MessageType msgType = rcvdMsg.getType();
+		if (MessageType.SESSIONEND != msgType) {
+			throw new EndSessionException();
+		} else {
+			_comm.sendMessage(Message.OK_MSG);
+		}
 	}
 	
 	private void handleKill() throws IOException {
 		_comm.sendMessage(Message.OK_MSG);
-		_data.setShutdownSignal(true);
+		_data.setShutdownSignal();
+	}
+	
+	private void handleSessionEnd() throws IOException {
+		_comm.sendMessage(Message.OK_MSG);
 	}
 	
 }

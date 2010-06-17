@@ -8,6 +8,7 @@ public class FileMessage extends Message {
 	
 	protected static final String NAME = "FILE";
 	protected static final MessageType TYPE = MessageType.FILE;
+	private static final int CHUNK_SIZE = 1024;
 	
 	byte[] _fileContents;
 	
@@ -35,8 +36,14 @@ public class FileMessage extends Message {
 		try {
 			long length = in.readLong();
 			_fileContents = new byte[(int)length];
-			if (length != in.read(_fileContents, 0, (int)length)) {
-				throw new InvalidMessageFormatException();
+			int offset = 0;
+			while (_fileContents.length > offset) {
+				int sizeToRead = Math.min(CHUNK_SIZE, _fileContents.length - offset);
+				int actuallyReadBytes = in.read(_fileContents, offset, sizeToRead);
+				if (actuallyReadBytes <= 0) {
+					throw new InvalidMessageFormatException();
+				}
+				offset += actuallyReadBytes;
 			}
 		} catch (IOException e) {
 			throw new InvalidMessageFormatException();
@@ -47,7 +54,12 @@ public class FileMessage extends Message {
 	@Override
 	protected void writeImp(DataOutputStream out) throws IOException {
 		out.writeLong(_fileContents.length);
-		out.write(_fileContents);
+		int offset = 0;
+		while (_fileContents.length > offset) {
+			int sizeToWrite = Math.min(CHUNK_SIZE, _fileContents.length - offset);
+			out.write(_fileContents, offset, sizeToWrite);
+			offset += sizeToWrite;
+		}
 	}
 	
 	@Override
