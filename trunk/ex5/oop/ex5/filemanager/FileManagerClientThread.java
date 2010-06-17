@@ -35,13 +35,10 @@ public class FileManagerClientThread extends ClientThread {
 				sendErrorMessage();
 			}
 		} catch (InvalidMessageFormatException e) {
-			e.printStackTrace(); //TODO remove
 			sendErrorMessage();
 		} catch (InvalidMessageNameException e) {
-			e.printStackTrace(); //TODO remove
 			sendErrorMessage();
 		} catch (IOException e) {
-			e.printStackTrace(); //TODO remove
 			sendErrorMessage();
 		} finally {
 			_comm.close();
@@ -49,7 +46,6 @@ public class FileManagerClientThread extends ClientThread {
 	}
 
 	private void handleFileRequest(String fileName) throws IOException {
-		//TODO use the synchronized File
 		if (!_data.containsFile(fileName)) {
 			_comm.sendMessage(Message.FILENOTFOUND_MSG);
 			return;
@@ -68,7 +64,6 @@ public class FileManagerClientThread extends ClientThread {
 					in.read(fileContents);
 					in.close();
 				} catch (IOException e) {
-					e.printStackTrace(); //TODO remove
 					_comm.sendMessage(Message.ERROR_MSG);
 				}
 				_comm.sendMessage(new FileMessage(fileContents));
@@ -82,7 +77,6 @@ public class FileManagerClientThread extends ClientThread {
 		try {
 			_comm.sendMessage(Message.ERROR_MSG);
 		} catch (IOException e) {
-			e.printStackTrace(); //TODO remove
 			// Fail silently, nothing to do
 		}		
 	}

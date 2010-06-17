@@ -15,13 +15,12 @@ public class ByeScenario extends Scenario {
 	}
 
 	public void executeScenario() {
-		_data.setShutdownSignal(true);
+		_data.setShutdownSignal();
 		while (_listeningThread.isAlive()) {
 			try {
 				_listeningThread.join();
 			} catch (InterruptedException e) {
-				e.printStackTrace(); //TODO remove
-				// TODO
+				// Ignored on purpose (no one is supposed to interrupt this thread)
 			}
 		}
 		sendMsgToAllNameServers(Message.BYE_MSG);

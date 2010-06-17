@@ -22,8 +22,7 @@ public class SynchronizedFile {
 			try {
 				wait();
 			} catch (InterruptedException e) {
-				e.printStackTrace(); //TODO remove
-				// TODO 
+				// It's safe to delete the file now
 			}
 		}
 	}
