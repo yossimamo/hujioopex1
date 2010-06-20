@@ -69,13 +69,13 @@ public class MyFileManager {
 				nextCommand = Command.OTHER;
 			}
 			switch (nextCommand) {
-			case LIST :
+			case LIST:
 				printFiles();
 				break;
-			case LISTSERVERS :
+			case LISTSERVERS:
 				printServers();
 				break;
-			case GET :
+			case GET:
 				Scenario getScenario = new GetScenario(_data, commandLineScanner.next());
 				getScenario.executeScenario();
 				break;
@@ -83,15 +83,15 @@ public class MyFileManager {
 				Scenario delScenario = new DelScenario(_data, commandLineScanner.next());
 				delScenario.executeScenario();
 				break;
-			case KILL :
+			case KILL:
 				Scenario killScenario = new KillScenario(_data);
 				killScenario.executeScenario();
 				break;
-			case BYE :
+			case BYE:
 				Scenario byeScenario = new ByeScenario(_data, _listeningThread);
 				byeScenario.executeScenario();
 				break;
-			case OTHER :
+			case OTHER:
 				System.out.println("Unknown command");
 			}
 			commandLineScanner.close();
